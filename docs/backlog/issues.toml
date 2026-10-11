@@ -1,0 +1,371 @@
+# Backlog source of truth for GitHub labels, milestones, and issues.
+# File or update with: uv run python scripts/file_issues.py [--apply]
+# Plan reference: docs/aureproof-plan-v2.md §10-§12. Estimates are planning
+# assumptions in focused days, not commitments.
+
+# --- Labels -----------------------------------------------------------------
+# GitHub defaults (bug, documentation, enhancement, good first issue,
+# help wanted, ...) already exist and are not redefined here.
+
+[[label]]
+name = "P0"
+color = "b60205"
+description = "Critical path to v0.1.0"
+
+[[label]]
+name = "P1"
+color = "d93f0b"
+description = "v0.1.x follow-up"
+
+[[label]]
+name = "P2"
+color = "fbca04"
+description = "Later (v0.2+)"
+
+[[label]]
+name = "triage"
+color = "d4c5f9"
+description = "Needs a maintainer to triage"
+
+[[label]]
+name = "spec"
+color = "1d76db"
+description = "Open specs: THR, Evidence Bundle, Decision Protocol, schemas"
+
+[[label]]
+name = "scoring"
+color = "5319e7"
+description = "Matching rules, verdicts, metrics"
+
+[[label]]
+name = "bundle"
+color = "0e8a16"
+description = "Evidence bundle, journal, sealing, attempts"
+
+[[label]]
+name = "stats"
+color = "c5def5"
+description = "Decision gate and statistics"
+
+[[label]]
+name = "fixture"
+color = "bfd4f2"
+description = "Evaluation fixtures and task-health records"
+
+[[label]]
+name = "adapter"
+color = "0052cc"
+description = "Runners, importers, exporters"
+
+[[label]]
+name = "cli"
+color = "006b75"
+description = "Command-line interface"
+
+[[label]]
+name = "security"
+color = "ee0701"
+description = "Threat model, isolation, trust boundaries"
+
+[[label]]
+name = "policy"
+color = "f9d0c4"
+description = "Responsible use, provider terms, licensing"
+
+[[label]]
+name = "research"
+color = "fef2c0"
+description = "User research and demand validation"
+
+[[label]]
+name = "spike"
+color = "e99695"
+description = "Time-boxed investigation that ends in an ADR"
+
+[[label]]
+name = "adr"
+color = "c2e0c6"
+description = "Architecture decision record"
+
+# --- Milestones ---------------------------------------------------------------
+
+[[milestone]]
+title = "M0 Foundations"
+description = "Interviews; repo + OSS kit + CI; worked example (pair #1); Inspect runner spike; Linux host. Gate: interview notes, clone green, spike verdict."
+
+[[milestone]]
+title = "M1 Offline integrity core"
+description = "THR / Bundle / Decision specs + schemas + conformance vectors; matcher + metrics; hash chain + in-toto seal; CLI validate/score/report. Gate: golden counts match an independent calculation, offline."
+
+[[milestone]]
+title = "M2 Calibrated slice"
+description = "3 fixture pairs with health controls; difficulty probe; one live episode via the Inspect bridge; signed bundle; offline re-score. Stop/go: the real commitment point."
+
+[[milestone]]
+title = "M3 Benchmark + gate"
+description = "~20 cases with adjudication, canaries, private split; external subject; exact paired gate + GitHub Action; pilot; signed pre-registered protocol."
+
+[[milestone]]
+title = "M4 v0.1.0"
+description = "Assessment (sanity + close contrasts); report; ABC self-assessment; Croissant card; EEE exporter; SBOM + PEP 740 + DOI; independent reproduction."
+
+[[milestone]]
+title = "M5 Upstream & audit"
+description = "NeMo Gym #3675, in-toto #575, Harbor registry; public-benchmark health audit; arXiv report."
+
+# --- Issues ------------------------------------------------------------------
+
+[[issue]]
+id = "AP-001"
+title = "Freeze v0.1 scope, primary metric, and agent/protocol choice"
+milestone = "M0 Foundations"
+labels = ["P0", "adr"]
+estimate = "0.5 focused day"
+plan = "§1.5, §3.6, §4.3"
+depends = []
+context = "scope.md and ADR-0001/0004 exist. Still open: the primary metric (strict confirmed yield vs known-defect recall), the external agent and its model protocol, and the second reviewer (ADR-0005)."
+deliverable = "ADRs recording the primary metric and the external agent + provider protocol; scope.md marked frozen."
+done = [
+  "Primary metric chosen with rationale in an ADR",
+  "External agent and model protocol recorded in an ADR",
+  "scope.md marked frozen and linked from ROADMAP.md",
+]
+
+[[issue]]
+id = "AP-032"
+title = "Run 3-5 practitioner interviews and record the go / narrow decision"
+milestone = "M0 Foundations"
+labels = ["P0", "research"]
+estimate = "2 focused days (calendar time is longer)"
+plan = "§1.3, §1.4, §10.1 (M0 gate)"
+depends = ["AP-001"]
+context = "Demand is the least-proven assumption. The interview kit (guide, one-page positioning, mock report, notes template) is in docs/research/."
+deliverable = "Anonymized interview notes and a recorded go / narrow decision for the M0 gate."
+done = [
+  "At least 3 interviews held with the docs/research/interview-guide.md script",
+  "Anonymized notes committed under docs/research/",
+  "Go / narrow decision recorded in ROADMAP.md",
+]
+
+[[issue]]
+id = "AP-034"
+title = "Inspect runner spike: settle ADR-0002 and ADR-0003"
+milestone = "M0 Foundations"
+labels = ["P0", "spike", "adapter"]
+estimate = "1 focused day"
+plan = "§3.3"
+depends = ["AP-010"]
+context = "ADR-0002 (Inspect first) and ADR-0003 (Aureproof owns attempts) are proposed pending a spike on fixture pair #1."
+deliverable = "Spike notes plus ADR-0002/0003 promoted to accepted, or a documented fallback (plain-Docker runner + own proxy)."
+done = [
+  "Bridge works with the sandbox at network_mode: none",
+  "Reference subject writes findings.json as a declared artifact",
+  "Label-matcher scorer runs in the controller and reads no agent-writable verdict files",
+  "Inspect and inspect_swe pin cleanly with uv; Python floor confirmed",
+  "Runner executes single attempts; Aureproof records retries",
+  "ADR-0002 and ADR-0003 updated with the evidence",
+]
+
+[[issue]]
+id = "AP-010"
+title = "Fixture pair #1 (missing authorization): fixture, labels, calibration PoC, expected verdicts"
+milestone = "M0 Foundations"
+labels = ["P0", "fixture"]
+estimate = "1 focused day"
+plan = "§4.1, §5.3, §5.8, §12"
+depends = []
+context = "The Day-1 worked example. A semantic defect (missing authorization) was chosen over a textbook pattern because single-shot models and pattern scanners saturate textbook fixtures (plan-review C4)."
+deliverable = "Vulnerable and repaired variants with decoys, evaluator-only labels, a calibration PoC, an expected-verdict table, and tests that keep labels in sync with the code."
+done = [
+  "Vulnerable and repaired variants plus decoy functions",
+  "Evaluator-only labels with file/symbol/line anchors and an accepted-CWE set",
+  "Calibration PoC triggers on the vulnerable variant only; irrelevant and malformed inputs do not count",
+  "Expected-verdict table covers the five Phase-0 scenarios",
+  "Canary present in every fixture file",
+  "Tests fail if labels drift from the code",
+]
+
+[[issue]]
+id = "AP-005"
+title = "Write scoring.md: matching rules M1-M9, dispositions, metrics, golden table"
+milestone = "M1 Offline integrity core"
+labels = ["P0", "spec", "scoring"]
+estimate = "1 focused day"
+plan = "§5.4, §5.5, §5.6, §5.8"
+depends = ["AP-001"]
+context = "The matching rules are the real measurement; they must be fixed before any schema or matcher code."
+deliverable = "scoring.md with rules M1-M9, dispositions, metric definitions, and at least 15 golden examples."
+done = [
+  "Rules M1-M9 written with the proposed line tolerance",
+  "Finding verdicts and episode dispositions defined (incl. safety_refusal)",
+  "Metric definitions with numerators, denominators, and undefined cases",
+  "At least 15 golden examples (plan §5.8)",
+  "A second reviewer agrees with every golden outcome",
+]
+
+[[issue]]
+id = "AP-003"
+title = "Task, System, Episode, and Attempt schemas"
+milestone = "M1 Offline integrity core"
+labels = ["P0", "spec"]
+estimate = "1 focused day"
+plan = "§3.7"
+depends = ["AP-001"]
+context = "Identity contracts every later artifact references."
+deliverable = "Pydantic v2 models in aureproof.contracts with JSON Schema 2020-12 export."
+done = [
+  "Models implemented in aureproof.contracts",
+  "JSON Schema 2020-12 exported under specs/",
+  "Valid and invalid conformance vectors pass",
+]
+
+[[issue]]
+id = "AP-004"
+title = "Event, Submission, Finding, and Verdict schemas with SARIF 2.1.0 mapping"
+milestone = "M1 Offline integrity core"
+labels = ["P0", "spec"]
+estimate = "1 focused day"
+plan = "§3.5, §3.7, §5.2"
+depends = ["AP-005", "AP-003"]
+context = "Findings must round-trip through SARIF so static baselines import cheaply."
+deliverable = "Models and schemas for events, submissions (findings, poc_ref), findings, and verdicts."
+done = [
+  "observation_source trust tiers encoded (controller_observed, agent_reported, imported)",
+  "Episode dispositions include safety_refusal",
+  "SARIF 2.1.0 round-trip test passes",
+  "Conformance vectors pass",
+]
+
+[[issue]]
+id = "AP-035"
+title = "Task Health Record spec v0.1: schema and conformance vectors"
+milestone = "M1 Offline integrity core"
+labels = ["P0", "spec", "fixture"]
+estimate = "1 focused day"
+plan = "§4.1"
+depends = ["AP-005"]
+context = "specs/thr/README.md is a draft stub; this freezes thr/v0.1."
+deliverable = "Normative THR spec, thr.schema.json, and conformance vectors."
+done = [
+  "Normative text in specs/thr/",
+  "thr.schema.json (JSON Schema 2020-12)",
+  "Vectors cover healthy, unhealthy, and unknown",
+  "Required controls include nop and spray_cheat",
+]
+
+[[issue]]
+id = "AP-036"
+title = "Evidence Bundle spec: RFC 8785 digests, blob store, hash chain, in-toto seal, validation"
+milestone = "M1 Offline integrity core"
+labels = ["P0", "spec", "bundle"]
+estimate = "2 focused days"
+plan = "§3.5, §4.2 (includes AP-006)"
+depends = ["AP-004"]
+context = "Combines AP-036 (spec + seal) and AP-006 (blob store + validation), which change together. Sigstore signing follows in M2."
+deliverable = "Normative bundle spec and schema plus the pure implementation in aureproof.bundle."
+done = [
+  "RFC 8785 canonical digests (SHA-256)",
+  "Content-addressed blob store",
+  "Hash-chained journal; seal stores event count and head hash",
+  "in-toto Statement v1 seal",
+  "Tampered, truncated, and missing-member vectors fail validation",
+]
+
+[[issue]]
+id = "AP-037"
+title = "Decision Protocol spec and exact paired permutation gate"
+milestone = "M1 Offline integrity core"
+labels = ["P0", "spec", "stats"]
+estimate = "1.5 focused days"
+plan = "§4.3, §6"
+depends = ["AP-005"]
+context = "The three-way pass / fail / inconclusive decision; the GitHub Action wrapper follows in M3."
+deliverable = "Normative decision spec and schema plus the pure implementation in aureproof.stats."
+done = [
+  "Exact sign-flip permutation over clusters, CI by test inversion",
+  "Wilson intervals per configuration",
+  "Vectors with hand-checked exact p-values and intervals",
+  "Fewer than 6 clusters is reported as unable to reach a decisive outcome",
+]
+
+[[issue]]
+id = "AP-007"
+title = "Matcher and metrics: pure, test-first, with Hypothesis invariants"
+milestone = "M1 Offline integrity core"
+labels = ["P0", "scoring"]
+estimate = "1.5 focused days"
+plan = "§5.1, §5.4, §5.6"
+depends = ["AP-004", "AP-005"]
+context = "match(findings, labels, matcher_version) is the v0.1 oracle (ADR-0004)."
+deliverable = "The matcher and metric functions in aureproof.scoring."
+done = [
+  "Golden table from scoring.md passes",
+  "Invariant: duplicates never change recall",
+  "Invariant: precision is undefined iff confirmed + refuted = 0",
+  "The spray control collapses strict confirmed yield",
+]
+
+[[issue]]
+id = "AP-008"
+title = "CLI: validate, score --offline, report (escaped HTML)"
+milestone = "M1 Offline integrity core"
+labels = ["P0", "cli"]
+estimate = "1 focused day"
+plan = "§3.9, §5.9"
+depends = ["AP-007", "AP-036"]
+context = "The Phase-1 gate runs through these commands."
+deliverable = "aureproof validate, score --offline, and report."
+done = [
+  "Offline tutorial runs without credentials",
+  "HTML report escapes agent-authored strings (XSS test)",
+  "Phase-1 gate: golden bundle counts match an independent calculation",
+]
+
+[[issue]]
+id = "AP-002"
+title = "STRIDE threat model with a control-to-test matrix"
+milestone = "M1 Offline integrity core"
+labels = ["P0", "security"]
+estimate = "1 focused day"
+plan = "§7.1, §7.2"
+depends = ["AP-034"]
+context = "Every claimed control must have a test; v0.1 and v0.2 controls are separated."
+deliverable = "docs/threat-model.md with the STRIDE table and test IDs."
+done = [
+  "STRIDE table for v0.1 (plan §7.1)",
+  "Every control maps to a test ID",
+  "v0.2 executed-PoC controls listed separately",
+]
+
+[[issue]]
+id = "AP-041"
+title = "Provider-terms review and safety_refusal handling"
+milestone = "M1 Offline integrity core"
+labels = ["P0", "policy"]
+estimate = "0.5 focused day"
+plan = "§5.5, §7.3, §7.4"
+depends = ["AP-001", "AP-004"]
+context = "RESPONSIBLE_USE.md exists; OpenAI's Sharing & Publication Policy was not yet verified."
+deliverable = "Reviewed provider-terms section and a refusal conformance vector."
+done = [
+  "Provider terms re-checked, including OpenAI's Sharing & Publication Policy",
+  "RESPONSIBLE_USE.md updated if anything changed",
+  "A safety_refusal vector scores as a refusal, not a miss",
+]
+
+[[issue]]
+id = "AP-009"
+title = "Aureproof-owned attempts and journal with restart recovery"
+milestone = "M2 Calibrated slice"
+labels = ["P0", "bundle"]
+estimate = "2 focused days"
+plan = "§3.4, ADR-0003"
+depends = ["AP-036"]
+context = "The runner executes single attempts; Aureproof records every attempt, including retries and infrastructure failures."
+deliverable = "Attempt records, journal for Aureproof-owned stages, and single-host restart recovery."
+done = [
+  "Attempt IDs assigned before dispatch",
+  "Restart preserves IDs",
+  "Finalization is idempotent (duplicate delivery yields one result)",
+  "Every scheduled episode ends with exactly one disposition",
+]
