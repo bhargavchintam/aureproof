@@ -18,3 +18,8 @@ updates:
       interval: "weekly"
     commit-message:
       prefix: "chore(ci)"
+    # One PR for all action bumps, so multi-part actions (codeql-action
+    # init/analyze/upload-sarif) always move to the same version together.
+    groups:
+      github-actions:
+        patterns: ["*"]

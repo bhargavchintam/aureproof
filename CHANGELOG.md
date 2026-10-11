@@ -23,5 +23,13 @@ public API and the specs may change between minor versions).
   scanning, CodeQL, and OpenSSF Scorecard; weekly Dependabot updates.
 - Scaffolding for the three specs (`specs/thr`, `specs/bundle`, `specs/decision`)
   and the initial ADRs.
+- Worked example: fixture pair `authz-001` (missing authorization) with decoys,
+  evaluator-only labels, a calibration PoC, an expected-verdict table, and tests
+  that fail if labels drift from the code or evaluation writes into the fixture tree.
+- Backlog as data (`docs/backlog/issues.toml`) and an idempotent filer
+  (`scripts/file_issues.py`) for labels, milestones, and issues.
+- Practitioner interview kit (`docs/research/`) and a Linux evaluation-host
+  check (`scripts/check_host.sh`, `docs/guides/linux-host.md`).
+- Dependabot groups GitHub Actions updates into a single pull request.
 
 [Unreleased]: https://github.com/bhargavchintam/aureproof/commits/main
