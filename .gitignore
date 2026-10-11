@@ -18,6 +18,7 @@ htmlcov/
 .ruff_cache/
 # Evidence / local runs (never commit real run artifacts or credentials)
 /runs/
+/spikes/*/logs/
 *.eval
 *.sarif.local
 .env

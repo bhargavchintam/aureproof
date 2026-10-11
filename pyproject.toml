@@ -38,6 +38,13 @@ Issues = "https://github.com/bhargavchintam/aureproof/issues"
 [project.scripts]
 aureproof = "aureproof.cli.main:app"
 
+[project.optional-dependencies]
+inspect = [
+    "anthropic>=1.13,<2",
+    "inspect-ai==0.3.278",
+    "inspect-swe==0.2.71",
+]
+
 [dependency-groups]
 dev = [
   "pytest>=8,<10",
@@ -74,6 +81,9 @@ explicit_package_bases = true
 minversion = "8.0"
 testpaths = ["tests"]
 addopts = "-ra --strict-markers --cov=aureproof --cov-report=term-missing"
+markers = [
+  "docker: needs a running Docker engine (skipped when unavailable)",
+]
 
 [tool.coverage.run]
 branch = true
