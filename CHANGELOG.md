@@ -31,5 +31,10 @@ public API and the specs may change between minor versions).
 - Practitioner interview kit (`docs/research/`) and a Linux evaluation-host
   check (`scripts/check_host.sh`, `docs/guides/linux-host.md`).
 - Dependabot groups GitHub Actions updates into a single pull request.
+- Day-2 Inspect runner spike (`spikes/inspect_day2/`, issue #7). Adds an optional
+  `inspect` extra with exact pins, collect-then-match grading of `findings.json`,
+  a bridge probe for no-network and key isolation, a one-command live-run harness
+  with a key-leak scan, and a Docker-gated regression test. ADR-0002 (Inspect
+  first) and ADR-0003 (Aureproof owns attempts) are accepted.
 
 [Unreleased]: https://github.com/bhargavchintam/aureproof/commits/main

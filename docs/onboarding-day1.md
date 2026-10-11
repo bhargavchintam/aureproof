@@ -28,6 +28,7 @@ automated is done; the remaining items need the maintainer.
 - [ ] **Set the Code of Conduct contact**: a dedicated, non-personal address in `CODE_OF_CONDUCT.md`.
 - [ ] **Run 3–5 practitioner interviews** with the kit and record the go / narrow decision ([#6](https://github.com/bhargavchintam/aureproof/issues/6)).
 - [ ] **Provision the Linux host** and get all `PASS` from `scripts/check_host.sh`.
-- [ ] **Run the Day-2 Inspect spike** on `authz-001` and settle ADR-0002/0003 ([#7](https://github.com/bhargavchintam/aureproof/issues/7)).
+- [x] **Day-2 Inspect spike** on `authz-001`: ADR-0002/0003 accepted. Notes: [`research/spike-inspect-day2.md`](research/spike-inspect-day2.md).
+- [ ] **Run the live Claude Code episode** to finish spike check 2 ([#7](https://github.com/bhargavchintam/aureproof/issues/7)): put `ANTHROPIC_API_KEY` in `~/.aureproof-spike.env` (mode 600), then run `uv run --extra inspect python spikes/inspect_day2/live.py`.
 - [ ] **Set up PyPI Trusted Publishing** before the first `0.1.0a1` release (M1).
 - [ ] **Review the open Dependabot PRs** (#1–#4). Future action updates arrive grouped in one PR.
