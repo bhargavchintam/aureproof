@@ -21,6 +21,8 @@ Planned total: ~40–55 focused days.
 
 ## Status
 
-M0 in progress — repository foundation and CI are done (see
-[`CHANGELOG.md`](CHANGELOG.md)). Remaining M0 items are tracked in
+M0 in progress. Done: repository foundation, CI and security settings, the
+filed backlog (issues #5–#19), and the worked example (fixture pair `authz-001`).
+Remaining: practitioner interviews (#6), the Inspect runner spike (#7), naming a
+second reviewer (ADR-0005), and the Linux host. Details and status:
 [`docs/onboarding-day1.md`](docs/onboarding-day1.md).
