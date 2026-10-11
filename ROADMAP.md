@@ -22,7 +22,8 @@ Planned total: ~40–55 focused days.
 ## Status
 
 M0 in progress. Done: repository foundation, CI and security settings, the
-filed backlog (issues #5–#19), and the worked example (fixture pair `authz-001`).
-Remaining: practitioner interviews (#6), the Inspect runner spike (#7), naming a
-second reviewer (ADR-0005), and the Linux host. Details and status:
+filed backlog (issues #5–#19), the worked example (fixture pair `authz-001`), and
+the Inspect runner spike (ADR-0002/0003 accepted). Remaining: the live Claude Code
+episode (#7), practitioner interviews (#6), naming a second reviewer (ADR-0005),
+and the Linux host. Details and status:
 [`docs/onboarding-day1.md`](docs/onboarding-day1.md).

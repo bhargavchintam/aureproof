@@ -161,7 +161,7 @@ This is a trust-boundary diagram, not a deployment requirement. On day one every
 - `inspect_swe` provides Claude Code and Codex CLI agents.
 - `inspect_harbor` runs Harbor-format tasks inside Inspect [R35].
 
-**Day-2 spike checks** (must pass, or fall back):
+**Day-2 spike checks** (must pass, or fall back). Result 2026-10-11: checks 1, 3, 4 and 5 pass, and check 2 passes except for the live Claude Code episode. See [`research/spike-inspect-day2.md`](research/spike-inspect-day2.md):
 1. The bridge works with the sandbox at `network_mode: none`.
 2. The reference subject and Claude Code both write `findings.json` as a declared artifact.
 3. The label-matcher scorer runs in the controller and never reads files the agent can write as verdicts.
@@ -233,7 +233,7 @@ Terminal states are `failed` and `incomplete`, with cleanup bookkeeping. `dispat
 ### 3.8 Technology decisions
 | Area | Decision | Change trigger |
 |---|---|---|
-| Language | Python 3.12+ (Harbor requires ≥3.12; confirm Inspect's floor in the spike) | Dependency floor changes |
+| Language | Python 3.12+ (Harbor requires ≥3.12; Inspect ≥3.10, confirmed in the spike) | Dependency floor changes |
 | Contracts | Pydantic v2 + JSON Schema 2020-12 export | — |
 | Environment | uv + hash-locked `uv.lock` | — |
 | CLI | Typer or similar | — |
@@ -851,8 +851,6 @@ If Day 12 doesn't show an isolated, calibrated oracle and a signed, re-scorable 
 - **R47** mini-swe-agent: https://github.com/SWE-agent/mini-swe-agent
 
 **Still unverified (spike checks):**
-- the Inspect bridge under `network_mode: none`
-- Inspect's Python floor
 - Docker Desktop on macOS with nftables egress
 - `inspect_harbor` maturity
 - whether EEE can hold THR and decision fields

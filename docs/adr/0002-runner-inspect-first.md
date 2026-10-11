@@ -4,7 +4,7 @@ SPDX-License-Identifier: Apache-2.0
 -->
 # ADR-0002: Inspect AI as the first runner; Harbor in v0.2
 
-- Status: proposed (confirm with the M0 Day-2 spike)
+- Status: accepted (2026-10-11, Day-2 spike, issue #7)
 - Date: 2026-10-07
 - Deciders: lead maintainer
 
@@ -30,4 +30,16 @@ execution, configured with `environment_mode = "separate"`, `max_retries = 0`,
 
 - Easier: key isolation and hosted-tool withholding come from the bridge; much of the inference-gateway work shrinks.
 - Harder: a second runner adapter (Harbor) later; both must satisfy the same contract.
-- Revisit: after the Day-2 spike (bridge under `network_mode: none`, `findings.json` artifact, in-controller scorer, uv-pinnable). Record the result here.
+- Harder: Inspect releases often (0.3.278 at acceptance); pin exact versions and keep `tests/integration/test_inspect_spike.py` as the upgrade contract test.
+- Revisit: if the live Claude Code episode (issue #7) cannot produce a submission through the bridge, or a pinned upgrade breaks the contract test.
+
+## Spike evidence (2026-10-11)
+
+Full notes: [`docs/research/spike-inspect-day2.md`](../research/spike-inspect-day2.md).
+Pins: `inspect-ai==0.3.278`, `inspect-swe==0.2.71`, Claude Code 2.1.287.
+
+- The bridge works with the sandbox at `network_mode: none`. The proxy listens on the container's loopback and relays over the exec channel. Egress is blocked, no provider variable is in the sandbox env, and a canary key reaches neither the sandbox nor any log.
+- The scorer runs in the controller and ignores planted `verdict.json` and `reward.txt` files. Grading is collect-then-match, so re-scoring a saved log reproduces the live verdicts with no sandbox.
+- The stack pins cleanly with uv (optional extra `inspect`). Python floor: Inspect needs ≥3.10, and the project stays at ≥3.12.
+- Required `inspect_swe.claude_code` settings: `disallowed_tools=["WebSearch", "WebFetch"]` (web search is otherwise on), `retry_refusals=0`, `retry_uncaught_errors=0`, `attempts=1`, and an exact, host-cached `version`.
+- Still open: a live Claude Code episode on a real model (`spikes/inspect_day2/live.py`).
