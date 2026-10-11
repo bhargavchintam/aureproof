@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: 2026 Bindu Bhargava R Chintam
+# SPDX-License-Identifier: Apache-2.0
+#
+# Agent sandbox for the Day-2 Inspect spike (issue #7). A custom compose file
+# replaces Inspect's generated default, so `network_mode: none` must be set here.
+services:
+  default:
+    image: python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1  # python:3.12-slim
+    command: tail -f /dev/null
+    init: true
+    network_mode: none
+    working_dir: /work
+    cpus: 1.0
+    mem_limit: 1gb
