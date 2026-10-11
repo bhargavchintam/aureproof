@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: 2026 Bindu Bhargava R Chintam
+# SPDX-License-Identifier: Apache-2.0
+# Run `uvx pre-commit install` once, then hooks run on every commit.
+# Keep hook versions in sync with the dev dependency group in pyproject.toml.
+minimum_pre_commit_version: "3.7.0"
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: check-toml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/seddonym/import-linter
+    rev: v2.1
+    hooks:
+      - id: import-linter
+
+  - repo: https://github.com/fsfe/reuse-tool
+    rev: v5.0.2
+    hooks:
+      - id: reuse
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks

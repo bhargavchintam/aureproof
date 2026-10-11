@@ -1,0 +1,129 @@
+# SPDX-FileCopyrightText: 2026 Bindu Bhargava R Chintam
+# SPDX-License-Identifier: Apache-2.0
+[build-system]
+requires = ["hatchling>=1.27"]  # >=1.27 for PEP 639 (SPDX license expression) support
+build-backend = "hatchling.build"
+
+[project]
+name = "aureproof"
+version = "0.0.0"
+description = "An open-source integrity layer for AI-agent evaluations: task-health records, signed re-scorable evidence bundles, and pre-registered regression decisions."
+readme = "README.md"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "Bindu Bhargava R Chintam" }]
+keywords = ["evaluation", "ai-agents", "security", "reproducibility", "benchmark", "attestation"]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Security",
+  "Topic :: Software Development :: Testing",
+  "Typing :: Typed",
+]
+dependencies = [
+  "pydantic>=2,<3",
+  "typer>=0.12,<1",
+]
+
+[project.urls]
+Homepage = "https://github.com/bhargavchintam/aureproof"
+Repository = "https://github.com/bhargavchintam/aureproof"
+Changelog = "https://github.com/bhargavchintam/aureproof/blob/main/CHANGELOG.md"
+Issues = "https://github.com/bhargavchintam/aureproof/issues"
+
+[project.scripts]
+aureproof = "aureproof.cli.main:app"
+
+[dependency-groups]
+dev = [
+  "pytest>=8,<10",
+  "pytest-cov>=5",
+  "hypothesis>=6",
+  "mypy>=1.11",
+  "ruff>=0.6",
+  "import-linter>=2",
+  "pre-commit>=3.7",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/aureproof"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "C4", "PTH", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+packages = ["aureproof"]
+mypy_path = "src"
+explicit_package_bases = true
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = "-ra --strict-markers --cov=aureproof --cov-report=term-missing"
+
+[tool.coverage.run]
+branch = true
+source = ["aureproof"]
+
+[tool.coverage.report]
+show_missing = true
+# Threshold intentionally unset on the Day-1 scaffold; raised to 90 once the
+# scoring/bundle cores land in M1 (see docs/aureproof-plan-v2.md §11, AP-007).
+
+# --- Architecture boundary enforcement (plan v2 §3.2) ------------------------
+# The pure core (contracts, scoring, stats, bundle) must not depend on adapters,
+# the CLI, or perform network/process I/O. These contracts are checked in CI and
+# pre-commit via `lint-imports`.
+[tool.importlinter]
+root_package = "aureproof"
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "Pure core does not depend on adapters or the CLI"
+type = "forbidden"
+source_modules = [
+  "aureproof.contracts",
+  "aureproof.scoring",
+  "aureproof.stats",
+  "aureproof.bundle",
+]
+forbidden_modules = [
+  "aureproof.runners",
+  "aureproof.importers",
+  "aureproof.exporters",
+  "aureproof.oracles",
+  "aureproof.cli",
+]
+
+[[tool.importlinter.contracts]]
+name = "Pure core performs no network or process I/O"
+type = "forbidden"
+source_modules = [
+  "aureproof.contracts",
+  "aureproof.scoring",
+  "aureproof.stats",
+  "aureproof.bundle",
+]
+# import-linter requires top-level package names for external modules.
+forbidden_modules = [
+  "socket",
+  "subprocess",
+  "urllib",
+  "http",
+  "httpx",
+  "requests",
+]

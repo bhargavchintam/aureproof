@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: 2026 Bindu Bhargava R Chintam
+# SPDX-License-Identifier: Apache-2.0
+cff-version: 1.2.0
+message: "If you use Aureproof, please cite it using these metadata."
+title: "Aureproof: an integrity layer for AI-agent evaluations"
+abstract: >-
+  Aureproof produces reviewable, reproducible evaluations of AI agents:
+  per-task health records, signed re-scorable evidence bundles, and
+  pre-registered pass/fail/inconclusive regression decisions.
+type: software
+authors:
+  - given-names: "Bindu Bhargava R"
+    family-names: "Chintam"
+repository-code: "https://github.com/bhargavchintam/aureproof"
+url: "https://github.com/bhargavchintam/aureproof"
+license: Apache-2.0
+version: "0.0.0"
+keywords:
+  - evaluation
+  - ai-agents
+  - security
+  - reproducibility
+  - benchmark

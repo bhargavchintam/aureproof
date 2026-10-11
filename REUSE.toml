@@ -1,0 +1,47 @@
+# SPDX-FileCopyrightText: 2026 Bindu Bhargava R Chintam
+# SPDX-License-Identifier: Apache-2.0
+# REUSE 3.3 configuration (https://reuse.software/spec-3.3/).
+# Python sources carry inline SPDX headers; this file covers everything else.
+version = 1
+
+[[annotations]]
+path = [
+  "README.md",
+  "CONTRIBUTING.md",
+  "SECURITY.md",
+  "RESPONSIBLE_USE.md",
+  "MAINTAINERS.md",
+  "CHANGELOG.md",
+  "ROADMAP.md",
+  "NOTICE",
+  "CODEOWNERS",
+  "CITATION.cff",
+  "uv.lock",
+  ".python-version",
+  ".gitignore",
+  ".gitleaks.toml",
+  "src/aureproof/py.typed",
+  "**/.gitkeep",
+  "**/*.yml",
+  "**/*.yaml",
+  "**/*.md",
+  ".github/**",
+  ".claude/**",
+  "docs/**",
+  "specs/**",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Bindu Bhargava R Chintam"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = ["fixtures/**", "examples/**", "conformance/**"]
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Bindu Bhargava R Chintam"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = ["CODE_OF_CONDUCT.md"]
+precedence = "override"
+SPDX-FileCopyrightText = "2014 Coraline Ada Ehmke and the Contributor Covenant contributors"
+SPDX-License-Identifier = "CC-BY-4.0"

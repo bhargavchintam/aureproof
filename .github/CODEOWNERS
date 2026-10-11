@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2026 Bindu Bhargava R Chintam
+# SPDX-License-Identifier: Apache-2.0
+# Default owner for everything in the repo.
+* @bhargavchintam
+
+# Specs, scoring semantics, and the threat model change the measurement itself
+# and the trust boundary: require the maintainer's review explicitly.
+/specs/        @bhargavchintam
+/src/aureproof/scoring/   @bhargavchintam
+/src/aureproof/bundle/    @bhargavchintam
+/docs/adr/     @bhargavchintam
+/.github/      @bhargavchintam

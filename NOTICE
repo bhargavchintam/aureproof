@@ -1,0 +1,9 @@
+Aureproof
+Copyright 2026 Bindu Bhargava R Chintam and the Aureproof contributors
+
+This product is licensed under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance with the License.
+A copy of the License is in the LICENSE file at the root of this repository.
+
+Self-authored evaluation fixtures under fixtures/ are licensed under
+CC-BY-4.0. See REUSE.toml and each file's SPDX identifier for per-file terms.

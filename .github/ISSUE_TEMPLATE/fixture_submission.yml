@@ -1,0 +1,40 @@
+# SPDX-FileCopyrightText: 2026 Bindu Bhargava R Chintam
+# SPDX-License-Identifier: Apache-2.0
+name: Fixture / task proposal
+description: Propose a new security-discovery fixture (vulnerable/repaired pair or decoy).
+labels: ["fixture", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Read `RESPONSIBLE_USE.md` first. Fixtures must be **self-authored or explicitly
+        authorized**, synthetic, and must not target third-party live systems.
+  - type: textarea
+    id: defect
+    attributes:
+      label: Defect and mechanism
+      description: The intended defect, its accepted CWE set, and how the repaired variant differs.
+    validations:
+      required: true
+  - type: dropdown
+    id: discriminates
+    attributes:
+      label: Does it resist the baselines?
+      description: Fixtures a single-shot model and Bandit both solve do not discriminate (plan v2 §4.1 difficulty probe).
+      options:
+        - "Yes — decoy / cross-file / semantic defect"
+        - "Not sure — needs a difficulty probe"
+        - "No — textbook single-file pattern"
+    validations:
+      required: true
+  - type: checkboxes
+    id: attestations
+    attributes:
+      label: Attestations
+      options:
+        - label: The content is self-authored or I am authorized to publish it.
+          required: true
+        - label: It is synthetic and targets no third-party live system.
+          required: true
+        - label: I understand it will ship with a canary and a task-health record.
+          required: true

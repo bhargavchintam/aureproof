@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: 2026 Bindu Bhargava R Chintam
+# SPDX-License-Identifier: Apache-2.0
+# Secret-scanning configuration. Start from gitleaks' built-in rules.
+# Canary identifiers in fixtures are deliberate, non-secret GUIDs; add explicit
+# allowlist paths here if a future canary format trips a rule.
+title = "aureproof gitleaks config"
+
+[extend]
+useDefault = true

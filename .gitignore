@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+# Virtualenv / uv
+.venv/
+# Testing / coverage / type / lint caches
+.pytest_cache/
+.hypothesis/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+# Evidence / local runs (never commit real run artifacts or credentials)
+/runs/
+*.eval
+*.sarif.local
+.env
+.env.*
+# OS / editor
+.DS_Store
+*.swp
+.idea/
+.vscode/
+# Private planning notes (never published)
+/private/
