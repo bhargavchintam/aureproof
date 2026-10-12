@@ -10,7 +10,7 @@ automated is done; the remaining items need the maintainer.
 ## Done
 
 - [x] `uv` project; `aureproof` package skeleton in the ports-and-adapters layout (plan §3.9).
-- [x] Quality gates: ruff, mypy (strict), pytest + coverage, import-linter contracts.
+- [x] Quality gates: ruff, mypy (strict), pytest, import-linter contracts. Coverage is reported but has no threshold until the scoring core lands (AP-007).
 - [x] OSS kit: LICENSE + REUSE, README, CONTRIBUTING (DCO), Code of Conduct 3.0, SECURITY, RESPONSIBLE_USE, CITATION.cff, CHANGELOG, ROADMAP, CODEOWNERS, issue/PR templates.
 - [x] CI with SHA-pinned actions and least-privilege tokens: quality gates, gitleaks, CodeQL, Scorecard — green on GitHub.
 - [x] Public repository [`bhargavchintam/aureproof`](https://github.com/bhargavchintam/aureproof) with private vulnerability reporting, Dependabot alerts and security updates, secret scanning with push protection, and Discussions enabled.
@@ -24,6 +24,7 @@ automated is done; the remaining items need the maintainer.
 
 ## To do (maintainer)
 
+- [ ] **Freeze scope, the primary metric, and the external agent + protocol** in ADRs ([#5](https://github.com/bhargavchintam/aureproof/issues/5), AP-001). This is an M0 issue, and #6 and #9 depend on it.
 - [ ] **Name the second reviewer** in `MAINTAINERS.md` and accept ADR-0005 (blocks the M2 calibration gate).
 - [ ] **Set the Code of Conduct contact**: a dedicated, non-personal address in `CODE_OF_CONDUCT.md`.
 - [ ] **Run 3–5 practitioner interviews** with the kit and record the go / narrow decision ([#6](https://github.com/bhargavchintam/aureproof/issues/6)).
@@ -31,4 +32,4 @@ automated is done; the remaining items need the maintainer.
 - [x] **Day-2 Inspect spike** on `authz-001`: ADR-0002/0003 accepted. Notes: [`research/spike-inspect-day2.md`](research/spike-inspect-day2.md).
 - [ ] **Run the live Claude Code episode** to finish spike check 2 ([#7](https://github.com/bhargavchintam/aureproof/issues/7)): put `ANTHROPIC_API_KEY` in `~/.aureproof-spike.env` (mode 600), then run `uv run --extra inspect python spikes/inspect_day2/live.py`.
 - [ ] **Set up PyPI Trusted Publishing** before the first `0.1.0a1` release (M1).
-- [ ] **Review the open Dependabot PRs** (#1–#4). Future action updates arrive grouped in one PR.
+- [x] **Dependabot PRs** #1–#4 superseded by the grouped #21 (merged); #23 (pydantic 2.14) merged.

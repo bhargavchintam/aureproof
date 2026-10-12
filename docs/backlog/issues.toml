@@ -155,7 +155,7 @@ labels = ["P0", "spike", "adapter"]
 estimate = "1 focused day"
 plan = "§3.3"
 depends = ["AP-010"]
-context = "ADR-0002 (Inspect first) and ADR-0003 (Aureproof owns attempts) are proposed pending a spike on fixture pair #1."
+context = "ADR-0002 (Inspect first) and ADR-0003 (Aureproof owns attempts) were accepted after the Day-2 spike (docs/research/spike-inspect-day2.md); only the live Claude Code episode for check 2 remains."
 deliverable = "Spike notes plus ADR-0002/0003 promoted to accepted, or a documented fallback (plain-Docker runner + own proxy)."
 done = [
   "Bridge works with the sandbox at network_mode: none",
