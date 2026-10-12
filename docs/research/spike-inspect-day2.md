@@ -66,5 +66,5 @@ Logs and run summaries go to `spikes/inspect_day2/logs/`, which git ignores. Run
 ## Open items
 
 - **Live Claude Code episode** (completes check 2). This needs `ANTHROPIC_API_KEY` in `~/.aureproof-spike.env` (mode 600). Paste the resulting `live-summary-*.json` into #7.
-- The spike test failed once, with unexplained cause, on its first run after the unit tests were added. It passed on all 7 reruns, and the failure output was not captured. Watch for it in AP-012.
+- ~~The spike test was flaky.~~ **Fixed.** The failure reproduced in 1 of 12 runs with captured output: `URLError(ConnectionRefusedError)` from the bridge probe. The probe connected before the bridge's in-container proxy was listening. It now waits up to 30 s for the port before calling the proxy. **AP-012 must do the same**: never assume the proxy is ready when `sandbox_agent_bridge()` yields.
 - The spike matcher is a stand-in. The real rules M1–M9 come with AP-005 and AP-007.
