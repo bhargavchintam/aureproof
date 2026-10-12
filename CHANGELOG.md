@@ -37,4 +37,7 @@ public API and the specs may change between minor versions).
   with a key-leak scan, and a Docker-gated regression test. ADR-0002 (Inspect
   first) and ADR-0003 (Aureproof owns attempts) are accepted.
 
+### Changed
+- Dependencies: grouped GitHub Actions updates (#21) and pydantic 2.14.0 (#23).
+
 [Unreleased]: https://github.com/bhargavchintam/aureproof/commits/main
