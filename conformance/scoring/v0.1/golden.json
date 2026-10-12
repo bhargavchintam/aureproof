@@ -1,0 +1,2056 @@
+{
+  "spec": "scoring/v0.1",
+  "matcher_version": "0.1.0",
+  "disposition_version": "0.1.0",
+  "metrics_version": "0.1.0",
+  "params": {
+    "line_tolerance": 3,
+    "max_line_span": 30,
+    "max_locations": 4,
+    "max_findings": 256,
+    "max_bytes": 1048576
+  },
+  "submission_encoding": "'findings' is serialized with json.dumps (UTF-8); 'raw' is used verbatim; 'absent' means no file was captured; 'repeat' is the finding repeated 'count' times in an array.",
+  "metric_encoding": "Each metric is {numerator, denominator}; the value is numerator/denominator, or null with an undefined_reason when the denominator is 0.",
+  "label_sets": {
+    "g1": {
+      "label_set": "g1",
+      "note": "Synthetic labels for the golden vectors only; no code exists behind them.",
+      "agent_view": {
+        "vulnerable": {
+          "app/api.py": 80,
+          "app/orders.py": 120,
+          "app/admin.py": 60,
+          "app/util.py": 40
+        },
+        "repaired": {
+          "app/api.py": 80,
+          "app/orders.py": 120,
+          "app/admin.py": 60,
+          "app/util.py": 40
+        }
+      },
+      "defects": [
+        {
+          "defect_id": "g1-d1",
+          "variants": [
+            "vulnerable"
+          ],
+          "accepted_cwes": [
+            89,
+            943
+          ],
+          "anchors": [
+            {
+              "file": "app/orders.py",
+              "symbol": "find_orders",
+              "line_range": [
+                40,
+                44
+              ],
+              "role": "site",
+              "role_required": false
+            },
+            {
+              "file": "app/api.py",
+              "symbol": "search",
+              "line_range": [
+                10,
+                18
+              ],
+              "role": "source",
+              "role_required": false
+            }
+          ]
+        },
+        {
+          "defect_id": "g1-d2",
+          "variants": [
+            "vulnerable",
+            "repaired"
+          ],
+          "accepted_cwes": [
+            89
+          ],
+          "anchors": [
+            {
+              "file": "app/orders.py",
+              "symbol": "order_total",
+              "line_range": [
+                52,
+                55
+              ],
+              "role": "site",
+              "role_required": false
+            }
+          ]
+        },
+        {
+          "defect_id": "g1-d3",
+          "variants": [
+            "vulnerable",
+            "repaired"
+          ],
+          "accepted_cwes": [
+            78
+          ],
+          "anchors": [
+            {
+              "file": "app/util.py",
+              "symbol": "run_report",
+              "line_range": [
+                10,
+                14
+              ],
+              "role": "sink",
+              "role_required": true
+            }
+          ]
+        }
+      ],
+      "focal_negative": {
+        "variant": "repaired",
+        "anchors": [
+          {
+            "file": "app/orders.py",
+            "symbol": "find_orders",
+            "line_range": [
+              40,
+              46
+            ],
+            "role": "site",
+            "role_required": false
+          },
+          {
+            "file": "app/api.py",
+            "symbol": "search",
+            "line_range": [
+              10,
+              18
+            ],
+            "role": "source",
+            "role_required": false
+          }
+        ]
+      },
+      "reviewed_negative_scope": [
+        {
+          "file": "app/admin.py",
+          "note": "whole file reviewed"
+        },
+        {
+          "file": "app/orders.py",
+          "symbol": "list_orders",
+          "line_range": [
+            10,
+            20
+          ]
+        }
+      ]
+    }
+  },
+  "cases": [
+    {
+      "id": "G-01",
+      "title": "Exact anchor and accepted CWE",
+      "rules": [
+        "M1",
+        "M3"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "symbol": "find_orders",
+                "start_line": 40,
+                "end_line": 44
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "confirmed",
+            "rule": "M1",
+            "defect_id": "g1-d1"
+          }
+        ],
+        "credited": [
+          "g1-d1"
+        ],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-02",
+      "title": "Symbol match with lines far from the anchor",
+      "rules": [
+        "M1"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "symbol": "find_orders",
+                "start_line": 28,
+                "end_line": 30
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "confirmed",
+            "rule": "M1",
+            "defect_id": "g1-d1"
+          }
+        ],
+        "credited": [
+          "g1-d1"
+        ],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-03",
+      "title": "No symbol; last line inside the tolerance",
+      "rules": [
+        "M1"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "start_line": 47,
+                "end_line": 47
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "confirmed",
+            "rule": "M1",
+            "defect_id": "g1-d1"
+          }
+        ],
+        "credited": [
+          "g1-d1"
+        ],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-04",
+      "title": "No symbol; one line beyond the tolerance",
+      "rules": [
+        "M1",
+        "M8"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "start_line": 48,
+                "end_line": 48
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "unresolved:out_of_scope",
+            "rule": "M8"
+          }
+        ],
+        "credited": [],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-05",
+      "title": "Right location, wrong class",
+      "rules": [
+        "M3"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 79,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "symbol": "find_orders"
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "unresolved:class_mismatch",
+            "rule": "M3"
+          }
+        ],
+        "credited": [],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-06",
+      "title": "Two findings on one defect",
+      "rules": [
+        "M4"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "symbol": "find_orders"
+              }
+            ],
+            "description": "Finding description."
+          },
+          {
+            "cwe": 943,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "start_line": 41,
+                "end_line": 42
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "confirmed",
+            "rule": "M1",
+            "defect_id": "g1-d1"
+          },
+          {
+            "verdict": "duplicate",
+            "rule": "M4",
+            "defect_id": "g1-d1"
+          }
+        ],
+        "credited": [
+          "g1-d1"
+        ],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-07",
+      "title": "One finding spanning two defects by lines: larger raw overlap wins",
+      "rules": [
+        "M5"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "start_line": 44,
+                "end_line": 50
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "confirmed",
+            "rule": "M5",
+            "defect_id": "g1-d1"
+          }
+        ],
+        "credited": [
+          "g1-d1"
+        ],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-08",
+      "title": "Symbol match beats line overlap",
+      "rules": [
+        "M5"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "symbol": "order_total",
+                "start_line": 40,
+                "end_line": 44
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "confirmed",
+            "rule": "M5",
+            "defect_id": "g1-d2"
+          }
+        ],
+        "credited": [
+          "g1-d2"
+        ],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-09",
+      "title": "Repaired variant: finding at the focal site",
+      "rules": [
+        "M6"
+      ],
+      "label_set": "g1",
+      "variant": "repaired",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "symbol": "find_orders",
+                "start_line": 40,
+                "end_line": 46
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "refuted",
+            "rule": "M6"
+          }
+        ],
+        "credited": [],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-10",
+      "title": "Repaired variant: finding at the focal source anchor",
+      "rules": [
+        "M6",
+        "M2"
+      ],
+      "label_set": "g1",
+      "variant": "repaired",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/api.py",
+                "symbol": "search",
+                "role": "source"
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "refuted",
+            "rule": "M6"
+          }
+        ],
+        "credited": [],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-11",
+      "title": "Reviewed-negative scope by symbol",
+      "rules": [
+        "M7"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "symbol": "list_orders"
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "refuted",
+            "rule": "M7"
+          }
+        ],
+        "credited": [],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-12",
+      "title": "Reviewed-negative scope: whole file",
+      "rules": [
+        "M7"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 862,
+            "locations": [
+              {
+                "file": "app/admin.py",
+                "symbol": "purge",
+                "start_line": 30,
+                "end_line": 35
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "refuted",
+            "rule": "M7"
+          }
+        ],
+        "credited": [],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-13",
+      "title": "Only partly inside reviewed scope",
+      "rules": [
+        "M7",
+        "M8"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 862,
+            "locations": [
+              {
+                "file": "app/admin.py",
+                "start_line": 30,
+                "end_line": 35
+              },
+              {
+                "file": "app/util.py",
+                "start_line": 30,
+                "end_line": 32
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "unresolved:out_of_scope",
+            "rule": "M8"
+          }
+        ],
+        "credited": [],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-14",
+      "title": "Outside labels and reviewed scope",
+      "rules": [
+        "M8"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 22,
+            "locations": [
+              {
+                "file": "app/util.py",
+                "symbol": "helper",
+                "start_line": 30,
+                "end_line": 32
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "unresolved:out_of_scope",
+            "rule": "M8"
+          }
+        ],
+        "credited": [],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-15",
+      "title": "Cross-file flow: source end only",
+      "rules": [
+        "M2"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/api.py",
+                "symbol": "search",
+                "role": "source"
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "confirmed",
+            "rule": "M2",
+            "defect_id": "g1-d1"
+          }
+        ],
+        "credited": [
+          "g1-d1"
+        ],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-16",
+      "title": "Role required (sink) but reported as site",
+      "rules": [
+        "M2",
+        "M8"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 78,
+            "locations": [
+              {
+                "file": "app/util.py",
+                "symbol": "run_report",
+                "role": "site"
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "unresolved:out_of_scope",
+            "rule": "M8"
+          }
+        ],
+        "credited": [],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-17",
+      "title": "Role required and matched",
+      "rules": [
+        "M2"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 78,
+            "locations": [
+              {
+                "file": "app/util.py",
+                "symbol": "run_report",
+                "role": "sink"
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "confirmed",
+            "rule": "M2",
+            "defect_id": "g1-d3"
+          }
+        ],
+        "credited": [
+          "g1-d3"
+        ],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-18",
+      "title": "Alternate accepted CWE",
+      "rules": [
+        "M3"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 943,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "symbol": "find_orders"
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "confirmed",
+            "rule": "M1",
+            "defect_id": "g1-d1"
+          }
+        ],
+        "credited": [
+          "g1-d1"
+        ],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-19",
+      "title": "CWE given as a string",
+      "rules": [
+        "N3"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": "CWE-89",
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "symbol": "find_orders"
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "confirmed",
+            "rule": "M1",
+            "defect_id": "g1-d1"
+          }
+        ],
+        "credited": [
+          "g1-d1"
+        ],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-20",
+      "title": "Qualified symbol name",
+      "rules": [
+        "M1"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "symbol": "app.orders.find_orders"
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "confirmed",
+            "rule": "M1",
+            "defect_id": "g1-d1"
+          }
+        ],
+        "credited": [
+          "g1-d1"
+        ],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-21",
+      "title": "An invalid finding does not affect a valid one",
+      "rules": [
+        "N1",
+        "M9"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "symbol": "find_orders"
+              }
+            ],
+            "description": "Finding description."
+          },
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "/app/orders.py",
+                "start_line": 40,
+                "end_line": 44
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "confirmed",
+            "rule": "M1",
+            "defect_id": "g1-d1"
+          },
+          {
+            "verdict": "invalid",
+            "rule": "M9"
+          }
+        ],
+        "credited": [
+          "g1-d1"
+        ],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-22",
+      "title": "File not in the agent view",
+      "rules": [
+        "N1",
+        "M9"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/payments.py",
+                "symbol": "charge"
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "invalid",
+            "rule": "M9"
+          }
+        ],
+        "credited": [],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-23",
+      "title": "Lines beyond the end of the file",
+      "rules": [
+        "N2",
+        "M9"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "start_line": 500,
+                "end_line": 501
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "invalid",
+            "rule": "M9"
+          }
+        ],
+        "credited": [],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-24",
+      "title": "Line span over the cap cannot match by lines",
+      "rules": [
+        "M1",
+        "M8"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "start_line": 1,
+                "end_line": 120
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "unresolved:out_of_scope",
+            "rule": "M8"
+          }
+        ],
+        "credited": [],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-25",
+      "title": "Empty array",
+      "rules": [
+        "D8"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "raw": "[]"
+      },
+      "expected": {
+        "disposition": "completed_no_findings",
+        "verdicts": [],
+        "credited": [],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-26",
+      "title": "Malformed JSON",
+      "rules": [
+        "D6"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "raw": "[{"
+      },
+      "expected": {
+        "disposition": "invalid_output",
+        "verdicts": null,
+        "credited": [],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-27",
+      "title": "Top-level value is not an array",
+      "rules": [
+        "D6"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "raw": "{\"cwe\": 89}"
+      },
+      "expected": {
+        "disposition": "invalid_output",
+        "verdicts": null,
+        "credited": [],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-28",
+      "title": "Duplicate object keys",
+      "rules": [
+        "D6"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "raw": "[{\"cwe\": 89, \"cwe\": 78, \"locations\": [{\"file\": \"app/orders.py\", \"symbol\": \"find_orders\"}], \"description\": \"x\"}]"
+      },
+      "expected": {
+        "disposition": "invalid_output",
+        "verdicts": null,
+        "credited": [],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-29",
+      "title": "No submission after a clean exit",
+      "rules": [
+        "D6"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "absent": true
+      },
+      "expected": {
+        "disposition": "invalid_output",
+        "verdicts": null,
+        "credited": [],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-30",
+      "title": "Refusal with no submission",
+      "rules": [
+        "D3"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": true
+      },
+      "submission": {
+        "absent": true
+      },
+      "expected": {
+        "disposition": "safety_refusal",
+        "verdicts": null,
+        "credited": [],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-31",
+      "title": "Refusal signal but findings submitted",
+      "rules": [
+        "D7"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": true
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "symbol": "find_orders"
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "confirmed",
+            "rule": "M1",
+            "defect_id": "g1-d1"
+          }
+        ],
+        "credited": [
+          "g1-d1"
+        ],
+        "annotations": [
+          "refusal_signal"
+        ]
+      }
+    },
+    {
+      "id": "G-32",
+      "title": "Infrastructure failure",
+      "rules": [
+        "D2"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "infra_error",
+        "refusal_signal": false
+      },
+      "submission": {
+        "absent": true
+      },
+      "expected": {
+        "disposition": "infra_failure",
+        "verdicts": null,
+        "credited": [],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-33",
+      "title": "Mandatory evidence missing",
+      "rules": [
+        "D1"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": false,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "symbol": "find_orders"
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "evidence_incomplete",
+        "verdicts": null,
+        "credited": [],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-34",
+      "title": "Budget exhausted after writing a finding",
+      "rules": [
+        "D4"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "limit_exceeded",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "symbol": "find_orders"
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "budget_exhausted",
+        "verdicts": [
+          {
+            "verdict": "confirmed",
+            "rule": "M1",
+            "defect_id": "g1-d1"
+          }
+        ],
+        "credited": [
+          "g1-d1"
+        ],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-35",
+      "title": "Agent crashed without a submission",
+      "rules": [
+        "D5"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "agent_error",
+        "refusal_signal": false
+      },
+      "submission": {
+        "absent": true
+      },
+      "expected": {
+        "disposition": "agent_error",
+        "verdicts": null,
+        "credited": [],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-36",
+      "title": "More than max_findings findings",
+      "rules": [
+        "D6"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "repeat": {
+          "finding": {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "symbol": "find_orders"
+              }
+            ],
+            "description": "Finding description."
+          },
+          "count": 257
+        }
+      },
+      "expected": {
+        "disposition": "invalid_output",
+        "verdicts": null,
+        "credited": [],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-37",
+      "title": "Refusal with an empty array",
+      "rules": [
+        "D3"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": true
+      },
+      "submission": {
+        "raw": "[]"
+      },
+      "expected": {
+        "disposition": "safety_refusal",
+        "verdicts": null,
+        "credited": [],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-38",
+      "title": "Repaired variant: focal refuted, a non-focal defect still confirmed",
+      "rules": [
+        "M6",
+        "M1"
+      ],
+      "label_set": "g1",
+      "variant": "repaired",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "symbol": "find_orders",
+                "start_line": 40,
+                "end_line": 46
+              }
+            ],
+            "description": "Finding description."
+          },
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "symbol": "order_total"
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "refuted",
+            "rule": "M6"
+          },
+          {
+            "verdict": "confirmed",
+            "rule": "M1",
+            "defect_id": "g1-d2"
+          }
+        ],
+        "credited": [
+          "g1-d2"
+        ],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-39",
+      "title": "Spray submission (used by S-01)",
+      "rules": [
+        "M4",
+        "M7",
+        "M8"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "symbol": "find_orders"
+              }
+            ],
+            "description": "Finding description."
+          },
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "symbol": "order_total"
+              }
+            ],
+            "description": "Finding description."
+          },
+          {
+            "cwe": 78,
+            "locations": [
+              {
+                "file": "app/util.py",
+                "symbol": "run_report",
+                "role": "sink"
+              }
+            ],
+            "description": "Finding description."
+          },
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "start_line": 41,
+                "end_line": 41
+              }
+            ],
+            "description": "Finding description."
+          },
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "symbol": "list_orders"
+              }
+            ],
+            "description": "Finding description."
+          },
+          {
+            "cwe": 862,
+            "locations": [
+              {
+                "file": "app/admin.py",
+                "symbol": "purge"
+              }
+            ],
+            "description": "Finding description."
+          },
+          {
+            "cwe": 78,
+            "locations": [
+              {
+                "file": "app/util.py",
+                "symbol": "helper",
+                "start_line": 30,
+                "end_line": 31
+              }
+            ],
+            "description": "Finding description."
+          },
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/api.py",
+                "symbol": "export",
+                "start_line": 60,
+                "end_line": 62
+              }
+            ],
+            "description": "Finding description."
+          },
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "start_line": 100,
+                "end_line": 101
+              }
+            ],
+            "description": "Finding description."
+          },
+          {
+            "cwe": 862,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "start_line": 80,
+                "end_line": 81
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "confirmed",
+            "rule": "M1",
+            "defect_id": "g1-d1"
+          },
+          {
+            "verdict": "confirmed",
+            "rule": "M1",
+            "defect_id": "g1-d2"
+          },
+          {
+            "verdict": "confirmed",
+            "rule": "M2",
+            "defect_id": "g1-d3"
+          },
+          {
+            "verdict": "duplicate",
+            "rule": "M4",
+            "defect_id": "g1-d1"
+          },
+          {
+            "verdict": "refuted",
+            "rule": "M7"
+          },
+          {
+            "verdict": "refuted",
+            "rule": "M7"
+          },
+          {
+            "verdict": "unresolved:out_of_scope",
+            "rule": "M8"
+          },
+          {
+            "verdict": "unresolved:out_of_scope",
+            "rule": "M8"
+          },
+          {
+            "verdict": "unresolved:out_of_scope",
+            "rule": "M8"
+          },
+          {
+            "verdict": "unresolved:out_of_scope",
+            "rule": "M8"
+          }
+        ],
+        "credited": [
+          "g1-d1",
+          "g1-d2",
+          "g1-d3"
+        ],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-40",
+      "title": "Both ends of a flow in one finding: the strongest anchor match decides the rule",
+      "rules": [
+        "M1",
+        "M2"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "app/orders.py",
+                "start_line": 40,
+                "end_line": 44
+              },
+              {
+                "file": "app/api.py",
+                "symbol": "search",
+                "role": "source"
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "confirmed",
+            "rule": "M2",
+            "defect_id": "g1-d1"
+          }
+        ],
+        "credited": [
+          "g1-d1"
+        ],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-41",
+      "title": "Leading ./ is normalized",
+      "rules": [
+        "N1"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "findings": [
+          {
+            "cwe": 89,
+            "locations": [
+              {
+                "file": "./app/orders.py",
+                "symbol": "find_orders"
+              }
+            ],
+            "description": "Finding description."
+          }
+        ]
+      },
+      "expected": {
+        "disposition": "completed_with_findings",
+        "verdicts": [
+          {
+            "verdict": "confirmed",
+            "rule": "M1",
+            "defect_id": "g1-d1"
+          }
+        ],
+        "credited": [
+          "g1-d1"
+        ],
+        "annotations": []
+      }
+    }
+  ],
+  "cohorts": [
+    {
+      "id": "C-01",
+      "title": "Mixed cohort: graded, budget-exhausted, refused, infrastructure-failed and evidence-incomplete episodes",
+      "episodes": [
+        "G-01",
+        "G-38",
+        "G-25",
+        "G-34",
+        "G-30",
+        "G-32",
+        "G-33"
+      ],
+      "expected": {
+        "known_defect_recall": {
+          "numerator": 3,
+          "denominator": 11
+        },
+        "adjudicated_precision": {
+          "numerator": 3,
+          "denominator": 4
+        },
+        "unresolved_fraction": {
+          "numerator": 0,
+          "denominator": 4
+        },
+        "strict_confirmed_yield": {
+          "numerator": 3,
+          "denominator": 4
+        },
+        "duplicate_rate": {
+          "numerator": 0,
+          "denominator": 4
+        },
+        "invalid_finding_rate": {
+          "numerator": 0,
+          "denominator": 4
+        },
+        "scoped_false_alarm_rate": {
+          "numerator": 1,
+          "denominator": 9
+        },
+        "operational_completion": {
+          "numerator": 3,
+          "denominator": 7
+        },
+        "refusal_rate": {
+          "numerator": 1,
+          "denominator": 7
+        },
+        "infrastructure_failure_rate": {
+          "numerator": 1,
+          "denominator": 7
+        },
+        "evidence_incomplete_rate": {
+          "numerator": 1,
+          "denominator": 7
+        }
+      }
+    },
+    {
+      "id": "C-02",
+      "title": "Undefined metrics: no submitted findings",
+      "episodes": [
+        "G-25",
+        "G-30"
+      ],
+      "expected": {
+        "known_defect_recall": {
+          "numerator": 0,
+          "denominator": 3
+        },
+        "adjudicated_precision": {
+          "numerator": 0,
+          "denominator": 0
+        },
+        "unresolved_fraction": {
+          "numerator": 0,
+          "denominator": 0
+        },
+        "strict_confirmed_yield": {
+          "numerator": 0,
+          "denominator": 0
+        },
+        "duplicate_rate": {
+          "numerator": 0,
+          "denominator": 0
+        },
+        "invalid_finding_rate": {
+          "numerator": 0,
+          "denominator": 0
+        },
+        "scoped_false_alarm_rate": {
+          "numerator": 0,
+          "denominator": 2
+        },
+        "operational_completion": {
+          "numerator": 1,
+          "denominator": 2
+        },
+        "refusal_rate": {
+          "numerator": 1,
+          "denominator": 2
+        },
+        "infrastructure_failure_rate": {
+          "numerator": 0,
+          "denominator": 2
+        },
+        "evidence_incomplete_rate": {
+          "numerator": 0,
+          "denominator": 2
+        }
+      }
+    },
+    {
+      "id": "S-01",
+      "title": "Spray control: recall 1, yield and precision fall",
+      "episodes": [
+        "G-39"
+      ],
+      "expected": {
+        "known_defect_recall": {
+          "numerator": 3,
+          "denominator": 3
+        },
+        "adjudicated_precision": {
+          "numerator": 3,
+          "denominator": 5
+        },
+        "unresolved_fraction": {
+          "numerator": 4,
+          "denominator": 9
+        },
+        "strict_confirmed_yield": {
+          "numerator": 3,
+          "denominator": 10
+        },
+        "duplicate_rate": {
+          "numerator": 1,
+          "denominator": 10
+        },
+        "invalid_finding_rate": {
+          "numerator": 0,
+          "denominator": 10
+        },
+        "scoped_false_alarm_rate": {
+          "numerator": 2,
+          "denominator": 2
+        },
+        "operational_completion": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "refusal_rate": {
+          "numerator": 0,
+          "denominator": 1
+        },
+        "infrastructure_failure_rate": {
+          "numerator": 0,
+          "denominator": 1
+        },
+        "evidence_incomplete_rate": {
+          "numerator": 0,
+          "denominator": 1
+        }
+      }
+    }
+  ]
+}
