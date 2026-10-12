@@ -365,7 +365,7 @@ bundle/
 ### 5.3 Defect labels (evaluator-only)
 `defect_id`, `variant` (vulnerable/repaired), `accepted_cwes[]` (e.g. {78, 77, 88}), `anchors[]{file, symbol, line_range, role}`, `cluster_id`, `reviewed_negative_scope[]`, `calibration_poc_ref`.
 
-### 5.4 Matching rules (proposal; frozen in `scoring.md` with `matcher_version`)
+### 5.4 Matching rules (proposal; refined in [`specs/scoring/scoring.md`](../specs/scoring/scoring.md), which takes precedence)
 | Rule | Behavior |
 |---|---|
 | M1 location | Same file, and either the symbol matches or the line ranges overlap within tolerance *t* (default proposed: ±3 lines) |

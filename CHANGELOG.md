@@ -36,6 +36,11 @@ public API and the specs may change between minor versions).
   a bridge probe for no-network and key isolation, a one-command live-run harness
   with a key-leak scan, and a Docker-gated regression test. ADR-0002 (Inspect
   first) and ADR-0003 (Aureproof owns attempts) are accepted.
+- Draft scoring specification `scoring/v0.1` (`specs/scoring/scoring.md`, issue #9):
+  matcher rules M1–M9 with normalization and validity rules, the episode
+  disposition decision list, metric definitions with explicit denominators and
+  undefined cases, and 41 golden vectors plus 3 cohort metric vectors
+  (`conformance/scoring/v0.1/golden.json`) with integrity tests.
 
 ### Changed
 - Dependencies: grouped GitHub Actions updates (#21) and pydantic 2.14.0 (#23).
