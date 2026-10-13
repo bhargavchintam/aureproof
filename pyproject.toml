@@ -92,8 +92,8 @@ source = ["aureproof"]
 
 [tool.coverage.report]
 show_missing = true
-# Threshold intentionally unset on the Day-1 scaffold; raised to 90 once the
-# scoring/bundle cores land in M1 (see docs/aureproof-plan-v2.md §11, AP-007).
+# 90% from AP-007 (the scoring core). Branch coverage is on.
+fail_under = 90
 
 # --- Architecture boundary enforcement (plan v2 §3.2) ------------------------
 # The pure core (contracts, scoring, stats, bundle) must not depend on adapters,

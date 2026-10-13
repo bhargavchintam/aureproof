@@ -47,8 +47,17 @@ public API and the specs may change between minor versions).
   export and import with a property-based round-trip test, generated JSON Schema
   2020-12 files in `specs/contracts/v0.1/` with a drift check, and conformance
   vectors checked against both the models and the schemas.
+- The v0.1 oracle (`aureproof.scoring`, issue #15): a pure, deterministic label
+  matcher (rules M1–M9), strict submission parsing, the episode disposition
+  decision list, and cohort metrics with explicit support. All 44 golden vectors
+  and the `authz-001` expected-verdict table pass, along with Hypothesis
+  invariants (duplicates never change recall; precision is undefined exactly when
+  confirmed + refuted = 0; spraying collapses strict confirmed yield).
+  The coverage gate is now 90%.
 
 ### Changed
+- `MetricRecord` gains `kind` (`proportion` or `rate`): the scoped false-alarm
+  rate can exceed 1.
 - `authz-001` labels migrated to the v0.1 label schema (`variants[]`; the focal
   negative lists its site and source anchors).
 - Dependencies: grouped GitHub Actions updates (#21) and pydantic 2.14.0 (#23).

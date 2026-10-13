@@ -209,7 +209,7 @@ A **cohort** is a set of scheduled episodes for one system configuration. Let:
   - *U* = `unresolved:*`, *I* = `invalid`,
   - *N* = *C* + *R* + *Dp* + *U* + *I* (all submitted findings).
 
-Each metric is a **MetricRecord**: `{metric, numerator, denominator, value | null, undefined_reason?, cohort, metric_version}`. A value is `null` exactly when its denominator is 0, and `undefined_reason` says which.
+Each metric is a **MetricRecord**: `{metric, kind: proportion|rate, numerator, denominator, value | null, undefined_reason?, cohort, metric_version}`. A value is `null` exactly when its denominator is 0, and `undefined_reason` says which.
 
 | Metric | Numerator | Denominator | Undefined when |
 | --- | --- | --- | --- |
@@ -228,6 +228,7 @@ Each metric is a **MetricRecord**: `{metric, numerator, denominator, value | nul
 Further definitions:
 
 - **Negative units** for an episode = the number of `reviewed_negative_scope` entries, plus 1 for the focal negative when the episode ran on `focal_negative.variant`.
+- **Proportions and rates.** Every metric is a proportion (numerator ≤ denominator) except the scoped false-alarm rate. That one is a **rate**: several refuted findings can land on one negative unit, so it can exceed 1. `MetricRecord.kind` records which is which.
 - **Precision before and after adjudication.** Before adjudication, precision is *provisional*: unresolved findings are left out and shown through the unresolved fraction. After adjudication, each adjudicated finding counts under its adjudicated verdict (§7).
 - **Budget usage** (actions, wall time, tokens and requests) is reported as distributions per configuration, never normalized across tokenizers.
 - **Spray control.** A submission with a finding at every function and every accepted CWE must give recall ≈ 1 but a low yield and precision (golden `S-01`). If any headline metric rewards spraying, the metric design is broken (THR `spray_cheat`).
