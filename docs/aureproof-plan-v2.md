@@ -356,7 +356,7 @@ bundle/
 ### 5.2 Finding schema (SARIF-mappable)
 | Field | SARIF 2.1.0 mapping |
 |---|---|
-| `finding_id` | `result.guid` |
+| `finding_id` | `result.properties.finding_id` (SARIF `guid` must be a GUID) |
 | `cwe` | `result.ruleId = "CWE-<n>"` (+ taxonomy reference) |
 | `locations[]{file, start_line, end_line, symbol?, role: source\|sink\|site}` | `physicalLocation.artifactLocation.uri`, `region`, `logicalLocations`; role in `properties` |
 | `description` | `message.text` |

@@ -1,0 +1,13 @@
+{
+  "description": "CWE given as a string (N3).",
+  "instance": {
+    "cwe": "CWE-639",
+    "locations": [
+      {
+        "file": "docstore/service.py",
+        "symbol": "delete_document"
+      }
+    ],
+    "description": "No ownership check before delete."
+  }
+}

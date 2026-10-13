@@ -351,6 +351,7 @@ inspect = [
 dev = [
     { name = "hypothesis" },
     { name = "import-linter" },
+    { name = "jsonschema" },
     { name = "mypy" },
     { name = "pre-commit" },
     { name = "pytest" },
@@ -372,6 +373,7 @@ provides-extras = ["inspect"]
 dev = [
     { name = "hypothesis", specifier = ">=6" },
     { name = "import-linter", specifier = ">=2" },
+    { name = "jsonschema", specifier = ">=4.23" },
     { name = "mypy", specifier = ">=1.11" },
     { name = "pre-commit", specifier = ">=3.7" },
     { name = "pytest", specifier = ">=8,<10" },

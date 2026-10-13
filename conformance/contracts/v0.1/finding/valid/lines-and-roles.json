@@ -1,0 +1,21 @@
+{
+  "description": "Cross-file flow with explicit lines and roles.",
+  "instance": {
+    "cwe": 862,
+    "locations": [
+      {
+        "file": "docstore/api.py",
+        "symbol": "handle_request",
+        "start_line": 14,
+        "end_line": 38,
+        "role": "source"
+      },
+      {
+        "file": "docstore/service.py",
+        "start_line": 60,
+        "role": "sink"
+      }
+    ],
+    "description": "No ownership check before delete."
+  }
+}

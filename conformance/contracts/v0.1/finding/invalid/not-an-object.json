@@ -1,0 +1,6 @@
+{
+  "description": "A finding is an object.",
+  "instance": [
+    "CWE-862"
+  ]
+}

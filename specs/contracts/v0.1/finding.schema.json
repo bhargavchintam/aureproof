@@ -1,0 +1,139 @@
+{
+  "$defs": {
+    "Location": {
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": [
+            "symbol"
+          ]
+        },
+        {
+          "required": [
+            "start_line"
+          ]
+        }
+      ],
+      "description": "One place a finding points at. Lines are 1-based and inclusive.",
+      "properties": {
+        "end_line": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End Line"
+        },
+        "file": {
+          "minLength": 1,
+          "pattern": "^(?!/)(?!.*\\\\)(?!(.*/)?\\.\\.(/|$)).+$",
+          "title": "File",
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/$defs/Role",
+          "default": "site"
+        },
+        "start_line": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Start Line"
+        },
+        "symbol": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Symbol"
+        }
+      },
+      "required": [
+        "file"
+      ],
+      "title": "Location",
+      "type": "object"
+    },
+    "Role": {
+      "enum": [
+        "site",
+        "source",
+        "sink"
+      ],
+      "title": "Role",
+      "type": "string"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "description": "One reported defect. Unknown fields are kept as evidence, never matched.",
+  "properties": {
+    "cwe": {
+      "anyOf": [
+        {
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "pattern": "^[Cc][Ww][Ee]-[0-9]+$",
+          "type": "string"
+        }
+      ],
+      "description": "CWE ID: an integer, or a string such as \"CWE-89\" (N3).",
+      "title": "Cwe"
+    },
+    "description": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Description",
+      "type": "string"
+    },
+    "finding_id": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Finding Id"
+    },
+    "locations": {
+      "items": {
+        "$ref": "#/$defs/Location"
+      },
+      "maxItems": 4,
+      "minItems": 1,
+      "title": "Locations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "cwe",
+    "locations",
+    "description"
+  ],
+  "title": "Finding",
+  "type": "object"
+}

@@ -1,0 +1,14 @@
+{
+  "description": "end_line before start_line (N2).",
+  "instance": {
+    "cwe": 862,
+    "locations": [
+      {
+        "file": "docstore/service.py",
+        "start_line": 9,
+        "end_line": 3
+      }
+    ],
+    "description": "No ownership check before delete."
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "description": "A location needs a symbol or a start_line (N4).",
+  "instance": {
+    "cwe": 862,
+    "locations": [
+      {
+        "file": "docstore/service.py"
+      }
+    ],
+    "description": "No ownership check before delete."
+  }
+}

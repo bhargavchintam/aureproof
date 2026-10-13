@@ -1,0 +1,14 @@
+{
+  "description": "Role must be site, source or sink.",
+  "instance": {
+    "cwe": 862,
+    "locations": [
+      {
+        "file": "docstore/service.py",
+        "symbol": "delete_document",
+        "role": "caller"
+      }
+    ],
+    "description": "No ownership check before delete."
+  }
+}

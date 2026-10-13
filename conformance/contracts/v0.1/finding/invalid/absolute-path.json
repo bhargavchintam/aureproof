@@ -1,0 +1,13 @@
+{
+  "description": "Paths must be workspace-relative (N1).",
+  "instance": {
+    "cwe": 862,
+    "locations": [
+      {
+        "file": "/etc/passwd",
+        "start_line": 1
+      }
+    ],
+    "description": "No ownership check before delete."
+  }
+}

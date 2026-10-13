@@ -1,0 +1,12 @@
+{
+  "description": "cwe is required.",
+  "instance": {
+    "locations": [
+      {
+        "file": "docstore/service.py",
+        "symbol": "delete_document"
+      }
+    ],
+    "description": "No ownership check before delete."
+  }
+}

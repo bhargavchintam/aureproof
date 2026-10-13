@@ -1,0 +1,37 @@
+{
+  "$defs": {
+    "RunnerOutcome": {
+      "enum": [
+        "ok",
+        "infra_error",
+        "agent_error",
+        "limit_exceeded"
+      ],
+      "title": "RunnerOutcome",
+      "type": "string"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Controller-observed episode facts; never agent-reported (scoring.md \u00a75.1).",
+  "properties": {
+    "evidence_complete": {
+      "title": "Evidence Complete",
+      "type": "boolean"
+    },
+    "refusal_signal": {
+      "default": false,
+      "title": "Refusal Signal",
+      "type": "boolean"
+    },
+    "runner_outcome": {
+      "$ref": "#/$defs/RunnerOutcome"
+    }
+  },
+  "required": [
+    "evidence_complete",
+    "runner_outcome"
+  ],
+  "title": "EpisodeSignals",
+  "type": "object"
+}

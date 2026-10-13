@@ -1,0 +1,29 @@
+{
+  "description": "More than max_locations.",
+  "instance": {
+    "cwe": 862,
+    "locations": [
+      {
+        "file": "docstore/service.py",
+        "symbol": "delete_document"
+      },
+      {
+        "file": "docstore/service.py",
+        "symbol": "delete_document"
+      },
+      {
+        "file": "docstore/service.py",
+        "symbol": "delete_document"
+      },
+      {
+        "file": "docstore/service.py",
+        "symbol": "delete_document"
+      },
+      {
+        "file": "docstore/service.py",
+        "symbol": "delete_document"
+      }
+    ],
+    "description": "No ownership check before delete."
+  }
+}

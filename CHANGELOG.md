@@ -41,8 +41,16 @@ public API and the specs may change between minor versions).
   disposition decision list, metric definitions with explicit denominators and
   undefined cases, and 41 golden vectors plus 3 cohort metric vectors
   (`conformance/scoring/v0.1/golden.json`) with integrity tests.
+- Data contracts (`aureproof.contracts`, issue #11): findings, labels,
+  verdicts, dispositions, episode signals, metric records, events with
+  `observation_source` trust tiers, and submissions. Includes SARIF 2.1.0
+  export and import with a property-based round-trip test, generated JSON Schema
+  2020-12 files in `specs/contracts/v0.1/` with a drift check, and conformance
+  vectors checked against both the models and the schemas.
 
 ### Changed
+- `authz-001` labels migrated to the v0.1 label schema (`variants[]`; the focal
+  negative lists its site and source anchors).
 - Dependencies: grouped GitHub Actions updates (#21) and pydantic 2.14.0 (#23).
 
 [Unreleased]: https://github.com/bhargavchintam/aureproof/commits/main

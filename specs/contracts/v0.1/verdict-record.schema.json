@@ -1,0 +1,107 @@
+{
+  "$defs": {
+    "MatchInfo": {
+      "additionalProperties": false,
+      "properties": {
+        "anchor_index": {
+          "minimum": 0,
+          "title": "Anchor Index",
+          "type": "integer"
+        },
+        "kind": {
+          "enum": [
+            "symbol",
+            "line"
+          ],
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "anchor_index"
+      ],
+      "title": "MatchInfo",
+      "type": "object"
+    },
+    "Rule": {
+      "enum": [
+        "M1",
+        "M2",
+        "M3",
+        "M4",
+        "M5",
+        "M6",
+        "M7",
+        "M8",
+        "M9"
+      ],
+      "title": "Rule",
+      "type": "string"
+    },
+    "VerdictKind": {
+      "enum": [
+        "confirmed",
+        "duplicate",
+        "refuted",
+        "unresolved:class_mismatch",
+        "unresolved:out_of_scope",
+        "invalid"
+      ],
+      "title": "VerdictKind",
+      "type": "string"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "defect_id": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Defect Id"
+    },
+    "finding_index": {
+      "minimum": 0,
+      "title": "Finding Index",
+      "type": "integer"
+    },
+    "match": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/MatchInfo"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "matcher_version": {
+      "minLength": 1,
+      "title": "Matcher Version",
+      "type": "string"
+    },
+    "rule": {
+      "$ref": "#/$defs/Rule"
+    },
+    "verdict": {
+      "$ref": "#/$defs/VerdictKind"
+    }
+  },
+  "required": [
+    "finding_index",
+    "verdict",
+    "rule",
+    "matcher_version"
+  ],
+  "title": "VerdictRecord",
+  "type": "object"
+}
