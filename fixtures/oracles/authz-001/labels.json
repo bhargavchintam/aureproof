@@ -1,5 +1,5 @@
 {
-  "schema": "aureproof.labels/draft-0",
+  "schema": "aureproof.labels/v0.1",
   "task_id": "authz-001",
   "task_revision": "0.1.0-draft",
   "cluster_id": "authz-001",
@@ -7,7 +7,9 @@
   "defects": [
     {
       "defect_id": "authz-001-d1",
-      "variant": "vulnerable",
+      "variants": [
+        "vulnerable"
+      ],
       "summary": "delete_document removes any document for any authenticated actor: it uses the actor only for the audit entry and never checks ownership or admin rights, so a non-owner can delete another user's document through handle_request.",
       "accepted_cwes": [
         284,
@@ -40,15 +42,26 @@
   ],
   "focal_negative": {
     "variant": "repaired",
-    "anchor": {
-      "file": "docstore/service.py",
-      "symbol": "delete_document",
-      "line_range": [
-        60,
-        65
-      ]
-    },
-    "expected": "refuted"
+    "anchors": [
+      {
+        "file": "docstore/service.py",
+        "symbol": "delete_document",
+        "line_range": [
+          60,
+          65
+        ],
+        "role": "site"
+      },
+      {
+        "file": "docstore/api.py",
+        "symbol": "handle_request",
+        "line_range": [
+          14,
+          38
+        ],
+        "role": "source"
+      }
+    ]
   },
   "reviewed_negative_scope": [
     {

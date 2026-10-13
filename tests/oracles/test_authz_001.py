@@ -146,7 +146,8 @@ def test_pair_differs_only_in_the_focal_function() -> None:
 
 def test_defect_anchors_point_at_real_spans(labels: dict[str, Any]) -> None:
     for defect in labels["defects"]:
-        variant_dir = VARIANTS[defect["variant"]]
+        assert defect["variants"] == ["vulnerable"]
+        variant_dir = VARIANTS["vulnerable"]
         for anchor in defect["anchors"]:
             spans = _function_spans(variant_dir / anchor["file"])
             assert anchor["symbol"] in spans, f"{anchor['symbol']} missing in {anchor['file']}"
@@ -156,11 +157,12 @@ def test_defect_anchors_point_at_real_spans(labels: dict[str, Any]) -> None:
             )
 
 
-def test_focal_negative_anchor_points_at_repaired_span(labels: dict[str, Any]) -> None:
+def test_focal_negative_anchors_point_at_repaired_spans(labels: dict[str, Any]) -> None:
     focal = labels["focal_negative"]
-    anchor = focal["anchor"]
-    spans = _function_spans(VARIANTS[focal["variant"]] / anchor["file"])
-    assert tuple(anchor["line_range"]) == spans[anchor["symbol"]]
+    assert [a["role"] for a in focal["anchors"]] == ["site", "source"]
+    for anchor in focal["anchors"]:
+        spans = _function_spans(VARIANTS[focal["variant"]] / anchor["file"])
+        assert tuple(anchor["line_range"]) == spans[anchor["symbol"]]
 
 
 def test_reviewed_negative_scope_exists_in_both_variants(labels: dict[str, Any]) -> None:
