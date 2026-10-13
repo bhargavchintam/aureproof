@@ -54,6 +54,13 @@ public API and the specs may change between minor versions).
   invariants (duplicates never change recall; precision is undefined exactly when
   confirmed + refuted = 0; spraying collapses strict confirmed yield).
   The coverage gate is now 90%.
+- Evidence Bundle v0.1 (`specs/bundle/README.md`, `aureproof.bundle`, issue #13):
+  RFC 8785 canonical JSON and SHA-256 digests (`rfc8785`, also a sigstore
+  dependency), content-addressed blobs, a hash-chained journal, a manifest, and an
+  in-toto Statement v1 seal recording the event count and journal head. Also a
+  pure `validate` that reports every failed check (V1–V6), with an optional
+  trusted seal digest. 14 generated conformance vectors cover tampered,
+  truncated, reordered and missing evidence.
 
 ### Changed
 - `MetricRecord` gains `kind` (`proportion` or `rate`): the scoped false-alarm

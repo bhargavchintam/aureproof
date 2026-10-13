@@ -301,6 +301,8 @@ Each spec ships as normative Markdown, a **JSON Schema 2020-12**, **conformance 
 **Exclusion rule:** only THR statuses frozen before the protocol freeze decide exclusion. Post-hoc exclusions are reported as exploratory. An unhealthy task gets a dataset-health status, never an agent false-positive verdict.
 
 ### 4.2 Evidence Bundle v0.1
+Refined in [`specs/bundle/README.md`](../specs/bundle/README.md), which takes precedence.
+
 ```
 bundle/
   manifest.json          # RFC 8785 canonical; every member: path, sha256, size, media type, role, mandatory
