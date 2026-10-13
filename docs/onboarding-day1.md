@@ -10,7 +10,7 @@ automated is done; the remaining items need the maintainer.
 ## Done
 
 - [x] `uv` project; `aureproof` package skeleton in the ports-and-adapters layout (plan §3.9).
-- [x] Quality gates: ruff, mypy (strict), pytest, import-linter contracts. Coverage is reported but has no threshold until the scoring core lands (AP-007).
+- [x] Quality gates: ruff, mypy (strict), pytest, import-linter contracts. Coverage must stay at or above 90% (enforced since AP-007).
 - [x] OSS kit: LICENSE + REUSE, README, CONTRIBUTING (DCO), Code of Conduct 3.0, SECURITY, RESPONSIBLE_USE, CITATION.cff, CHANGELOG, ROADMAP, CODEOWNERS, issue/PR templates.
 - [x] CI with SHA-pinned actions and least-privilege tokens: quality gates, gitleaks, CodeQL, Scorecard — green on GitHub.
 - [x] Public repository [`bhargavchintam/aureproof`](https://github.com/bhargavchintam/aureproof) with private vulnerability reporting, Dependabot alerts and security updates, secret scanning with push protection, and Discussions enabled.

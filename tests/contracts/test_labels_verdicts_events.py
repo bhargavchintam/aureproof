@@ -105,6 +105,8 @@ def test_metric_record_value_is_null_exactly_when_undefined() -> None:
     assert u.value is None and u.undefined_reason == "denominator is 0"
     with pytest.raises(ValidationError):
         MetricRecord.of("x", 4, 3, metric_version="0.1.0")
+    rate = MetricRecord.of("scoped_false_alarm_rate", 4, 3, metric_version="0.1.0", kind="rate")
+    assert rate.value == pytest.approx(4 / 3)
 
 
 def test_events_carry_a_trust_tier() -> None:

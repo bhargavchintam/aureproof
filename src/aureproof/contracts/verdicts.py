@@ -88,6 +88,7 @@ class MetricRecord(Contract):
     """Every percentage keeps its support; ``value`` is null iff the denominator is 0."""
 
     metric: NonEmptyStr
+    kind: Literal["proportion", "rate"] = "proportion"  # a rate may exceed 1
     numerator: NonNegativeInt
     denominator: NonNegativeInt
     value: float | None
@@ -97,8 +98,8 @@ class MetricRecord(Contract):
 
     @model_validator(mode="after")
     def _consistent(self) -> Self:
-        if self.numerator > self.denominator:
-            raise ValueError("numerator must not exceed denominator")
+        if self.kind == "proportion" and self.numerator > self.denominator:
+            raise ValueError("a proportion's numerator must not exceed its denominator")
         if (self.denominator == 0) != (self.value is None):
             raise ValueError("value must be null exactly when the denominator is 0")
         if (self.value is None) != (self.undefined_reason is not None):
@@ -114,10 +115,12 @@ class MetricRecord(Contract):
         *,
         metric_version: str,
         cohort: str | None = None,
+        kind: Literal["proportion", "rate"] = "proportion",
     ) -> MetricRecord:
         defined = denominator > 0
         return cls(
             metric=metric,
+            kind=kind,
             numerator=numerator,
             denominator=denominator,
             value=numerator / denominator if defined else None,
