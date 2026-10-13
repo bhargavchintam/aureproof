@@ -57,8 +57,20 @@ def scripted_policy(
 
 
 PROBE = r"""
-import hashlib, json, os, socket, urllib.error, urllib.request
+import hashlib, json, os, socket, time, urllib.error, urllib.request
 out = {}
+# The bridge starts its proxy asynchronously; wait until it accepts connections
+# rather than racing it (a refused first connect made the spike test flaky).
+deadline = time.monotonic() + 30
+while True:
+    try:
+        socket.create_connection(("127.0.0.1", 13131), timeout=1).close()
+        break
+    except OSError:
+        if time.monotonic() > deadline:
+            break
+        time.sleep(0.2)
+out["proxy_wait_s"] = round(30 - (deadline - time.monotonic()), 2)
 req = urllib.request.Request(
     "http://localhost:13131/v1/messages",
     data=json.dumps({"model": "inspect", "max_tokens": 64,
