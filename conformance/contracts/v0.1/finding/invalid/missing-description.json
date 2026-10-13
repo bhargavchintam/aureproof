@@ -1,0 +1,12 @@
+{
+  "description": "description is required.",
+  "instance": {
+    "cwe": 862,
+    "locations": [
+      {
+        "file": "docstore/service.py",
+        "symbol": "delete_document"
+      }
+    ]
+  }
+}

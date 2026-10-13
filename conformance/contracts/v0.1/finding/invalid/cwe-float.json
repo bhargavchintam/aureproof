@@ -1,0 +1,13 @@
+{
+  "description": "Floats are not integers.",
+  "instance": {
+    "cwe": 862.0,
+    "locations": [
+      {
+        "file": "docstore/service.py",
+        "symbol": "delete_document"
+      }
+    ],
+    "description": "No ownership check before delete."
+  }
+}

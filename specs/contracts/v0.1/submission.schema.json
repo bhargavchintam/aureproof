@@ -1,0 +1,77 @@
+{
+  "$defs": {
+    "FindingsSubmission": {
+      "additionalProperties": false,
+      "description": "The captured ``findings.json`` bytes, by digest (collect-then-match).",
+      "properties": {
+        "kind": {
+          "const": "findings",
+          "default": "findings",
+          "title": "Kind",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "size_bytes": {
+          "minimum": 0,
+          "title": "Size Bytes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "sha256",
+        "size_bytes"
+      ],
+      "title": "FindingsSubmission",
+      "type": "object"
+    },
+    "PocRefSubmission": {
+      "additionalProperties": false,
+      "description": "A PoC the agent submitted: stored as evidence, never executed in v0.1 (ADR-0004).",
+      "properties": {
+        "executed": {
+          "const": false,
+          "default": false,
+          "title": "Executed",
+          "type": "boolean"
+        },
+        "kind": {
+          "const": "poc_ref",
+          "default": "poc_ref",
+          "title": "Kind",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sha256"
+      ],
+      "title": "PocRefSubmission",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "discriminator": {
+    "mapping": {
+      "findings": "#/$defs/FindingsSubmission",
+      "poc_ref": "#/$defs/PocRefSubmission"
+    },
+    "propertyName": "kind"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/FindingsSubmission"
+    },
+    {
+      "$ref": "#/$defs/PocRefSubmission"
+    }
+  ],
+  "title": "submission"
+}

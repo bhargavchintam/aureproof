@@ -1,0 +1,14 @@
+{
+  "description": "Locations have no extra fields.",
+  "instance": {
+    "cwe": 862,
+    "locations": [
+      {
+        "file": "docstore/service.py",
+        "symbol": "delete_document",
+        "column": 4
+      }
+    ],
+    "description": "No ownership check before delete."
+  }
+}

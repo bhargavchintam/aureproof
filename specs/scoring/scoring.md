@@ -50,7 +50,7 @@ A submission MUST be a UTF-8 JSON array of findings. Each finding is an object:
 | `finding_id` | no | Agent-chosen string. The canonical ID is the 0-based submission index |
 | other fields | no | Ignored by the matcher and preserved as evidence |
 
-Lines are 1-based and inclusive. The schema itself is AP-004 (#11). This table fixes the semantics the schema must encode. It maps to SARIF 2.1.0 as in plan §5.2.
+Lines are 1-based and inclusive. The schema is generated from `aureproof.contracts` into [`specs/contracts/v0.1/`](../contracts/README.md) (AP-004). It maps to SARIF 2.1.0 as in plan §5.2.
 
 ### 2.2 Labels (evaluator-only)
 
@@ -281,4 +281,4 @@ They were written **before** the matcher. They were cross-checked against an ind
 - **Q3.** Is greedy submission-order crediting acceptable, versus an optimal bipartite matching that would credit G-07's second defect when a later finding names it?
 - **Q4.** This spec counts `budget_exhausted`, `agent_error` and `invalid_output` as graded, so their positives count as misses. This deliberately departs from plan §4.3's default ("excluded from quality metrics"): excluding them would let a system avoid misses by timing out on hard tasks. Should the Decision Protocol be allowed to override this?
 - **Q5.** The limits (`max_locations`, `max_findings`, `max_bytes`) must be stated in the agent instruction. The `authz-001` instruction doesn't state them yet.
-- **Q6.** The `authz-001` labels still use the draft shape (`variant`, one focal anchor). Migrating them to `variants[]`, and adding `api.py::handle_request` as a focal anchor, would refute a source-end finding on the repaired variant instead of leaving it `unresolved:out_of_scope`.
+- **Q6.** *Resolved in AP-004 (#11):* the `authz-001` labels are migrated to `variants[]`, and the focal negative lists both its site and its `api.py::handle_request` source anchor. A source-end finding on the repaired variant is therefore refuted (M6), not left unresolved.

@@ -1,0 +1,13 @@
+{
+  "description": "Booleans are not integers.",
+  "instance": {
+    "cwe": true,
+    "locations": [
+      {
+        "file": "docstore/service.py",
+        "symbol": "delete_document"
+      }
+    ],
+    "description": "No ownership check before delete."
+  }
+}

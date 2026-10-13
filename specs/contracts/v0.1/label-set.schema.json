@@ -1,0 +1,372 @@
+{
+  "$defs": {
+    "Anchor": {
+      "additionalProperties": false,
+      "properties": {
+        "file": {
+          "minLength": 1,
+          "title": "File",
+          "type": "string"
+        },
+        "line_range": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "minimum": 1,
+              "type": "integer"
+            }
+          ],
+          "title": "Line Range",
+          "type": "array"
+        },
+        "role": {
+          "$ref": "#/$defs/Role",
+          "default": "site"
+        },
+        "role_required": {
+          "default": false,
+          "title": "Role Required",
+          "type": "boolean"
+        },
+        "symbol": {
+          "minLength": 1,
+          "title": "Symbol",
+          "type": "string"
+        }
+      },
+      "required": [
+        "file",
+        "symbol",
+        "line_range"
+      ],
+      "title": "Anchor",
+      "type": "object"
+    },
+    "Defect": {
+      "additionalProperties": false,
+      "properties": {
+        "accepted_cwes": {
+          "items": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "minItems": 1,
+          "title": "Accepted Cwes",
+          "type": "array"
+        },
+        "anchors": {
+          "items": {
+            "$ref": "#/$defs/Anchor"
+          },
+          "minItems": 1,
+          "title": "Anchors",
+          "type": "array"
+        },
+        "calibration_poc": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Calibration Poc"
+        },
+        "defect_id": {
+          "minLength": 1,
+          "title": "Defect Id",
+          "type": "string"
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Summary"
+        },
+        "variants": {
+          "items": {
+            "enum": [
+              "vulnerable",
+              "repaired"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Variants",
+          "type": "array"
+        }
+      },
+      "required": [
+        "defect_id",
+        "variants",
+        "accepted_cwes",
+        "anchors"
+      ],
+      "title": "Defect",
+      "type": "object"
+    },
+    "FocalNegative": {
+      "additionalProperties": false,
+      "description": "Where the repaired defect used to be: every anchor of it (site and ends).",
+      "properties": {
+        "anchors": {
+          "items": {
+            "$ref": "#/$defs/Anchor"
+          },
+          "minItems": 1,
+          "title": "Anchors",
+          "type": "array"
+        },
+        "variant": {
+          "enum": [
+            "vulnerable",
+            "repaired"
+          ],
+          "title": "Variant",
+          "type": "string"
+        }
+      },
+      "required": [
+        "variant",
+        "anchors"
+      ],
+      "title": "FocalNegative",
+      "type": "object"
+    },
+    "Role": {
+      "enum": [
+        "site",
+        "source",
+        "sink"
+      ],
+      "title": "Role",
+      "type": "string"
+    },
+    "ScopeEntry": {
+      "additionalProperties": false,
+      "description": "Reviewed and found free of in-scope defects. No symbol = the whole file.",
+      "properties": {
+        "file": {
+          "minLength": 1,
+          "title": "File",
+          "type": "string"
+        },
+        "line_range": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Line Range"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "symbol": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Symbol"
+        }
+      },
+      "required": [
+        "file"
+      ],
+      "title": "ScopeEntry",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "agent_view": {
+      "anyOf": [
+        {
+          "additionalProperties": {
+            "additionalProperties": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "type": "object"
+          },
+          "propertyNames": {
+            "enum": [
+              "vulnerable",
+              "repaired"
+            ]
+          },
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Agent View"
+    },
+    "canary": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Canary"
+    },
+    "cluster_id": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Cluster Id"
+    },
+    "defects": {
+      "items": {
+        "$ref": "#/$defs/Defect"
+      },
+      "title": "Defects",
+      "type": "array"
+    },
+    "focal_negative": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/FocalNegative"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "label_set": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Label Set"
+    },
+    "note": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Note"
+    },
+    "reviewed_negative_scope": {
+      "items": {
+        "$ref": "#/$defs/ScopeEntry"
+      },
+      "title": "Reviewed Negative Scope",
+      "type": "array"
+    },
+    "schema": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Schema"
+    },
+    "task_id": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Task Id"
+    },
+    "task_revision": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Task Revision"
+    }
+  },
+  "required": [
+    "defects"
+  ],
+  "title": "LabelSet",
+  "type": "object"
+}

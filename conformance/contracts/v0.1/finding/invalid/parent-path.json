@@ -1,0 +1,13 @@
+{
+  "description": "Paths must not leave the workspace (N1).",
+  "instance": {
+    "cwe": 862,
+    "locations": [
+      {
+        "file": "docstore/../../x.py",
+        "start_line": 1
+      }
+    ],
+    "description": "No ownership check before delete."
+  }
+}

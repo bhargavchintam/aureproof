@@ -1,0 +1,13 @@
+{
+  "description": "Leading ./ is stripped (N1).",
+  "instance": {
+    "cwe": 862,
+    "locations": [
+      {
+        "file": "./docstore/service.py",
+        "symbol": "delete_document"
+      }
+    ],
+    "description": "No ownership check before delete."
+  }
+}

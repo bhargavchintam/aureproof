@@ -1,0 +1,13 @@
+{
+  "description": "Line numbers are integers, not strings.",
+  "instance": {
+    "cwe": 862,
+    "locations": [
+      {
+        "file": "docstore/service.py",
+        "start_line": "60"
+      }
+    ],
+    "description": "No ownership check before delete."
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "$defs": {
+    "ObservationSource": {
+      "description": "Trust tier: agent data can never impersonate controller observations.",
+      "enum": [
+        "controller_observed",
+        "agent_reported",
+        "imported"
+      ],
+      "title": "ObservationSource",
+      "type": "string"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "actor": {
+      "minLength": 1,
+      "title": "Actor",
+      "type": "string"
+    },
+    "attempt_id": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Attempt Id"
+    },
+    "blob_refs": {
+      "items": {
+        "pattern": "^sha256:[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "title": "Blob Refs",
+      "type": "array"
+    },
+    "causal_ids": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "title": "Causal Ids",
+      "type": "array"
+    },
+    "episode_id": {
+      "minLength": 1,
+      "title": "Episode Id",
+      "type": "string"
+    },
+    "kind": {
+      "minLength": 1,
+      "title": "Kind",
+      "type": "string"
+    },
+    "observation_source": {
+      "$ref": "#/$defs/ObservationSource"
+    },
+    "payload": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Payload"
+    },
+    "seq": {
+      "minimum": 0,
+      "title": "Seq",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "seq",
+    "episode_id",
+    "actor",
+    "kind",
+    "observation_source"
+  ],
+  "title": "Event",
+  "type": "object"
+}

@@ -1,0 +1,25 @@
+{
+  "description": "Exactly max_locations (4) locations.",
+  "instance": {
+    "cwe": 862,
+    "locations": [
+      {
+        "file": "docstore/service.py",
+        "symbol": "delete_document"
+      },
+      {
+        "file": "docstore/service.py",
+        "symbol": "delete_document"
+      },
+      {
+        "file": "docstore/service.py",
+        "symbol": "delete_document"
+      },
+      {
+        "file": "docstore/service.py",
+        "symbol": "delete_document"
+      }
+    ],
+    "description": "No ownership check before delete."
+  }
+}

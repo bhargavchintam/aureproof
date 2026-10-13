@@ -1,0 +1,8 @@
+{
+  "description": "At least one location.",
+  "instance": {
+    "cwe": 862,
+    "locations": [],
+    "description": "No ownership check before delete."
+  }
+}
