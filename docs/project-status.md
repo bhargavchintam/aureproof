@@ -99,8 +99,8 @@ are complete. Drafting can start early; gate acceptance requires the evidence.
 | --- | --- |
 | Repair the current measuring path | **#34 first**: spike/current-label compatibility and no-cost CI lane. **#35 next**: bounded JSON and bundle conformance. #36: scoring parameter/version identity and supported metric values, after reviewed semantics |
 | Finish M0 decisions | #5 metric/agent/protocol freeze; #31 reviewer; #32 Linux host; #33 project contact/license provenance; #6 interviews/go-narrow; #7 real Claude Code spike after repair and qualification |
-| Complete M1 | #9 scoring review; #10 identity schemas; #12 THR spec; #14 Decision spec/exact statistics; #17 threat/control matrix; #18 provider terms; #16 offline CLI, safe persisted bundles and report; #37 independent offline alpha gate/Trusted Publishing |
-| Build M2 slice | #19 durable attempts/recovery; #38 calibration THR; #39 production Inspect adapter; #40 artifact collection limits; #42 bridge controls; #43 reference subject; #41 pairs 2–3; #44 difficulty probes; #45 private split/canaries; #46 signatures; **#47 stop/go** |
+| Complete M1 | #9 scoring review; #10 identity schemas; #12 THR spec; #14 Decision spec/exact statistics; #17 threat/control matrix; #18 provider terms; #16 offline CLI, safe persisted bundles and report; #58 compatibility-policy portion; #37 independent offline alpha gate/Trusted Publishing |
+| Build M2 slice | #19 durable attempts/recovery; #38 calibration THR plus task validate/fixture CI; #39 production Inspect adapter; #40 artifact collection limits; #42 bridge controls; #43 reference subject; #41 pairs 2–3; #44 difficulty probes; #45 private split/canaries; #46 signatures; **#47 stop/go** |
 | Build M3 benchmark/gate | #48 production Claude Code subject; #49 about 20 cases/8 clusters; #51 adjudication; #50 comparison report; #53 CLI/Action gate; #52 pilot/MDE and signed pre-registration |
 | Qualify M4 release | #54 assessment; #55 faults; #58 version/migration policy; #59 EEE; #60 dataset/RAI card; #61 ABC; #56 release-candidate docs/provenance; #62 partner own-log validation; #57 independent reproduction; **#66 final release** |
 | Follow through M5 | #63 public health audit; #64 coordinated upstream contributions; #65 paper and inspect_evals registration |
@@ -134,13 +134,18 @@ those production changes. The passing existing tests do not cover these inputs.
 ## Scope and release decisions
 
 M2 go is required before expanding the benchmark; failed controls or saturated
-fixtures trigger redesign. Pilot MDE can make the eventual claim descriptive.
+fixtures trigger redesign. Closing the interview issue with narrow/rethink
+does not authorize the unchanged scope: go must support the current scope,
+or narrow must produce a reviewed scope/roadmap/backlog amendment. Rethink
+blocks expansion until resolved. Pilot MDE can make the eventual claim descriptive.
 The signed protocol must precede assessment. Missing evidence, low power or
 incomplete adjudication cannot become pass. Independent reproduction failure
 blocks the release. #66 consolidates every plan §14 acceptance criterion;
 preparing a candidate in #56 does not authorize final publication early.
 
-AP-040/#58 includes an M1 compatibility-policy portion and M4 migration work.
+AP-040/#58 includes an M1 compatibility-policy portion, required by the alpha
+gate #37, and M4 migration work. Alpha need not wait for the entire migration
+issue to close if the policy evidence is accepted.
 EEE/#59 and Croissant/#60 retain the original P1 labels but remain tracked in
 M4 because the roadmap explicitly includes them; minimal license/RAI metadata
 is required by §14. Any future deferral needs an explicit scope amendment,

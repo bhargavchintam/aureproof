@@ -400,7 +400,7 @@ milestone = "M2 Calibrated slice"
 labels = ["P0","fixture","scoring"]
 estimate = "1.5 focused days remaining"
 plan = "§4.1, §5.1, §10.1 (M2)"
-depends = ["AP-010","AP-035","AP-007","AP-048","AP-049"]
+depends = ["AP-010","AP-035","AP-007","AP-048","AP-049","AP-008"]
 context = "The authz-001 worked example and calibration PoC exist; a calibrated, environment-specific Task Health Record has not yet been produced. Evaluator-authored calibration code is trusted input. Agent-submitted PoCs remain stored evidence only in v0.1."
 deliverable = "A calibration runner and reviewed THR for authz-001, with saved control evidence and deterministic outcomes."
 done = [
@@ -409,6 +409,7 @@ done = [
   "Every control is re-run with identical outcomes, and a named reviewer signs off the record",
   "THR records the Linux environment identity, canary, authorship/license provenance, known limits, and status reasons",
   "A task is marked healthy only when every required control passes; unhealthy and unknown remain explicit",
+  "aureproof task validate runs the full controls, determinism, canary/provenance checks and label lint; fixture CI uses this command and unhealthy/unknown tasks fail qualification visibly",
 ]
 
 [[issue]]
@@ -901,6 +902,7 @@ done = [
   "Trusted Publisher is configured with least-privilege OIDC and protected release context",
   "Build/install and provenance checks pass; authorized alpha publication records PEP 740 attestations and release evidence",
   "No publication is triggered merely by opening a PR or running ordinary CI",
+  "AP-040's M1 compatibility/version policy is documented and enforced before alpha; its separate M4 migration implementation may remain open",
 ]
 
 [[issue]]
@@ -938,6 +940,7 @@ done = [
   "A third party verifies the signed bundle and identical offline re-score without live inference",
   "Reviewer records isolation, missing-evidence/retry behavior and bounded limitations",
   "ROADMAP.md records go / redesign / stop; benchmark expansion stays blocked until go",
+  "M0 demand evidence supports go for the current scope, or a reviewed scope/roadmap/backlog amendment implements narrow; rethink blocks go until resolved",
 ]
 
 [[issue]]
