@@ -5,7 +5,10 @@ SPDX-License-Identifier: Apache-2.0
 # Scope (v0.1)
 
 Condensed from [`aureproof-plan-v2.md`](aureproof-plan-v2.md) §1. This file is
-the frozen statement of what v0.1 is and is not.
+the proposed statement of what v0.1 is and is not. The primary metric and
+exact external-agent/provider protocol remain open in
+[#5](https://github.com/bhargavchintam/aureproof/issues/5). Mark this scope
+frozen only after those choices are recorded in accepted ADRs.
 
 ## The promise
 

@@ -4,6 +4,11 @@ Prepared 6 October 2026. Supersedes the original v1 plan (kept private, not part
 
 **Status:** proposed plan. No implementation, benchmark outcome, isolation guarantee, or performance result is asserted. Effort figures are planning assumptions. External facts were verified on 2026-10-06 (§15). Anything still unverified is flagged as a **spike check**.
 
+This is the original design/effort baseline. For implementation progress as of
+14 October 2026 and the numbered execution queue, see
+[`project-status.md`](project-status.md). The first-12-days table is a proposed
+task sequence; it is not a record of completed workdays or a calendar deadline.
+
 ---
 
 ## 0. What changed from v1

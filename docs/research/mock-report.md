@@ -11,7 +11,7 @@
 | Primary metric | Strict confirmed yield (confirmed findings / all submitted findings) |
 | Margin δ | 0.05 (non-inferiority) |
 | Cohort | 14 healthy tasks in 8 independent clusters; 2 tasks excluded as **unhealthy** before the run |
-| Repetitions | 3 per task per system — 84 scheduled episodes per system |
+| Repetitions | 3 per task per system — 42 scheduled episodes per system |
 | Result | B − A = +0.04, exact 90% CI [−0.07, +0.15] → **inconclusive** (the CI crosses −δ) |
 
 **Why inconclusive:** with 8 clusters the interval is wide; the data cannot rule
@@ -22,7 +22,7 @@ as a win for B.
 
 | Task | Status | Reason |
 | --- | --- | --- |
-| authz-001 … (12 more) | healthy | All controls pass, including the no-op and "flag everything" controls |
+| authz-001 … (13 more) | healthy | All controls pass, including the no-op and "flag everything" controls |
 | pathx-003 | unhealthy | Reference finding not confirmed on runner backend X |
 | cmdx-002 | unhealthy | Repaired variant still triggers the calibration PoC |
 
@@ -30,10 +30,10 @@ as a win for B.
 
 | Disposition | A | B |
 | --- | --- | --- |
-| Completed with findings | 71 | 74 |
-| Completed, no findings | 6 | 3 |
-| Safety refusal (reported, not a miss) | 4 | 1 |
-| Infrastructure failure | 3 | 6 |
+| Completed with findings | 35 | 37 |
+| Completed, no findings | 3 | 1 |
+| Safety refusal (reported, not a miss) | 2 | 1 |
+| Infrastructure failure | 2 | 3 |
 
 | Finding verdicts | A | B |
 | --- | --- | --- |
@@ -45,6 +45,11 @@ as a win for B.
 ## Per-cluster differences (B − A)
 
 `+0.10, −0.04, +0.08, 0.00, +0.12, −0.06, +0.05, +0.07`
+
+The reported contrast averages these eight cluster differences. The finding
+counts above are pooled descriptive totals, so subtracting their pooled
+yields does not reproduce the cluster-averaged contrast. The interval is an
+invented illustration, not a calculation or an observed result.
 
 ## Evidence
 
