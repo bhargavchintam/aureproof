@@ -115,47 +115,54 @@ description = "NeMo Gym #3675, in-toto #575, Harbor registry; public-benchmark h
 
 # --- Issues ------------------------------------------------------------------
 
+# Reviewed 2026-10-14 against main ca7a936 and live GitHub state.
+# AP-006 is included in AP-036; AP-033 foundation is already delivered.
+# Added items decompose existing gates; future v0.2+ work remains deferred.
+# Estimates overlap and are planning assumptions, not a timesheet.
+
 [[issue]]
 id = "AP-001"
 title = "Freeze v0.1 scope, primary metric, and agent/protocol choice"
 milestone = "M0 Foundations"
-labels = ["P0", "adr"]
+labels = ["P0","adr"]
 estimate = "0.5 focused day"
 plan = "§1.5, §3.6, §4.3"
 depends = []
-context = "scope.md and ADR-0001/0004 exist. Still open: the primary metric (strict confirmed yield vs known-defect recall), the external agent and its model protocol, and the second reviewer (ADR-0005)."
+context = "The v0.1 promise is documented, but scope.md incorrectly calls it frozen while the primary metric and exact external-agent/provider protocol remain undecided. Reviewer appointment is tracked separately by AP-048."
 deliverable = "ADRs recording the primary metric and the external agent + provider protocol; scope.md marked frozen."
 done = [
   "Primary metric chosen with rationale in an ADR",
   "External agent and model protocol recorded in an ADR",
   "scope.md marked frozen and linked from ROADMAP.md",
+  "ADR resolves native versus controlled interface, hosted-tool policy and declared budgets; no decision is inferred from implemented defaults",
 ]
 
 [[issue]]
 id = "AP-032"
 title = "Run 3-5 practitioner interviews and record the go / narrow decision"
 milestone = "M0 Foundations"
-labels = ["P0", "research"]
+labels = ["P0","research"]
 estimate = "2 focused days (calendar time is longer)"
 plan = "§1.3, §1.4, §10.1 (M0 gate)"
 depends = ["AP-001"]
-context = "Demand is the least-proven assumption. The interview kit (guide, one-page positioning, mock report, notes template) is in docs/research/."
+context = "The interview kit exists; no completed practitioner notes or demand decision were found. Interview preparation does not satisfy the M0 gate."
 deliverable = "Anonymized interview notes and a recorded go / narrow decision for the M0 gate."
 done = [
   "At least 3 interviews held with the docs/research/interview-guide.md script",
   "Anonymized notes committed under docs/research/",
   "Go / narrow decision recorded in ROADMAP.md",
+  "Decision follows the guide's evidence rule; outreach is conducted only with explicit authorization",
 ]
 
 [[issue]]
 id = "AP-034"
 title = "Inspect runner spike: settle ADR-0002 and ADR-0003"
 milestone = "M0 Foundations"
-labels = ["P0", "spike", "adapter"]
+labels = ["P0","spike","adapter"]
 estimate = "1 focused day"
 plan = "§3.3"
-depends = ["AP-010"]
-context = "ADR-0002 (Inspect first) and ADR-0003 (Aureproof owns attempts) were accepted after the Day-2 spike (docs/research/spike-inspect-day2.md); only the live Claude Code episode for check 2 remains."
+depends = ["AP-010","AP-055","AP-001","AP-049"]
+context = "ADR-0002/0003 were accepted from the October 11 mock/reference spike. Check 2 still lacks a real Claude Code findings.json. The current label migration also broke the duplicated spike matcher (AP-055); repair and rerun before live qualification."
 deliverable = "Spike notes plus ADR-0002/0003 promoted to accepted, or a documented fallback (plain-Docker runner + own proxy)."
 done = [
   "Bridge works with the sandbox at network_mode: none",
@@ -164,13 +171,15 @@ done = [
   "Inspect and inspect_swe pin cleanly with uv; Python floor confirmed",
   "Runner executes single attempts; Aureproof records retries",
   "ADR-0002 and ADR-0003 updated with the evidence",
+  "After AP-055, a separately authorized budgeted live Claude Code episode captures findings.json and produces the same offline re-score",
+  "Live notes record exact subject/model/host identities and retain limitations; mockllm is not labelled a live result",
 ]
 
 [[issue]]
 id = "AP-010"
 title = "Fixture pair #1 (missing authorization): fixture, labels, calibration PoC, expected verdicts"
 milestone = "M0 Foundations"
-labels = ["P0", "fixture"]
+labels = ["P0","fixture"]
 estimate = "1 focused day"
 plan = "§4.1, §5.3, §5.8, §12"
 depends = []
@@ -189,11 +198,11 @@ done = [
 id = "AP-005"
 title = "Write scoring.md: matching rules M1-M9, dispositions, metrics, golden table"
 milestone = "M1 Offline integrity core"
-labels = ["P0", "spec", "scoring"]
+labels = ["P0","spec","scoring"]
 estimate = "1 focused day"
 plan = "§5.4, §5.5, §5.6, §5.8"
-depends = ["AP-001"]
-context = "The matching rules are the real measurement; they must be fixed before any schema or matcher code."
+depends = ["AP-001","AP-048"]
+context = "scoring.md, 41 episode golden cases and three cohort cases are implemented, but the spec remains draft pending a second review. Q1–Q5, failure-cohort defaults and limits must be settled before calling the semantics frozen."
 deliverable = "scoring.md with rules M1-M9, dispositions, metric definitions, and at least 15 golden examples."
 done = [
   "Rules M1-M9 written with the proposed line tolerance",
@@ -201,32 +210,35 @@ done = [
   "Metric definitions with numerators, denominators, and undefined cases",
   "At least 15 golden examples (plan §5.8)",
   "A second reviewer agrees with every golden outcome",
+  "Open Q1–Q5 are resolved and agent-visible limits plus operational/quality failure policies are recorded consistently",
 ]
 
 [[issue]]
 id = "AP-003"
 title = "Task, System, Episode, and Attempt schemas"
 milestone = "M1 Offline integrity core"
-labels = ["P0", "spec"]
+labels = ["P0","spec"]
 estimate = "1 focused day"
 plan = "§3.7"
 depends = ["AP-001"]
-context = "Identity contracts every later artifact references."
+context = "Findings/event/submission contracts have merged, but TaskSpec, SystemSpec, EpisodeSpec and AttemptRecord are absent. This issue remains open despite AP-004 completing early."
 deliverable = "Pydantic v2 models in aureproof.contracts with JSON Schema 2020-12 export."
 done = [
   "Models implemented in aureproof.contracts",
   "JSON Schema 2020-12 exported under specs/",
   "Valid and invalid conformance vectors pass",
+  "System changes and task/dataset revisions yield distinct reproducible identities; missing provider identity fields are explicit",
+  "Episode and attempt IDs bind task, system, protocol and repetition consistently before dispatch",
 ]
 
 [[issue]]
 id = "AP-004"
 title = "Event, Submission, Finding, and Verdict schemas with SARIF 2.1.0 mapping"
 milestone = "M1 Offline integrity core"
-labels = ["P0", "spec"]
+labels = ["P0","spec"]
 estimate = "1 focused day"
 plan = "§3.5, §3.7, §5.2"
-depends = ["AP-005", "AP-003"]
+depends = ["AP-005","AP-003"]
 context = "Findings must round-trip through SARIF so static baselines import cheaply."
 deliverable = "Models and schemas for events, submissions (findings, poc_ref), findings, and verdicts."
 done = [
@@ -240,10 +252,10 @@ done = [
 id = "AP-035"
 title = "Task Health Record spec v0.1: schema and conformance vectors"
 milestone = "M1 Offline integrity core"
-labels = ["P0", "spec", "fixture"]
+labels = ["P0","spec","fixture"]
 estimate = "1 focused day"
 plan = "§4.1"
-depends = ["AP-005"]
+depends = ["AP-005","AP-003"]
 context = "specs/thr/README.md is a draft stub; this freezes thr/v0.1."
 deliverable = "Normative THR spec, thr.schema.json, and conformance vectors."
 done = [
@@ -251,13 +263,15 @@ done = [
   "thr.schema.json (JSON Schema 2020-12)",
   "Vectors cover healthy, unhealthy, and unknown",
   "Required controls include nop and spray_cheat",
+  "Health derivation, determinism, reviewer/freeze identity, difficulty-probe fields and exclusion policy are normative",
+  "Label lint L1–L4 rejects drift and unhealthy tasks never become agent false positives",
 ]
 
 [[issue]]
 id = "AP-036"
 title = "Evidence Bundle spec: RFC 8785 digests, blob store, hash chain, in-toto seal, validation"
 milestone = "M1 Offline integrity core"
-labels = ["P0", "spec", "bundle"]
+labels = ["P0","spec","bundle"]
 estimate = "2 focused days"
 plan = "§3.5, §4.2 (includes AP-006)"
 depends = ["AP-004"]
@@ -275,10 +289,10 @@ done = [
 id = "AP-037"
 title = "Decision Protocol spec and exact paired permutation gate"
 milestone = "M1 Offline integrity core"
-labels = ["P0", "spec", "stats"]
+labels = ["P0","spec","stats"]
 estimate = "1.5 focused days"
 plan = "§4.3, §6"
-depends = ["AP-005"]
+depends = ["AP-005","AP-003"]
 context = "The three-way pass / fail / inconclusive decision; the GitHub Action wrapper follows in M3."
 deliverable = "Normative decision spec and schema plus the pure implementation in aureproof.stats."
 done = [
@@ -286,16 +300,18 @@ done = [
   "Wilson intervals per configuration",
   "Vectors with hand-checked exact p-values and intervals",
   "Fewer than 6 clusters is reported as unable to reach a decisive outcome",
+  "DecisionProtocol schema binds cohort/THR digests, cluster map, systems, repetition, budgets, failure policy, margin and stopping rule",
+  "Boundary/tie/zero-difference vectors cover pass, fail and inconclusive; incomplete adjudication cannot silently pass",
 ]
 
 [[issue]]
 id = "AP-007"
 title = "Matcher and metrics: pure, test-first, with Hypothesis invariants"
 milestone = "M1 Offline integrity core"
-labels = ["P0", "scoring"]
+labels = ["P0","scoring"]
 estimate = "1.5 focused days"
 plan = "§5.1, §5.4, §5.6"
-depends = ["AP-004", "AP-005"]
+depends = ["AP-004","AP-005"]
 context = "match(findings, labels, matcher_version) is the v0.1 oracle (ADR-0004)."
 deliverable = "The matcher and metric functions in aureproof.scoring."
 done = [
@@ -309,58 +325,63 @@ done = [
 id = "AP-008"
 title = "CLI: validate, score --offline, report (escaped HTML)"
 milestone = "M1 Offline integrity core"
-labels = ["P0", "cli"]
+labels = ["P0","cli"]
 estimate = "1 focused day"
 plan = "§3.9, §5.9"
-depends = ["AP-007", "AP-036"]
+depends = ["AP-007","AP-036","AP-003","AP-035","AP-037","AP-057","AP-058"]
 context = "The Phase-1 gate runs through these commands."
 deliverable = "aureproof validate, score --offline, and report."
 done = [
   "Offline tutorial runs without credentials",
   "HTML report escapes agent-authored strings (XSS test)",
   "Phase-1 gate: golden bundle counts match an independent calculation",
+  "Implement validate, score --offline and report using saved records only, with defined failure exit behavior",
+  "Filesystem bundle reader/writer and CAS adapter enforce canonical paths, regular files, symlink rejection and atomic writes",
+  "Reports expose denominators, undefined/unresolved/refusal outcomes and unsigned/completeness limitations",
 ]
 
 [[issue]]
 id = "AP-002"
 title = "STRIDE threat model with a control-to-test matrix"
 milestone = "M1 Offline integrity core"
-labels = ["P0", "security"]
+labels = ["P0","security"]
 estimate = "1 focused day"
 plan = "§7.1, §7.2"
-depends = ["AP-034"]
-context = "Every claimed control must have a test; v0.1 and v0.2 controls are separated."
+depends = ["AP-055"]
+context = "The plan's STRIDE table exists, but docs/threat-model.md and a control-to-test matrix do not. Drafting can use no-cost spike evidence after AP-055; do not wait for paid inference to document unqualified controls."
 deliverable = "docs/threat-model.md with the STRIDE table and test IDs."
 done = [
   "STRIDE table for v0.1 (plan §7.1)",
   "Every control maps to a test ID",
   "v0.2 executed-PoC controls listed separately",
+  "Each control records implemented/tested/pending status and limitations; skipped integration tests are not passing evidence",
 ]
 
 [[issue]]
 id = "AP-041"
 title = "Provider-terms review and safety_refusal handling"
 milestone = "M1 Offline integrity core"
-labels = ["P0", "policy"]
+labels = ["P0","policy"]
 estimate = "0.5 focused day"
 plan = "§5.5, §7.3, §7.4"
-depends = ["AP-001", "AP-004"]
-context = "RESPONSIBLE_USE.md exists; OpenAI's Sharing & Publication Policy was not yet verified."
+depends = ["AP-001","AP-004"]
+context = "RESPONSIBLE_USE.md exists and core refusal golden cases already pass. Current provider-terms verification, including Sharing & Publication Policy, is still absent; verify official terms for the actual selected provider before live use/public release."
 deliverable = "Reviewed provider-terms section and a refusal conformance vector."
 done = [
   "Provider terms re-checked, including OpenAI's Sharing & Publication Policy",
   "RESPONSIBLE_USE.md updated if anything changed",
   "A safety_refusal vector scores as a refusal, not a miss",
+  "Date and primary-source policy links are recorded for each provider actually used; no retries bypass safeguards",
 ]
 
 [[issue]]
 id = "AP-009"
 title = "Aureproof-owned attempts and journal with restart recovery"
 milestone = "M2 Calibrated slice"
-labels = ["P0", "bundle"]
+labels = ["P0","bundle"]
 estimate = "2 focused days"
 plan = "§3.4, ADR-0003"
-depends = ["AP-036"]
+depends = ["AP-036","AP-003","AP-057"]
 context = "The runner executes single attempts; Aureproof records every attempt, including retries and infrastructure failures."
 deliverable = "Attempt records, journal for Aureproof-owned stages, and single-host restart recovery."
 done = [
@@ -368,4 +389,666 @@ done = [
   "Restart preserves IDs",
   "Finalization is idempotent (duplicate delivery yields one result)",
   "Every scheduled episode ends with exactly one disposition",
+  "Request identity persists before dispatch and a response, terminal error or explicit unknown outcome is retained",
+  "Append-only durable journal/atomic persistence and rebuildable index recover without silently merging attempts",
+]
+
+[[issue]]
+id = "AP-011"
+title = "Calibration runner and complete THR controls for pair #1"
+milestone = "M2 Calibrated slice"
+labels = ["P0","fixture","scoring"]
+estimate = "1.5 focused days remaining"
+plan = "§4.1, §5.1, §10.1 (M2)"
+depends = ["AP-010","AP-035","AP-007","AP-048","AP-049","AP-008"]
+context = "The authz-001 worked example and calibration PoC exist; a calibrated, environment-specific Task Health Record has not yet been produced. Evaluator-authored calibration code is trusted input. Agent-submitted PoCs remain stored evidence only in v0.1."
+deliverable = "A calibration runner and reviewed THR for authz-001, with saved control evidence and deterministic outcomes."
+done = [
+  "Reference-positive, repaired-negative, nop, spray_cheat, malformed, and calibration_poc controls execute and retain input digests, outcomes, and run IDs",
+  "Calibration PoC triggers on the vulnerable variant only; irrelevant and malformed inputs do not count",
+  "Every control is re-run with identical outcomes, and a named reviewer signs off the record",
+  "THR records the Linux environment identity, canary, authorship/license provenance, known limits, and status reasons",
+  "A task is marked healthy only when every required control passes; unhealthy and unknown remain explicit",
+  "aureproof task validate runs the full controls, determinism, canary/provenance checks and label lint; fixture CI uses this command and unhealthy/unknown tasks fail qualification visibly",
+]
+
+[[issue]]
+id = "AP-012"
+title = "Inspect runner adapter with Aureproof-owned single attempts and captured submissions"
+milestone = "M2 Calibrated slice"
+labels = ["P0","adapter","bundle"]
+estimate = "2 focused days remaining"
+plan = "§3.3, §3.4, §3.6, ADR-0002/0003; docs/research/spike-inspect-day2.md"
+depends = ["AP-034","AP-009","AP-003","AP-004","AP-049","AP-055","AP-057"]
+context = "The Day-2 spike establishes feasibility but is not the production Runner adapter. The production adapter must collect findings once, persist their raw bytes/digest, and score the captured artifact so saved logs can be re-scored without a sandbox."
+deliverable = "A thin Inspect Runner adapter behind the documented port, with stable episode/attempt IDs, declared findings.json collection, and saved Inspect logs."
+done = [
+  "One dispatched attempt produces a captured submission or an explicit terminal disposition and a retained log digest",
+  "collect_findings retains raw submission bytes and SHA-256 before controller matching; saved-log re-scoring needs no sandbox",
+  "Inspect retry_on_error=0 and fail_on_error=False are recorded; agent retries/refusal retries/hidden continuations are disabled",
+  "Proxy readiness is checked before model traffic; offered tools, protocol, exact runner/agent pins, and effective settings enter system identity",
+  "Per-sample errors, capture status, and scores determine disposition rather than the log header",
+  "Attempt IDs and provider retry/request IDs are journaled without merging failed attempts",
+]
+
+[[issue]]
+id = "AP-013a"
+title = "Artifact collection and parsing limits for agent submissions"
+milestone = "M2 Calibrated slice"
+labels = ["P0","security","adapter"]
+estimate = "0.75 focused day remaining"
+plan = "§7.1, §14 Artifact safety"
+depends = ["AP-012","AP-057"]
+context = "Core malformed-input handling does not replace bounded collection of a file supplied by an agent. v0.1 parses findings as data and does not execute submitted PoCs."
+deliverable = "Bounded artifact collection with size, depth, finding-count, canonical-path, and symlink checks."
+done = [
+  "Oversized artifacts are rejected before unbounded read/parse; limits are declared and versioned",
+  "Deeply nested JSON and excessive finding counts are rejected deterministically",
+  "Absolute/traversal paths and symlinks cannot escape the declared artifact/workspace boundary",
+  "Malformed or absent output records the documented disposition and cannot create a false successful seal",
+  "DoS/path/symlink vectors exercise the production adapter collection path",
+]
+
+[[issue]]
+id = "AP-015"
+title = "Bridge capability qualification: key isolation, hosted tools, budgets, and evidence coverage"
+milestone = "M2 Calibrated slice"
+labels = ["P0","adapter","security"]
+estimate = "1 focused day remaining"
+plan = "§3.5, §3.6, §7.1, §14 Inference boundary"
+depends = ["AP-012","AP-013a","AP-002","AP-049"]
+context = "The mock spike showed key isolation and no network on a development host. Release claims require the production bridge and qualified Linux environment to enforce the declared capabilities."
+deliverable = "Executable bridge capability tests and an observation/enforcement coverage declaration."
+done = [
+  "Sandbox environment and transcript canary checks show no upstream provider key or evaluator label leakage",
+  "Sandbox outbound traffic fails; provider-hosted tools are withheld or rejected unless explicitly granted",
+  "Unsupported native/controlled-interface capabilities fail preflight and transformations are disclosed",
+  "Time, action, request, and available token budgets enforce budget_exhausted without hidden extra opportunities",
+  "Streaming/model-call evidence and infrastructure retries are captured with their trust tier",
+  "Every claimed bridge control maps to a test ID in the STRIDE matrix",
+]
+
+[[issue]]
+id = "AP-016"
+title = "Reference subject using Inspect ReAct or mini-swe-agent"
+milestone = "M2 Calibrated slice"
+labels = ["P0","adapter"]
+estimate = "0.75 focused day remaining"
+plan = "§3.6, §3.8, §10.1 (M2)"
+depends = ["AP-012","AP-015"]
+context = "Reuse an existing reference scaffold instead of building a separate agent framework. The reference subject provides tool execution that the controller can observe."
+deliverable = "A pinned reference subject and SystemSpec that produce valid structured findings through the production Runner adapter."
+done = [
+  "Reference scaffold, model, prompts, tool inventory, budgets, interface mode, and versions form a reproducible SystemSpec",
+  "A reference episode on a calibrated fixture produces findings.json and controller_observed tool events",
+  "Refusal, agent error, no-findings completion, and budget exhaustion remain distinct dispositions",
+  "No grading feedback or evaluator labels are exposed during the episode",
+]
+
+[[issue]]
+id = "AP-014"
+title = "Fixture pairs #2-3 with reviewed, deterministic Task Health Records"
+milestone = "M2 Calibrated slice"
+labels = ["P0","fixture"]
+estimate = "1.5 focused days remaining"
+plan = "§4.1, §5.3, §10.1 (M2)"
+depends = ["AP-011","AP-048"]
+context = "Expand the calibrated slice to three pairs before building the full pack. Pair #1 already tests missing authorization, so choose distinct path-boundary/authz mechanisms, decoys, or cross-file context rather than reproducing a textbook pattern."
+deliverable = "Two additional self-authored vulnerable/repaired Python pairs, evaluator-only labels and calibration PoCs, and reviewed THRs."
+done = [
+  "Three pairs in total have separated agent/evaluator material, accepted-CWE anchors, scoped negatives, and canaries",
+  "Each new pair passes the full required THR controls and determinism re-run in its named environment",
+  "A named reviewer checks labels/calibration and records known limits and provenance",
+  "Every new pair has a healthy THR; failures remain unhealthy/unknown until repaired under a new revision",
+]
+
+[[issue]]
+id = "AP-019"
+title = "Bandit SARIF and direct-model baselines with THR difficulty probes"
+milestone = "M2 Calibrated slice"
+labels = ["P0","adapter","fixture","scoring"]
+estimate = "1 focused day remaining"
+plan = "§4.1 difficulty_probe, §6.2, §13 Ceiling effect"
+depends = ["AP-004","AP-011","AP-015","AP-041","AP-014"]
+context = "Synthetic fixtures need a measured difficulty probe before expansion. Baselines are separately accounted systems and must use the same scoring rules, rather than appearing as agent repetitions."
+deliverable = "Pinned Bandit SARIF import and single-shot model baselines, with probe results attached to THRs."
+done = [
+  "Bandit SARIF round-trips to the finding schema with declared mapping losses and tool identity",
+  "Single-shot model configuration, provider protocol, budgets, prompts, and refusals are retained",
+  "Baseline outcomes and metrics use the same reviewed labels/matcher and show exact denominators",
+  "Difficulty probes cover the three calibrated pairs and are recorded with THR identities",
+  "Saturation is reported and triggers fixture redesign before AP-053/AP-018 rather than a capability claim",
+]
+
+[[issue]]
+id = "AP-039"
+title = "Canaries and private held-out assessment split"
+milestone = "M2 Calibrated slice"
+labels = ["P0","fixture","security"]
+estimate = "0.75 focused day remaining"
+plan = "§3.9, §7.6, §10.1 (M2/M3)"
+depends = ["AP-010","AP-001"]
+context = "Public development fixtures are not a held-out assessment. v0.1 needs contamination markers, exposure tracking, and a genuinely private assessment source."
+deliverable = "Canary checks and a private assessment repository/split with versioned exposure and provenance records."
+done = [
+  "Every fixture and oracle file carries its required canary; CI checks presence without leaking private labels",
+  "A private assessment repository exists with documented access and agent/evaluator build-context separation",
+  "Development versus assessment membership and dataset revisions are recorded before assessment",
+  "Public exposure and known benchmark overlap are tracked; syntactic renaming is not presented as decontamination",
+  "Assessment material stays private until the authorized results publication",
+]
+
+[[issue]]
+id = "AP-017"
+title = "External subject: pinned Claude Code through inspect_swe"
+milestone = "M3 Benchmark + gate"
+labels = ["P0","adapter"]
+estimate = "1 focused day remaining"
+plan = "§3.3, §3.5, §3.6, §14 External portability"
+depends = ["AP-012","AP-015","AP-053","AP-001"]
+context = "The live M0 spike settles compatibility; this issue turns Claude Code into an assessment-ready external subject. Expansion follows the M2 stop/go gate."
+deliverable = "A pinned Claude Code subject through inspect_swe with a documented contract and coverage declaration."
+done = [
+  "Exact host-cached agent version and checksum, scaffold/model/protocol, prompts, tools, policy, and adapter revision enter SystemSpec",
+  "WebSearch/WebFetch, refusal retries, uncaught-error retries, and continuation settings are explicitly controlled and recorded",
+  "The controlled-interface allowlist is stated; native-capability limitations are disclosed",
+  "A live subject episode produces a declared submission and saved log through the production adapter",
+  "Internal agent traces are agent_reported; bridge calls and controller-executed actions are separately tagged",
+  "Integration instructions and tested platform/version combinations are documented",
+]
+
+[[issue]]
+id = "AP-018"
+title = "Expand precision-first fixture pack to about 20 cases across at least 8 clusters"
+milestone = "M3 Benchmark + gate"
+labels = ["P0","fixture"]
+estimate = "4 focused days remaining"
+plan = "§4.1, §6.1, §7.6, §10.1 (M3)"
+depends = ["AP-014","AP-039","AP-019","AP-048","AP-053"]
+context = "Benchmark expansion is conditional on the M2 stop/go, reviewer availability, and difficulty probes. Cases measure controlled skills; they do not establish real-world security capability."
+deliverable = "Approximately 20 self-authored Python cases with decoys, cross-file flows, semantic defects, and reviewed frozen THRs."
+done = [
+  "Pack includes vulnerable/repaired variants and reviewed-negative decoys with separated evaluator labels",
+  "At least 8 conservative independent clusters are recorded, grouping variants/templates/repositories rather than counting them independently",
+  "Every scored task has passing THR controls, determinism evidence, provenance, canary, and reviewer sign-off",
+  "Difficulty probes show that Bandit and the direct-model baseline do not saturate the pack",
+  "Private assessment membership and THR-based exclusions are frozen before protocol signing",
+  "Fixture-authoring guidance and contribution rubric describe how to add a task safely",
+]
+
+[[issue]]
+id = "AP-038"
+title = "Recorded adjudication workflow, adjudicate CLI, and inter-rater agreement"
+milestone = "M3 Benchmark + gate"
+labels = ["P0","scoring","cli","spec"]
+estimate = "1.5 focused days remaining"
+plan = "§3.7 Adjudication, §5.7, §14 Failure accounting"
+depends = ["AP-007","AP-048"]
+context = "Unresolved findings are not false alarms. Adjudication must be a versioned grading operation with saved evidence, reviewer identities, and explicit dataset changes."
+deliverable = "Adjudication record schema, unresolved queue, aureproof adjudicate, and Cohen’s kappa reporting."
+done = [
+  "Queue covers unresolved:class_mismatch and unresolved:out_of_scope without silently dropping findings",
+  "Records include finding ID, adjudicator, decision, rationale, evidence, timestamp, and dataset revisions before/after",
+  "At least 20% of unresolved cases have two adjudicators; agreement/disagreement and kappa or an explicit undefined reason are reported",
+  "New defects in negative regions produce a new dataset revision and re-score under both old/new revisions",
+  "Offline re-scoring reuses saved adjudications; re-adjudication creates new recorded evidence",
+  "Unequal or incomplete adjudication coverage is visible and cannot turn an unsupported decision into pass",
+]
+
+[[issue]]
+id = "AP-020"
+title = "Paired comparison report with cluster tables, exact intervals, and Wilson intervals"
+milestone = "M3 Benchmark + gate"
+labels = ["P0","stats","cli"]
+estimate = "0.75 focused day remaining"
+plan = "§4.3, §6.1-§6.5"
+depends = ["AP-037","AP-007"]
+context = "The pure exact-test implementation needs a reviewable comparison surface tied to the frozen cohort and primary estimand. Repetitions do not create extra independent clusters."
+deliverable = "aureproof compare/gate reporting with per-cluster differences, exact p/CI, Wilson intervals, denominators, and decision rationale."
+done = [
+  "Synthetic dependent-data vectors reproduce independently enumerated exact p-values and intervals",
+  "Reports show cohort, cluster map, configuration identities, repetitions, failures/refusals, exclusions, and undefined reasons",
+  "Fewer than 6 independent clusters and incomplete adjudication cannot yield a decisive pass",
+  "Margin and pass/fail/inconclusive boundaries follow the signed protocol and show the per-cluster table",
+  "Quality metrics and operational completion are separated; uncertainty on this fixed suite is not a population claim",
+]
+
+[[issue]]
+id = "AP-021"
+title = "Run 36-episode pilot, record MDE, and sign the pre-registered assessment protocol"
+milestone = "M3 Benchmark + gate"
+labels = ["P0","research","stats","bundle"]
+estimate = "1.5 focused days remaining plus live-run calendar time"
+plan = "§4.3, §6.2, §10.1 (M3)"
+depends = ["AP-017","AP-018","AP-019","AP-020","AP-038","AP-052","AP-053"]
+context = "The pilot is six cases x two configurations x three repetitions (36 episodes). It diagnoses harness/measurement problems and estimates practical detectability before the assessment is allowed to start."
+deliverable = "A retained pilot report with MDE and a frozen, Sigstore-signed assessment protocol."
+done = [
+  "All 36 pilot episodes have stable identities, complete evidence, and exactly one disposition; baselines are accounted separately",
+  "Variance/MDE, cluster count, costs, and harness/oracle defects are recorded; changes create new versions rather than rewriting results",
+  "If MDE exceeds a practically interesting effect, the primary claim is explicitly descriptive only",
+  "Protocol fixes estimand, healthy cohort/THR digests, cluster map, system identities, budgets, repetitions, failure handling, margin, exact test, and no-peeking stopping rule",
+  "Protocol signature and trusted timestamp precede every assessment episode",
+  "No benchmark expansion or pilot proceeds before AP-053 records the M2 go decision",
+]
+
+[[issue]]
+id = "AP-022"
+title = "Assessment with sanity and close contrasts, complete outcomes, and report"
+milestone = "M4 v0.1.0"
+labels = ["P0","research","stats","bundle"]
+estimate = "2 focused days remaining plus live-run calendar time"
+plan = "§6.3-§6.7, §10.1 (M4), §14 Comparison validity"
+depends = ["AP-021"]
+context = "The assessment uses the fixed healthy cohort and signed protocol. A sanity contrast should demonstrate detectable effects; a realistic close contrast may be inconclusive and must remain so when the evidence is insufficient."
+deliverable = "Complete assessment bundles and a reviewable report for the predeclared sanity and close contrasts."
+done = [
+  "Every scheduled episode and attempt is accounted for with exactly one episode disposition and visible retries",
+  "Report shows counts/denominators, finding verdicts, unresolved/adjudication coverage, refusals, budgets, exclusions, and per-cluster differences",
+  "Exact intervals and pass/fail/inconclusive rationale follow the pre-registered margins and test",
+  "Sanity and close contrasts are both reported; unexpected/inconclusive results are retained rather than selected away",
+  "All scored tasks use frozen THRs and saved adjudications; exploratory/post-hoc changes are clearly labeled",
+  "Findings link to submission/model-call evidence and trust tiers; public results use redacted bundles with declared completeness",
+  "Synthetic fixed-suite limitations and hosted-endpoint reproduction limits are stated",
+]
+
+[[issue]]
+id = "AP-023"
+title = "Fault qualification for restart, interrupted calls, duplicate finalization, and partial writes"
+milestone = "M4 v0.1.0"
+labels = ["P0","bundle","security"]
+estimate = "1.5 focused days remaining"
+plan = "§3.4, §6.7, §10.1 (M4), §14 Recovery"
+depends = ["AP-009","AP-012","AP-052","AP-013a"]
+context = "Durable lifecycle code and signatures require end-to-end qualification through the production runner. Mandatory-evidence loss must be visible rather than producing a valid-looking partial result."
+deliverable = "Fault-injection evidence and control-to-test links covering the v0.1 recovery scenarios."
+done = [
+  "Restart preserves preassigned episode/attempt IDs and resumes only permitted owned stages",
+  "Interrupted upstream calls retain request identity and response/error/explicit unknown outcome",
+  "Duplicate deliveries/finalization publish one result and do not inflate scores or attempts",
+  "Partial journal/blob/manifest/signature writes cannot produce a false valid seal",
+  "Missing mandatory evidence yields evidence_incomplete and blocks sealing",
+  "Recorded fault tests support the release Recovery/Evidence completeness gates; hostile PoC confinement and unrelated v0.2 faults stay deferred",
+]
+
+[[issue]]
+id = "AP-024"
+title = "Release guides, signed tutorials, supply-chain provenance, SBOM, and DOI"
+milestone = "M4 v0.1.0"
+labels = ["P0","documentation","policy","bundle"]
+estimate = "2 focused days remaining"
+plan = "§8, §9.5, §10.1 (M4), §14 Supply chain/Compatibility"
+depends = ["AP-008","AP-017","AP-041","AP-050","AP-051","AP-052"]
+context = "Prepare the release candidate, documentation and supply-chain workflow. Final public v0.1.0 publication is tracked by AP-059 after independent reproduction and all acceptance gates."
+deliverable = "A release candidate and reviewed docs/provenance pipeline that an independent engineer can reproduce before the final tag."
+done = [
+  "Fresh install and offline tutorial run without model credentials and reproduce the documented counts",
+  "Three guides explain task-health controls, authoring/licensing, verdicts/denominators, exclusions, refusals, and three-way interpretation",
+  "Signed example bundles can be verified by a third party and re-scored offline",
+  "Release-candidate build and protected publishing pipeline qualify Trusted Publishing/PEP 740 and SBOM generation; default-branch Scorecard meets the planned >=8 gate",
+  "CITATION.cff and proposed release metadata are prepared for the Zenodo DOI; changelog and package/spec versions agree",
+  "Pinned producer/consumer/runner combinations and compatibility limits are documented",
+  "Provider sharing/publication terms are checked for the actual release, and public bundles pass secret/redaction checks",
+]
+
+[[issue]]
+id = "AP-044"
+title = "Publish ABC self-assessment and request BetterBench review"
+milestone = "M4 v0.1.0"
+labels = ["P0","research","documentation"]
+estimate = "0.5 focused day remaining"
+plan = "§8 Benchmark rigor, §10.1 (M4), §14 Benchmark rigor"
+depends = ["AP-022"]
+context = "Benchmark rigor claims require an evidence-linked assessment of task validity, outcome validity, and reporting. A request for an external assessment is distinct from receiving a favorable assessment."
+deliverable = "docs/ABC.md with concrete evidence and limitations, plus a recorded BetterBench assessment request."
+done = [
+  "ABC checklist addresses Task Validity, Outcome Validity, and Benchmark Reporting with links to versioned evidence",
+  "Known limits, synthetic-skill scope, exclusions, refusals, adjudication coverage, contamination, and power are stated",
+  "BetterBench assessment request is submitted through its documented process and its status is recorded accurately",
+]
+
+[[issue]]
+id = "AP-025"
+title = "Independent offline reproduction and verdict review"
+milestone = "M4 v0.1.0"
+labels = ["P0","research","bundle"]
+estimate = "1 focused day remaining plus reviewer calendar time"
+plan = "§5.9, §10.1 (M4), §14 Offline reproduction/External review"
+depends = ["AP-022","AP-024","AP-048"]
+context = "The release cannot be self-certified. A second engineer needs a fresh environment and complete saved artifacts to reproduce metrics without inference and review selected verdicts."
+deliverable = "Independent reproduction record with exact table comparison, signature/protocol verification, and recorded disagreements."
+done = [
+  "A second engineer installs in a fresh environment and verifies bundle signature and protocol pre-registration",
+  "Offline re-scoring reproduces at least one published metrics table exactly without model calls",
+  "Selected verdicts, denominators, exclusions, failures, and refusals are independently reviewed",
+  "Reproduction environment, commands, versions, observed results, and reviewer identity are retained",
+  "Disagreements are recorded/adjudicated under new versions; any reproduction failure blocks v0.1.0",
+]
+
+[[issue]]
+id = "AP-042"
+title = "Pinned Every Eval Ever exporter with round-trip conformance"
+milestone = "M4 v0.1.0"
+labels = ["P1","adapter","spec"]
+estimate = "1.5 focused days remaining"
+plan = "§3.2, §8 Eval interchange, §9.4 item 3, §10.1 (M4)"
+depends = ["AP-022","AP-040"]
+context = "The original plan lists EEE as P1 and includes it in M4 release scope. This task is included in the release checklist rather than silently treating it as optional. EEE support for task-health/decision fields remains an integration check."
+deliverable = "A pinned Every Eval Ever exporter and documented producer/consumer round-trip."
+done = [
+  "Exact EEE version and supported schema are pinned and recorded",
+  "Assessment results export and validate with the independent consumer",
+  "Round-trip preserves supported identities/counts/metrics; unmappable evidence/THR/decision fields have explicit loss/extension reporting",
+  "No signing/sealing guarantee is attributed to the interchange format itself",
+  "Round-trip conformance and compatibility documentation are linked in the M4 release checklist",
+]
+
+[[issue]]
+id = "AP-043"
+title = "Croissant metadata and responsible-AI dataset card for fixtures"
+milestone = "M4 v0.1.0"
+labels = ["P1","fixture","documentation","policy"]
+estimate = "0.75 focused day remaining"
+plan = "§7.4, §7.6, §8 Dataset metadata, §10.1 (M4), §14 Licensing"
+depends = ["AP-018","AP-050"]
+context = "The plan labels this P1 but includes it in M4 scope and explicitly requires a license/RAI dataset card for v0.1.0. Keep it on the release checklist. Fixture licensing and provider-output handling must be accurately distinguished."
+deliverable = "Validated Croissant 1.1 metadata with RAI fields and a fixture dataset card."
+done = [
+  "Metadata validator passes for the pinned Croissant/RAI schema versions",
+  "Dataset revision, task/cluster structure, canaries, provenance, exposure, intended use, and synthetic-skill limitations are documented",
+  "Self-authored fixture license and third-party/dependency provenance are stated accurately",
+  "Dataset card includes the planned evaluation-only/not-for-training statement and explains applicable transcript/provider restrictions",
+  "Private held-out material and public assessment release timing are represented without exposing private labels",
+  "Card and validation evidence are linked in the M4 release Licensing checklist",
+]
+
+[[issue]]
+id = "AP-045"
+title = "Public-benchmark Task Health Record audit with upstream-confirmed findings"
+milestone = "M5 Upstream & audit"
+labels = ["P1","research","fixture"]
+estimate = "2 focused days remaining plus upstream response time"
+plan = "§1.6, §9.4, §10.1 (M5)"
+depends = ["AP-035","AP-011","AP-053","AP-041"]
+context = "A small, permissively licensed existing benchmark subset can demonstrate whether persistent task-health records find substantive defects. Choose an authorized subset with checked terms and publish the audit even if it finds no defects."
+deliverable = "Versioned public-benchmark THR audit with reproducible evidence and appropriately routed upstream reports."
+done = [
+  "Subset license/terms, inclusion criteria, environment, revisions, and known limits are recorded",
+  "Full relevant health controls and determinism checks produce reviewed THRs",
+  "Public report distinguishes healthy, unhealthy, and unknown tasks without making population-wide claims",
+  "Substantive reproducible findings are reported upstream with evidence; security-sensitive disclosures use the relevant private process",
+  "At least one finding is confirmed upstream for the planned proof deliverable; if none is found/confirmed, the result and unmet gate are stated honestly",
+]
+
+[[issue]]
+id = "AP-046"
+title = "Sequenced upstream contributions: NeMo Gym, in-toto, EEE, and Harbor registry"
+milestone = "M5 Upstream & audit"
+labels = ["P1","adapter","spec","fixture"]
+estimate = "2 focused days remaining plus upstream review time"
+plan = "§9.4 items 1-4, §10.1 (M5)"
+depends = ["AP-045","AP-042","AP-018","AP-052"]
+context = "Contribute validated field/control requirements and the fixture pack to existing ecosystem work. Upstream references in the October 6 plan must be re-checked before coordination, and acceptance/review timing is outside project control."
+deliverable = "Linked upstream contributions and an audit trail of coordination, licenses, compatibility evidence, and review status."
+done = [
+  "NeMo Gym coordination builds on the relevant oracle/validation effort instead of duplicating it, with required DCO and headers",
+  "in-toto contribution provides field requirements from actual signed Aureproof bundles and tracks the current eval-result proposal",
+  "EEE proposal/exporter contribution documents optional THR/decision field requirements and round-trip evidence",
+  "Harbor registry publication happens only after required oracle/nop checks and parity evidence; task-health/forgery regression contributions follow normal upstream channels",
+  "At least 2 upstream PRs are merged or under active review, with current links/statuses recorded",
+  "No unsolicited claim of upstream endorsement or merged status is made",
+]
+
+[[issue]]
+id = "AP-047"
+title = "Write arXiv report and register the benchmark with inspect_evals"
+milestone = "M5 Upstream & audit"
+labels = ["P1","research","documentation"]
+estimate = "2 focused days remaining plus publication calendar time"
+plan = "§1.6, §9.4 item 5, §10.1 (M5)"
+depends = ["AP-022","AP-025","AP-044"]
+context = "The planned inspect_evals route is its Register after an arXiv report exists. Publication must describe actual evidence, fixed-suite limits, and unexpected or inconclusive results."
+deliverable = "An arXiv report and a benchmark Register submission using the currently documented requirements."
+done = [
+  "Report includes task-health methodology, signed/re-scorable evidence, protocol, exact decision analysis, findings, limitations, and reproduction",
+  "Provider publication terms and dataset/public-bundle licensing are checked before submission",
+  "A paper URL, 40-character pinned repository SHA, and logs from two models are prepared as required by the Register",
+  "Register issue is opened only after the paper URL exists and current submission requirements are verified",
+  "Paper and registry submission statuses are recorded accurately without implying acceptance",
+]
+
+[[issue]]
+id = "AP-040"
+title = "Spec compatibility policy and artifact migration command"
+milestone = "M4 v0.1.0"
+labels = ["P1","spec","cli"]
+estimate = "1 focused day remaining"
+plan = "§4 Open specifications, §3.9 migrate, §10.1 (M4)"
+depends = ["AP-035","AP-036","AP-037"]
+context = "Write the compatibility policy during M1 spec work, then complete migration by M4. Specs are versioned separately from the package and the plan promises current/N-1 readers; do not invent a historical version solely to claim coverage."
+deliverable = "A documented spec versioning policy, compatibility fixtures, and aureproof migrate for supported artifact changes."
+done = [
+  "M1 policy states independent spec/package versions, supported readers, incompatible-version errors, and migration rules",
+  "Current and genuine N-1 vectors validate where an earlier version exists; otherwise the initial-version limit is explicitly documented",
+  "Incompatible/unknown versions fail clearly before scoring or sealing",
+  "migrate writes a new artifact/revision with recorded source/provenance and does not silently edit signed evidence",
+  "Supported migrations have producer/consumer conformance and documented loss/unsupported-field behavior",
+  "Migration/compatibility evidence is linked in the M4 release checklist",
+]
+
+[[issue]]
+id = "AP-048"
+title = "Appoint the independent reviewer and agree review cadence"
+milestone = "M0 Foundations"
+labels = ["P0","adr","help wanted"]
+estimate = "0.5 focused day plus reviewer availability"
+plan = "§12, §14; ADR-0005"
+depends = []
+context = "ADR-0005 is proposed and MAINTAINERS.md names no second reviewer. This is an existing M2/release requirement, not new product scope."
+deliverable = "A consenting named reviewer, cadence and responsibilities recorded in MAINTAINERS.md; ADR-0005 accepted."
+done = [
+  "Reviewer agrees to THR and scoring review, independent table reproduction, and co-adjudication of at least 20% of unresolved cases",
+  "MAINTAINERS.md records the person and review cadence without publishing private contact details",
+  "ADR-0005 is accepted with reviewer evidence; M2 stays gated until this is complete",
+]
+
+[[issue]]
+id = "AP-049"
+title = "Qualify a dedicated Linux evaluation host"
+milestone = "M0 Foundations"
+labels = ["P0","security","help wanted"]
+estimate = "1 focused day plus host provisioning"
+plan = "§3.3, §7.1, §10.1, §12"
+depends = []
+context = "The available machine is a macOS development host. Docker Desktop and mock spike results do not establish the plan's Linux execution controls."
+deliverable = "Reproducible Linux host configuration and recorded readiness/control evidence."
+done = [
+  "Maintainer supplies an authorized Linux host and resource budget",
+  "scripts/check_host.sh reports all PASS on Linux; kernel, Docker, image and configuration identities are recorded",
+  "Network denial, proxy-only model access and controller/oracle separation are exercised and limitations recorded",
+  "Host evidence contains no credentials; macOS-only results are labelled development evidence",
+]
+
+[[issue]]
+id = "AP-050"
+title = "Finish Code of Conduct reporting contact and license provenance"
+milestone = "M0 Foundations"
+labels = ["P0","policy","help wanted"]
+estimate = "0.25 focused day plus contact setup"
+plan = "§9.1, §12"
+depends = []
+context = "CODE_OF_CONDUCT.md still requests a dedicated non-personal reporting address. Its attribution says CC BY-SA 4.0 while REUSE.toml assigns CC-BY-4.0."
+deliverable = "A working project reporting contact and consistent source attribution/license metadata."
+done = [
+  "Maintainer supplies and verifies a dedicated non-personal Code of Conduct reporting address",
+  "CODE_OF_CONDUCT.md contains the agreed contact and reporting procedure",
+  "Source attribution and SPDX/REUSE license assignment are reconciled against the actual source terms",
+  "reuse lint passes after provenance updates",
+]
+
+[[issue]]
+id = "AP-051"
+title = "Configure Trusted Publishing and qualify the first offline alpha release"
+milestone = "M1 Offline integrity core"
+labels = ["P0","security","cli"]
+estimate = "1 focused day plus account setup"
+plan = "§8, §9.5, §10.1 (M1), §12 Day 7"
+depends = ["AP-008","AP-003","AP-035","AP-037","AP-002","AP-041","AP-057","AP-058"]
+context = "There is no publishing workflow. The plan requires an offline Phase-1 gate and a 0.1.0a1 release through Trusted Publishing; credentials/account setup are maintainer work."
+deliverable = "Reviewed release workflow, Trusted Publisher registration and documented alpha readiness."
+done = [
+  "A fresh environment runs the credential-free tutorial and independently matches the golden bundle's exact counts",
+  "THR, Bundle and Decision schemas/conformance are exported and checked; malformed or incomplete required evidence cannot seal",
+  "Trusted Publisher is configured with least-privilege OIDC and protected release context",
+  "Build/install and provenance checks pass; authorized alpha publication records PEP 740 attestations and release evidence",
+  "No publication is triggered merely by opening a PR or running ordinary CI",
+  "AP-040's M1 compatibility/version policy is documented and enforced before alpha; its separate M4 migration implementation may remain open",
+]
+
+[[issue]]
+id = "AP-052"
+title = "Sign and verify protocols and evidence bundles with Sigstore"
+milestone = "M2 Calibrated slice"
+labels = ["P0","bundle","security"]
+estimate = "1.5 focused days"
+plan = "§4.2, §4.3, §8; AP-036 M2 follow-up"
+depends = ["AP-036","AP-003","AP-035","AP-037","AP-057"]
+context = "The current bundle seal proves structural byte integrity and explicitly skips V5 signature verification. The unsigned M1 core is complete; signing remains unimplemented."
+deliverable = "Sigstore adapter for protocol and bundle signing with offline verification and declared signer identity policy."
+done = [
+  "Pinned signing/verification dependencies live outside the pure core",
+  "Signed protocols and seals bind the exact canonical bytes and expected signer identity",
+  "Offline verification uses retained verification material and clearly rejects altered bytes, wrong identity and invalid signatures",
+  "Unsigned or missing signatures cannot satisfy a signed-evidence gate; completeness and signature results are distinct",
+  "Public/redacted bundle handling declares completeness and passes secret/redaction checks",
+]
+
+[[issue]]
+id = "AP-053"
+title = "Record the calibrated signed vertical slice and M2 stop/go decision"
+milestone = "M2 Calibrated slice"
+labels = ["P0","bundle","research"]
+estimate = "1 focused day for integration and review"
+plan = "§10.1 M2, §12 Days 10–12, §6.7"
+depends = ["AP-032","AP-048","AP-049","AP-051","AP-011","AP-014","AP-012","AP-013a","AP-015","AP-016","AP-019","AP-052","AP-009","AP-058"]
+context = "The plan's real commitment point is M2. Neither a mock Inspect episode nor an unsigned in-memory bundle satisfies it."
+deliverable = "One reviewed end-to-end live evidence chain and an explicit go / redesign / stop decision."
+done = [
+  "Three fixture pairs have reviewed healthy THRs with all required controls and deterministic reruns",
+  "Difficulty probes are recorded; saturated fixtures are redesigned under new revisions",
+  "An authorized budgeted episode links protocol, system/task identity, model/tool observations, captured submission and controller verdict",
+  "A third party verifies the signed bundle and identical offline re-score without live inference",
+  "Reviewer records isolation, missing-evidence/retry behavior and bounded limitations",
+  "ROADMAP.md records go / redesign / stop; benchmark expansion stays blocked until go",
+  "M0 demand evidence supports go for the current scope, or a reviewed scope/roadmap/backlog amendment implements narrow; rethink blocks go until resolved",
+]
+
+[[issue]]
+id = "AP-054"
+title = "Expose the offline comparison gate through CLI and a GitHub Action"
+milestone = "M3 Benchmark + gate"
+labels = ["P0","cli","stats"]
+estimate = "1 focused day"
+plan = "§3.9, §6.6; AP-037 M3 follow-up"
+depends = ["AP-037","AP-020","AP-008","AP-052","AP-053"]
+context = "AP-037 tracks the pure statistical core. The user-facing compare/gate commands and GitHub Action wrapper remain separate planned work."
+deliverable = "aureproof compare/gate plus a documented Action consuming validated signed bundles and a frozen protocol."
+done = [
+  "CLI outputs pass, fail or inconclusive with interval, margin, counts and per-cluster rationale",
+  "Action documents the treatment of inconclusive and exits consistently without silently treating it as pass",
+  "Low-power, incomplete evidence/adjudication, invalid signatures and protocol mismatches fail closed or remain inconclusive as specified",
+  "Ordinary and fork CI uses saved offline artifacts and makes no provider calls",
+  "End-to-end examples exercise all three outcomes and link their protocol and evidence",
+]
+
+[[issue]]
+id = "AP-055"
+title = "Restore Inspect spike compatibility and run no-cost adapter regressions in CI"
+milestone = "M0 Foundations"
+labels = ["P0","bug","adapter"]
+estimate = "0.5 focused day"
+plan = "§3.3, §6.6; AP-034 compatibility repair"
+depends = ["AP-004","AP-007"]
+context = "spikes/inspect_day2/scorer.py still reads defect['variant'] and focal_negative['anchor']; current labels use variants[] and anchors[]. Calling the actual spike matcher with current authz-001 labels raises KeyError 'variant' for either variant. Normal CI skips the entire Inspect integration module."
+deliverable = "A spike using current contracts/core semantics, plus ordinary no-provider regression coverage."
+done = [
+  "Current authz-001 labels grade the vulnerable positive and repaired focal anchors correctly",
+  "Duplicate, wrong-CWE, empty, refusal and missing-evidence scenarios retain canonical core behavior",
+  "Pure scorer/archive/key-file tests run in ordinary CI without requiring Docker or a provider key",
+  "Optional pinned Inspect + Docker/mockllm lane exercises capture, re-score and bridge readiness with no paid inference",
+  "Spike notes clearly distinguish mocked plumbing from a real Claude Code episode",
+]
+
+[[issue]]
+id = "AP-056"
+title = "Validate task health or the gate on a design partner's own logs"
+milestone = "M4 v0.1.0"
+labels = ["P0","research","help wanted"]
+estimate = "1 focused day plus partner availability"
+plan = "§1.4, §1.6, §14 Demand"
+depends = ["AP-032","AP-053","AP-054"]
+context = "Interview-kit preparation and maintainer demos do not satisfy the release demand gate: at least one external team must try task validation or gating on its own logs."
+deliverable = "Consented partner validation evidence and actionable integration feedback."
+done = [
+  "A design partner runs task validation or the offline gate on their own authorized logs",
+  "Anonymized reproduction steps and outcomes are recorded with permission",
+  "Integration problems are filed and material blockers resolved or transparently scoped",
+  "Evidence distinguishes partner adoption from interviews and invented mock reports; no private logs are published",
+]
+
+[[issue]]
+id = "AP-057"
+title = "Harden untrusted JSON parsing and Evidence Bundle conformance"
+milestone = "M1 Offline integrity core"
+labels = ["P0","bug","bundle","security"]
+estimate = "1 focused day"
+plan = "§4.2, §5.5, §7.1; specs/bundle §5 (V1–V3)"
+depends = ["AP-036","AP-004","AP-007"]
+context = "Audit reproduced uncaught JCS errors for NaN, 9007199254740992 and lone surrogates; a 20,001-byte depth-10,000 submission raises RecursionError. Journal validation hashes Pydantic-normalized Event defaults rather than the recorded raw event, and the builder can seal required-role members marked mandatory=False."
+deliverable = "Bounded deterministic input rejection and interoperable raw-event journal validation; builder invariants enforced before sealing."
+done = [
+  "Malformed or RFC 8785-unrepresentable manifest, seal and journal JSON yields failed validation checks without a controller exception",
+  "Deep submissions below the byte limit produce deterministic invalid_output with bounded processing",
+  "V3 hashes the original canonical event while independently validating its shape; valid omitted-default and nullable-field vectors pass",
+  "Builder rejects invalid manifest/seal metadata and required-role mandatory=False overrides with BundleError",
+  "Every successfully built bundle passes its structural/integrity validator; adversarial regression vectors cover these cases",
+  "Bundle manifest and in-toto seal JSON Schemas are published from the models and checked for drift",
+]
+
+[[issue]]
+id = "AP-058"
+title = "Bind scoring semantics to version identity and validate metric support"
+milestone = "M1 Offline integrity core"
+labels = ["P0","bug","scoring","spec"]
+estimate = "0.5 focused day"
+plan = "§3.7, §5.4, §5.6; specs/scoring §1, §3, §6"
+depends = ["AP-005","AP-004","AP-007"]
+context = "MatcherParams(line_tolerance=100) can change a verdict while it still records matcher_version 0.1.0. MetricRecord(numerator=1, denominator=2, value=100, metric_version='0.1.0', metric='example') currently validates despite contradictory support."
+deliverable = "A reproducible scoring version/profile identity and internally consistent metric records."
+done = [
+  "A matcher version fixes all scoring parameters, or an explicit registered profile/digest records them; unversioned overrides are rejected",
+  "Saved/sealed records retain the effective scoring identity needed for identical offline re-score",
+  "Defined metric values are finite and agree with numerator/denominator using a documented numerical tolerance",
+  "Proportions stay in [0,1]; nonnegative rate metrics may exceed 1; zero denominators remain undefined",
+  "Conformance vectors cover changed parameters, inconsistent values, nonfinite values and valid rate/undefined cases",
+]
+
+[[issue]]
+id = "AP-059"
+title = "Verify every v0.1.0 acceptance gate and publish the qualified release"
+milestone = "M4 v0.1.0"
+labels = ["P0","security","policy"]
+estimate = "0.5 focused day plus publication setup"
+plan = "§1.7, §9.5, §10.1 M4, §14"
+depends = ["AP-022","AP-023","AP-024","AP-025","AP-040","AP-042","AP-043","AP-044","AP-056","AP-050"]
+context = "Release preparation and independent reproduction must finish before final public publication. This issue is the existing M4 exit gate, split from AP-024 to avoid making reproduction depend on an already published release."
+deliverable = "A reviewed acceptance matrix with evidence for every plan §14 gate, followed by the authorized v0.1.0 release."
+done = [
+  "Every §14 acceptance criterion has a linked passing result and a responsible reviewer; unresolved material failures block the tag",
+  "Independent reproduction, design-partner use, task health, discrimination, comparison validity, signed protocol/bundle and recovery evidence are accepted",
+  "Project/package/domain/spec-URI namespace and license/provenance checks are recorded without claiming legal clearance from a name search",
+  "Current provider publication terms and public bundle secret/redaction checks pass",
+  "Default-branch Scorecard >=8 and protected release pipeline checks pass; SBOM, PEP 740 attestations and DOI are published with the authorized release",
+  "Versioned changelog, dataset/spec versions, signed examples and compatibility matrix match the published package",
+  "M4 completion is recorded accurately; later upstream/arXiv work remains tracked separately",
 ]

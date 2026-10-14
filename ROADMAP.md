@@ -21,11 +21,26 @@ Planned total: ~40–55 focused days.
 
 ## Status
 
-M0 in progress. Done: repository foundation, CI and security settings, the
-filed backlog (issues #5–#19), the worked example (fixture pair `authz-001`), and
-the Inspect runner spike (ADR-0002/0003 accepted). Remaining for M0: freezing the primary metric
-and the agent/protocol choice (#5), the live Claude Code episode (#7),
-practitioner interviews (#6), naming a second reviewer (ADR-0005), and the Linux
-host. M1 has started with the draft scoring spec
-([`specs/scoring/scoring.md`](specs/scoring/scoring.md), #9). Details and status:
-[`docs/onboarding-day1.md`](docs/onboarding-day1.md).
+Audited **14 October 2026** against default-branch `ca7a936`, GitHub issues/PRs
+and local checks. **M0 remains open; M1 is partially implemented; M2 has not
+passed.** The unsigned bundle core merged today in PR #30.
+
+Delivered: repository/CI foundation; `authz-001` fixture (#8); accepted Inspect
+and attempt-ownership ADRs from the mock spike; findings/event/submission
+contracts and SARIF (#11); matcher/dispositions/metrics (#15); unsigned bundle
+integrity, journal and in-toto seal (#13). Scoring spec #9 remains draft pending
+human review and unresolved choices.
+
+Next: restore the spike after the label-schema migration (#34), harden core
+input/conformance behavior (#35–#36), freeze the metric/protocol (#5), name a
+reviewer (#31), qualify Linux (#32), finish interviews (#6) and the live spike
+(#7), then complete identity/THR/Decision contracts and the offline CLI. Signed
+evidence and the production runner follow in M2. **#47 records the M2 stop/go
+before benchmark expansion; #66 is the final release gate.**
+
+The expanded backlog has 51 implementation tasks (4 closed, 47 open at audit
+time), with estimates, acceptance criteria and numbered dependencies. See the
+[ordered execution tracker #67](https://github.com/bhargavchintam/aureproof/issues/67)
+and [`docs/project-status.md`](docs/project-status.md) for the full schedule,
+verification evidence and workday-count limitations. These tasks decompose the
+existing plan; v0.2+ remains deferred.
