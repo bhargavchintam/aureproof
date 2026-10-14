@@ -5,7 +5,9 @@ SPDX-License-Identifier: Apache-2.0
 # Day-1 checklist (milestone M0)
 
 From [`aureproof-plan-v2.md`](aureproof-plan-v2.md) §12. Everything that can be
-automated is done; the remaining items need the maintainer.
+automated for the initial foundation is done; the remaining items need the
+maintainer. This is the historical foundation checklist; current project-wide
+progress and work order are in [`project-status.md`](project-status.md).
 
 ## Done
 
@@ -25,11 +27,12 @@ automated is done; the remaining items need the maintainer.
 ## To do (maintainer)
 
 - [ ] **Freeze scope, the primary metric, and the external agent + protocol** in ADRs ([#5](https://github.com/bhargavchintam/aureproof/issues/5), AP-001). This is an M0 issue, and #6 and #9 depend on it.
-- [ ] **Name the second reviewer** in `MAINTAINERS.md` and accept ADR-0005 (blocks the M2 calibration gate).
-- [ ] **Set the Code of Conduct contact**: a dedicated, non-personal address in `CODE_OF_CONDUCT.md`.
+- [ ] **Name the second reviewer** in `MAINTAINERS.md` and accept ADR-0005 (blocks the M2 calibration gate; [#31](https://github.com/bhargavchintam/aureproof/issues/31)).
+- [ ] **Set the Code of Conduct contact** and reconcile license provenance ([#33](https://github.com/bhargavchintam/aureproof/issues/33)).
 - [ ] **Run 3–5 practitioner interviews** with the kit and record the go / narrow decision ([#6](https://github.com/bhargavchintam/aureproof/issues/6)).
-- [ ] **Provision the Linux host** and get all `PASS` from `scripts/check_host.sh`.
+- [ ] **Provision the Linux host** and get all `PASS` from `scripts/check_host.sh` ([#32](https://github.com/bhargavchintam/aureproof/issues/32)).
 - [x] **Day-2 Inspect spike** on `authz-001`: ADR-0002/0003 accepted. Notes: [`research/spike-inspect-day2.md`](research/spike-inspect-day2.md).
-- [ ] **Run the live Claude Code episode** to finish spike check 2 ([#7](https://github.com/bhargavchintam/aureproof/issues/7)): put `ANTHROPIC_API_KEY` in `~/.aureproof-spike.env` (mode 600), then run `uv run --extra inspect python spikes/inspect_day2/live.py`.
-- [ ] **Set up PyPI Trusted Publishing** before the first `0.1.0a1` release (M1).
+- [ ] **Repair and re-run the spike with current labels** ([#34](https://github.com/bhargavchintam/aureproof/issues/34)); the historical mock result predates the label migration.
+- [ ] **Run the authorized, budgeted live Claude Code episode** to finish spike check 2 ([#7](https://github.com/bhargavchintam/aureproof/issues/7)) after its listed dependencies. Follow the spike README's private key-file procedure.
+- [ ] **Set up PyPI Trusted Publishing and qualify the offline alpha** ([#37](https://github.com/bhargavchintam/aureproof/issues/37), M1).
 - [x] **Dependabot PRs** #1–#4 superseded by the grouped #21 (merged); #23 (pydantic 2.14) merged.

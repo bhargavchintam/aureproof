@@ -15,8 +15,10 @@ SPDX-License-Identifier: Apache-2.0
 
 > **Status: pre-alpha (0.0.x), under active construction.** No benchmark
 > result, isolation guarantee, or performance claim is asserted yet. This
-> repository is the Day-1 foundation described in
-> [`docs/aureproof-plan-v2.md`](docs/aureproof-plan-v2.md).
+> repository has the foundation, findings/scoring core, and unsigned bundle
+> integrity core. M0 remains open and M1 is partially implemented; see the
+> [current status and ordered work](docs/project-status.md) and the
+> [implementation plan](docs/aureproof-plan-v2.md).
 
 ## What it does
 
@@ -82,6 +84,7 @@ Install the pre-commit hooks once: `uvx pre-commit install`.
 - [`docs/scope.md`](docs/scope.md) — personas, goals, non-goals
 - [`docs/adr/`](docs/adr/) — architecture decision records
 - [`ROADMAP.md`](ROADMAP.md) — milestones M0–M5
+- [`docs/project-status.md`](docs/project-status.md) — audited progress, effort assumptions, and execution order
 
 ## Contributing
 
