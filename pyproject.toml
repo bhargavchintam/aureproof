@@ -43,7 +43,7 @@ aureproof = "aureproof.cli.main:app"
 inspect = [
     "anthropic>=1.13,<2",
     "inspect-ai==0.3.278",
-    "inspect-swe==0.2.71",
+    "inspect-swe==0.2.72",
 ]
 
 [dependency-groups]
