@@ -58,6 +58,7 @@ def test_versions_and_params_match_the_vectors() -> None:
         "max_locations": V0_1.max_locations,
         "max_findings": V0_1.max_findings,
         "max_bytes": V0_1.max_bytes,
+        "max_depth": V0_1.max_depth,
     } == GOLDEN["params"]
 
 

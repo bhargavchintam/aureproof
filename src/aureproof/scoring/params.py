@@ -7,6 +7,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from aureproof.contracts.findings import MAX_LOCATIONS
+from aureproof.contracts.strict_json import MAX_JSON_DEPTH
 
 MATCHER_VERSION = "0.1.0"
 DISPOSITION_VERSION = "0.1.0"
@@ -22,6 +23,7 @@ class MatcherParams:
     max_locations: int = MAX_LOCATIONS
     max_findings: int = 256
     max_bytes: int = 1_048_576
+    max_depth: int = MAX_JSON_DEPTH
 
 
 V0_1 = MatcherParams()

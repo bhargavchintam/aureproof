@@ -11,9 +11,10 @@ from __future__ import annotations
 from enum import StrEnum
 from typing import Annotated, Any, Literal
 
-from pydantic import Field
+from pydantic import Field, field_validator
 
 from aureproof.contracts._base import BlobRef, Contract, NonEmptyStr, NonNegativeInt, Sha256Hex
+from aureproof.contracts.strict_json import JsonInputError, check_i_json
 
 
 class ObservationSource(StrEnum):
@@ -34,6 +35,17 @@ class Event(Contract):
     causal_ids: list[NonEmptyStr] = Field(default_factory=list)
     payload: dict[str, Any] | None = None
     blob_refs: list[BlobRef] = Field(default_factory=list)
+
+    @field_validator("payload")
+    @classmethod
+    def _canonicalizable(cls, value: dict[str, Any] | None) -> dict[str, Any] | None:
+        """Journal events are sealed in RFC 8785 form: no NaN, infinities, unsafe
+        integers or lone surrogates, never silently converted (issue #35)."""
+        try:
+            check_i_json(value)
+        except JsonInputError as exc:
+            raise ValueError(str(exc)) from exc
+        return value
 
 
 class FindingsSubmission(Contract):

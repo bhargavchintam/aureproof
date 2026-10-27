@@ -12,9 +12,16 @@ import rfc8785
 GENESIS = "sha256:" + "0" * 64
 
 
+class NotCanonicalizable(ValueError):
+    """The value has no RFC 8785 form (NaN, unsafe integer, lone surrogate, ...)."""
+
+
 def canonical_json(value: Any) -> bytes:
     """The single valid byte form of a JSON value (RFC 8785 / JCS)."""
-    return rfc8785.dumps(value)
+    try:
+        return rfc8785.dumps(value)
+    except (rfc8785.CanonicalizationError, TypeError, ValueError) as exc:
+        raise NotCanonicalizable(str(exc)) from exc
 
 
 def sha256_hex(data: bytes) -> str:

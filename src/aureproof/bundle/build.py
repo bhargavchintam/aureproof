@@ -6,9 +6,17 @@ from __future__ import annotations
 
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
-from typing import Literal
+from typing import Any, Literal, get_args
 
-from aureproof.bundle.canonical import GENESIS, canonical_json, digest_ref, sha256_hex
+from pydantic import ValidationError
+
+from aureproof.bundle.canonical import (
+    GENESIS,
+    NotCanonicalizable,
+    canonical_json,
+    digest_ref,
+    sha256_hex,
+)
 from aureproof.bundle.models import (
     BLOB_PREFIX,
     BUNDLE_VERSION,
@@ -19,9 +27,13 @@ from aureproof.bundle.models import (
     RESERVED,
     SEAL,
     STATEMENT_TYPE,
+    Manifest,
+    Predicate,
     Role,
 )
 from aureproof.contracts.events import Event
+
+ROLES = frozenset(get_args(Role))
 
 
 class BundleError(ValueError):
@@ -59,8 +71,11 @@ def journal_bytes(events: Sequence[Event]) -> tuple[bytes, str]:
         if event.seq != seq:
             raise BundleError(f"event seq {event.seq} at position {seq}: seq must be 0, 1, 2, ...")
         body = event.model_dump(mode="json", exclude_none=True)
-        current = entry_hash(seq, prev, body)
-        lines.append(canonical_json({"seq": seq, "prev": prev, "event": body, "hash": current}))
+        try:
+            current = entry_hash(seq, prev, body)
+            lines.append(canonical_json({"seq": seq, "prev": prev, "event": body, "hash": current}))
+        except NotCanonicalizable as exc:
+            raise BundleError(f"event {seq} has no RFC 8785 form: {exc}") from exc
         prev = current
     return b"".join(line + b"\n" for line in lines), prev
 
@@ -81,6 +96,12 @@ def build_bundle(
         path = BLOB_PREFIX + sha256_hex(blob)
         entries[path] = Member(path, blob, "blob", "application/octet-stream")
     for member in members:
+        if member.role not in ROLES:
+            raise BundleError(f"{member.path}: unknown role {member.role!r}")
+        if member.role in MANDATORY_ROLES and member.mandatory is False:
+            raise BundleError(f"{member.path}: role {member.role!r} is mandatory evidence")
+        if not member.media_type:
+            raise BundleError(f"{member.path}: media_type must not be empty")
         if member.path in RESERVED or member.path == JOURNAL or member.path.startswith(BLOB_PREFIX):
             raise BundleError(f"{member.path} is a reserved path")
         if not valid_path(member.path):
@@ -112,21 +133,34 @@ def build_bundle(
             for m in sorted(entries.values(), key=lambda m: m.path.encode())
         ],
     }
-    manifest_bytes = canonical_json(manifest)
+    predicate: dict[str, Any] = {
+        "bundle_version": BUNDLE_VERSION,
+        "event_count": len(events),
+        "journal_head": head,
+        "completeness": completeness,
+        "versions": dict(versions),
+        "generator": dict(generator),
+    }
+    try:
+        Manifest.model_validate(manifest)
+        Predicate.model_validate(predicate)
+        manifest_bytes = canonical_json(manifest)
+    except (ValidationError, NotCanonicalizable) as exc:
+        raise BundleError(f"invalid manifest or seal metadata: {exc}") from exc
     seal = {
         "_type": STATEMENT_TYPE,
         "subject": [{"name": MANIFEST, "digest": {"sha256": sha256_hex(manifest_bytes)}}],
         "predicateType": PREDICATE_TYPE,
-        "predicate": {
-            "bundle_version": BUNDLE_VERSION,
-            "event_count": len(events),
-            "journal_head": head,
-            "completeness": completeness,
-            "versions": dict(versions),
-            "generator": dict(generator),
-        },
+        "predicate": predicate,
     }
     files = {m.path: m.data for m in entries.values()}
     files[MANIFEST] = manifest_bytes
     files[SEAL] = canonical_json(seal)
+
+    # Defense in depth: never hand back a bundle that fails its own validator.
+    from aureproof.bundle.validate import validate
+
+    report = validate(files)
+    if not report.valid:  # pragma: no cover - would indicate a builder/validator mismatch
+        raise BundleError("built bundle fails validation: " + "; ".join(report.problems()))
     return files

@@ -76,6 +76,7 @@ Lines are 1-based and inclusive. The schema is generated from `aureproof.contrac
 | `max_locations` | 4 | Locations per finding |
 | `max_findings` | 256 | Findings per submission |
 | `max_bytes` | 1,048,576 | Submission size |
+| `max_depth` | 32 | JSON nesting depth, checked by a linear scan before parsing (issue #35) |
 
 The task instruction MUST state `max_locations`, `max_findings` and `max_bytes` to the agent. Until it does, these limits are provisional: see open question Q5.
 
@@ -172,6 +173,7 @@ When a submission is present, it is parsed as **strict JSON** (RFC 8259). It is 
 - it is larger than `max_bytes`;
 - it fails to parse;
 - it contains duplicate object keys or the non-standard values `NaN` or `Infinity`;
+- it is nested deeper than `max_depth` (checked before parsing, so the cost is linear in the size);
 - its top-level value is not an array;
 - the array holds more than `max_findings` entries.
 
@@ -248,7 +250,7 @@ Adjudication itself is AP-038. Here is how it affects scoring:
 [`conformance/scoring/v0.1/golden.json`](../../conformance/scoring/v0.1/golden.json) holds:
 
 - the synthetic label set `g1` and its `agent_view`;
-- 41 single-episode cases (`G-01`…`G-41`);
+- 42 single-episode cases (`G-01`…`G-42`);
 - 3 cohort metric cases (`C-01`, `C-02`, `S-01`).
 
 They were written **before** the matcher. They were cross-checked against an independent throwaway implementation of this document. A mutation pass then confirmed that changing any single rule fails at least one vector. The tolerance boundary, crediting, tie-breaks, role requirements, scope semantics, disposition order and the graded set were each covered. AP-007 (#15) MUST pass all of them. A rule change that changes any expected outcome bumps the version and regenerates the vectors in a reviewed PR.
@@ -267,7 +269,7 @@ They were written **before** the matcher. They were cross-checked against an ind
 | 10 cross-file source only | G-15 |
 | 11 alternate accepted CWE | G-18 |
 | 12 empty list | G-25, C-02 |
-| 13 malformed JSON | G-26, G-27, G-28 |
+| 13 malformed JSON | G-26, G-27, G-28 (G-42: nesting deeper than `max_depth`) |
 | 14 refusal | G-30 (G-31: refusal with findings) |
 | 15 infrastructure failure | G-32 |
 | 16 missing mandatory evidence | G-33 |

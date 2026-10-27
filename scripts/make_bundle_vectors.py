@@ -18,7 +18,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
-from aureproof.bundle import Member, build_bundle, canonical_json, digest_ref
+from aureproof.bundle import GENESIS, Member, build_bundle, canonical_json, digest_ref, sha256_hex
 from aureproof.contracts import Event
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -119,6 +119,55 @@ def _seal_with(files: Files, **predicate: Any) -> bytes:
     return canonical_json(seal)
 
 
+def _reseal_with_raw_events(files: Files, raw_events: list[dict[str, Any]]) -> Files:
+    """A producer that records events verbatim (e.g. omitting defaults or using
+    explicit nulls). V3 must hash exactly these bytes (issue #35)."""
+    lines, prev = [], GENESIS
+    for seq, event in enumerate(raw_events):
+        current = digest_ref({"seq": seq, "prev": prev, "event": event})
+        lines.append(canonical_json({"seq": seq, "prev": prev, "event": event, "hash": current}))
+        prev = current
+    journal = b"".join(line + b"\n" for line in lines)
+    manifest = json.loads(files["manifest.json"])
+    for member in manifest["members"]:
+        if member["path"] == "journal.jsonl":
+            member["sha256"], member["size"] = sha256_hex(journal), len(journal)
+    manifest_bytes = canonical_json(manifest)
+    seal = json.loads(files["seal.intoto.json"])
+    seal["subject"][0]["digest"]["sha256"] = sha256_hex(manifest_bytes)
+    seal["predicate"]["event_count"], seal["predicate"]["journal_head"] = len(raw_events), prev
+    return {
+        **files,
+        "journal.jsonl": journal,
+        "manifest.json": manifest_bytes,
+        "seal.intoto.json": canonical_json(seal),
+    }
+
+
+RAW_EVENTS = [
+    # Omitted defaults: no causal_ids, blob_refs or payload.
+    {
+        "seq": 0,
+        "episode_id": "ep",
+        "actor": "runner",
+        "kind": "episode_planned",
+        "observation_source": "controller_observed",
+    },
+    # Explicit nulls for nullable fields.
+    {
+        "seq": 1,
+        "episode_id": "ep",
+        "attempt_id": None,
+        "actor": "runner",
+        "kind": "note",
+        "observation_source": "agent_reported",
+        "payload": None,
+        "causal_ids": [],
+        "blob_refs": [],
+    },
+]
+
+
 MUTATIONS: dict[str, tuple[str, list[str], Callable[[Files], Files]]] = {
     "tampered-member": (
         "One byte of verdicts.json changed after sealing.",
@@ -211,6 +260,36 @@ MUTATIONS: dict[str, tuple[str, list[str], Callable[[Files], Files]]] = {
         ["V1", "V2"],
         lambda f: {**f, "../escape.json": b"{}"},
     ),
+    "manifest-nan": (
+        "manifest.json holds NaN (no RFC 8785 form).",
+        ["V1", "V6"],
+        lambda f: {**f, "manifest.json": b'{"bundle_version":"0.1","members":NaN}'},
+    ),
+    "seal-unsafe-integer": (
+        "Seal event_count is 2^53, outside the I-JSON safe range.",
+        ["V1"],
+        lambda f: {
+            **f,
+            "seal.intoto.json": f["seal.intoto.json"].replace(
+                b'"event_count":4', b'"event_count":9007199254740992'
+            ),
+        },
+    ),
+    "seal-lone-surrogate": (
+        "Seal string with a lone surrogate escape.",
+        ["V1"],
+        lambda f: {
+            **f,
+            "seal.intoto.json": f["seal.intoto.json"].replace(
+                b'"name":"aureproof"', b'"name":"\\ud800"'
+            ),
+        },
+    ),
+    "deep-journal-line": (
+        "A journal line nested 10,000 deep (bounded rejection).",
+        ["V2", "V3"],
+        lambda f: {**f, "journal.jsonl": b"[" * 10_000 + b"]" * 10_000 + b"\n"},
+    ),
 }
 
 
@@ -226,6 +305,11 @@ def vectors() -> dict[str, dict[str, Any]]:
             "expected_failed_checks": [],
             "files": _encode(base),
         }
+    }
+    out["valid/raw-event-defaults"] = {
+        "description": "Journal events recorded verbatim: omitted defaults and explicit nulls.",
+        "expected_failed_checks": [],
+        "files": _encode(_reseal_with_raw_events(base, RAW_EVENTS)),
     }
     for name, (description, failed, mutate) in MUTATIONS.items():
         out[f"invalid/{name}"] = {
