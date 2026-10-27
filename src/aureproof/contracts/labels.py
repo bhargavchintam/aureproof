@@ -82,6 +82,7 @@ class LabelSet(Contract):
     task_revision: NonEmptyStr | None = None
     cluster_id: NonEmptyStr | None = None
     canary: NonEmptyStr | None = None
+    oracle_canary: NonEmptyStr | None = None  # evaluator-only leak marker (#45)
     note: str | None = None
     agent_view: dict[Variant, dict[str, NonNegativeInt]] | None = None
     defects: list[Defect]

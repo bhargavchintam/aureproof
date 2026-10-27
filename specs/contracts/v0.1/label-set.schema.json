@@ -318,6 +318,19 @@
       "default": null,
       "title": "Note"
     },
+    "oracle_canary": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Oracle Canary"
+    },
     "reviewed_negative_scope": {
       "items": {
         "$ref": "#/$defs/ScopeEntry"

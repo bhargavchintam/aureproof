@@ -70,7 +70,7 @@
     },
     "labels": {
       "path": "fixtures/oracles/authz-001/labels.json",
-      "sha256": "2efadf1a8787515e9c021e5f3762406bfe51503d3150c8e42037c799485066ce"
+      "sha256": "fa84939d029877e806a86ef14f9165352f596e40e76a05a49a77ec1d67b8d307"
     }
   }
 }
