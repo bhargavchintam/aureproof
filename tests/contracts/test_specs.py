@@ -73,7 +73,7 @@ def _system() -> dict[str, Any]:
         lambda s: s["models"]["main"].update(model="claude-sonnet-5-5"),
         lambda s: s["models"]["main"]["provider_identity"].update(model_snapshot="2026-10-01"),
         lambda s: s.update(hosted_tools="web-search"),
-        lambda s: s["settings"].update(retry_refusals=1),
+        lambda s: s["settings"].update(effort="high"),
         lambda s: s["prompts"].update(instruction="0" * 64),
         lambda s: s.update(tools=["Bash", "Read"]),
         lambda s: s["runner"].update(version="0.3.284"),

@@ -159,6 +159,21 @@ class SystemSpec(Contract):
             raise ValueError("an external subject runs in native-capability mode (ADR-0007)")
         if self.subject.kind == "reference" and self.interface_mode != "controlled-interface":
             raise ValueError("the reference subject runs in controlled-interface mode (ADR-0007)")
+        # Never retry to bypass a provider safeguard (plan §7.4): a refusal is recorded
+        # as safety_refusal, not retried away.
+        if self.settings.get("retry_refusals") not in (None, 0):
+            raise ValueError("retry_refusals must be 0: refusals are never retried (plan §7.4)")
+        if self.subject.scaffold.startswith("inspect_swe."):
+            # inspect_swe defaults retry refusals and crashes 3 times and enable web search.
+            for key in ("retry_refusals", "retry_uncaught_errors"):
+                if self.settings.get(key) != 0:
+                    raise ValueError(f"inspect_swe subjects must set {key}=0 explicitly (ADR-0007)")
+            disallowed = self.settings.get("disallowed_tools")
+            withheld = set(disallowed) if isinstance(disallowed, list) else set()
+            if self.hosted_tools == "closed-world" and not {"WebSearch", "WebFetch"} <= withheld:
+                raise ValueError(
+                    "closed-world inspect_swe subjects must disallow WebSearch and WebFetch"
+                )
         return self
 
     @property
