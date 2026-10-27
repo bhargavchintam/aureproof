@@ -18,8 +18,8 @@ import sys
 from pathlib import Path
 
 from aureproof.bundle import schema as bundle_schema
+from aureproof.contracts import decision_schema, thr_schema
 from aureproof.contracts import schema as contract_schema
-from aureproof.contracts import thr_schema
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -31,7 +31,7 @@ def main() -> int:
 
     wanted: dict[Path, str] = {}
     existing: set[Path] = set()
-    for module in (contract_schema, bundle_schema, thr_schema):
+    for module in (contract_schema, bundle_schema, thr_schema, decision_schema):
         out_dir = ROOT / module.SCHEMA_DIR
         existing |= set(out_dir.glob("*.schema.json")) if out_dir.exists() else set()
         for name, schema in module.export_schemas().items():
