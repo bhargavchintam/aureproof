@@ -1,0 +1,298 @@
+{
+  "$defs": {
+    "Budget": {
+      "additionalProperties": false,
+      "description": "Per-episode limits (ADR-0007 defaults: 400k tokens, 15 minutes, 1 attempt).",
+      "properties": {
+        "max_attempts": {
+          "const": 1,
+          "default": 1,
+          "title": "Max Attempts",
+          "type": "integer"
+        },
+        "max_seconds": {
+          "default": 900,
+          "minimum": 1,
+          "title": "Max Seconds",
+          "type": "integer"
+        },
+        "max_tokens": {
+          "default": 400000,
+          "minimum": 1,
+          "title": "Max Tokens",
+          "type": "integer"
+        }
+      },
+      "title": "Budget",
+      "type": "object"
+    },
+    "JsonValue": {},
+    "ModelBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "model": {
+          "minLength": 1,
+          "title": "Model",
+          "type": "string"
+        },
+        "protocol": {
+          "enum": [
+            "anthropic-messages",
+            "openai-responses",
+            "openai-chat",
+            "inspect"
+          ],
+          "title": "Protocol",
+          "type": "string"
+        },
+        "provider": {
+          "minLength": 1,
+          "title": "Provider",
+          "type": "string"
+        },
+        "provider_identity": {
+          "$ref": "#/$defs/ProviderIdentity"
+        }
+      },
+      "required": [
+        "provider",
+        "model",
+        "protocol",
+        "provider_identity"
+      ],
+      "title": "ModelBinding",
+      "type": "object"
+    },
+    "ProviderIdentity": {
+      "additionalProperties": false,
+      "description": "Identity fields a hosted provider may or may not return. Every field is\nrequired; ``None`` records 'not returned' explicitly instead of omitting it.",
+      "properties": {
+        "api_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Api Version"
+        },
+        "endpoint": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Endpoint"
+        },
+        "model_snapshot": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Model Snapshot"
+        },
+        "region": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Region"
+        }
+      },
+      "required": [
+        "model_snapshot",
+        "api_version",
+        "endpoint",
+        "region"
+      ],
+      "title": "ProviderIdentity",
+      "type": "object"
+    },
+    "Runner": {
+      "additionalProperties": false,
+      "properties": {
+        "adapter_revision": {
+          "minLength": 1,
+          "title": "Adapter Revision",
+          "type": "string"
+        },
+        "name": {
+          "enum": [
+            "inspect",
+            "harbor",
+            "docker"
+          ],
+          "title": "Name",
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "adapter_revision"
+      ],
+      "title": "Runner",
+      "type": "object"
+    },
+    "Subject": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "external",
+            "reference",
+            "baseline"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "name": {
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "scaffold": {
+          "minLength": 1,
+          "title": "Scaffold",
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "name",
+        "version",
+        "scaffold"
+      ],
+      "title": "Subject",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Everything that can change an agent's behavior. Any change \u2192 new identity.",
+  "properties": {
+    "budget": {
+      "$ref": "#/$defs/Budget",
+      "default": {
+        "max_attempts": 1,
+        "max_seconds": 900,
+        "max_tokens": 400000
+      }
+    },
+    "hosted_tools": {
+      "enum": [
+        "closed-world",
+        "web-search"
+      ],
+      "title": "Hosted Tools",
+      "type": "string"
+    },
+    "interface_mode": {
+      "enum": [
+        "native-capability",
+        "controlled-interface"
+      ],
+      "title": "Interface Mode",
+      "type": "string"
+    },
+    "memory": {
+      "minLength": 1,
+      "title": "Memory",
+      "type": "string"
+    },
+    "models": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ModelBinding"
+      },
+      "minProperties": 1,
+      "propertyNames": {
+        "minLength": 1
+      },
+      "title": "Models",
+      "type": "object"
+    },
+    "prompts": {
+      "additionalProperties": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "propertyNames": {
+        "minLength": 1
+      },
+      "title": "Prompts",
+      "type": "object"
+    },
+    "runner": {
+      "$ref": "#/$defs/Runner"
+    },
+    "settings": {
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      },
+      "propertyNames": {
+        "minLength": 1
+      },
+      "title": "Settings",
+      "type": "object"
+    },
+    "subject": {
+      "$ref": "#/$defs/Subject"
+    },
+    "telemetry": {
+      "additionalProperties": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "propertyNames": {
+        "minLength": 1
+      },
+      "title": "Telemetry",
+      "type": "object"
+    },
+    "tools": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "title": "Tools",
+      "type": "array"
+    }
+  },
+  "required": [
+    "subject",
+    "interface_mode",
+    "hosted_tools",
+    "models",
+    "prompts",
+    "tools",
+    "memory",
+    "settings",
+    "runner",
+    "telemetry"
+  ],
+  "title": "SystemSpec",
+  "type": "object"
+}

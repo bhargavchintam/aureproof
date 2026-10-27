@@ -1,0 +1,158 @@
+{
+  "$defs": {
+    "AgentView": {
+      "additionalProperties": false,
+      "description": "What the agent sees for one variant: a fixture directory, by content.",
+      "properties": {
+        "files": {
+          "items": {
+            "$ref": "#/$defs/FileDigest"
+          },
+          "minItems": 1,
+          "title": "Files",
+          "type": "array"
+        },
+        "instruction": {
+          "$ref": "#/$defs/FileDigest"
+        },
+        "root": {
+          "minLength": 1,
+          "pattern": "^(?!/)(?!.*\\\\)(?!(.*/)?\\.{1,2}(/|$)).+$",
+          "title": "Root",
+          "type": "string"
+        }
+      },
+      "required": [
+        "root",
+        "instruction",
+        "files"
+      ],
+      "title": "AgentView",
+      "type": "object"
+    },
+    "Budget": {
+      "additionalProperties": false,
+      "description": "Per-episode limits (ADR-0007 defaults: 400k tokens, 15 minutes, 1 attempt).",
+      "properties": {
+        "max_attempts": {
+          "const": 1,
+          "default": 1,
+          "title": "Max Attempts",
+          "type": "integer"
+        },
+        "max_seconds": {
+          "default": 900,
+          "minimum": 1,
+          "title": "Max Seconds",
+          "type": "integer"
+        },
+        "max_tokens": {
+          "default": 400000,
+          "minimum": 1,
+          "title": "Max Tokens",
+          "type": "integer"
+        }
+      },
+      "title": "Budget",
+      "type": "object"
+    },
+    "FileDigest": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "minLength": 1,
+          "pattern": "^(?!/)(?!.*\\\\)(?!(.*/)?\\.{1,2}(/|$)).+$",
+          "title": "Path",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "title": "FileDigest",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "agent_views": {
+      "additionalProperties": {
+        "$ref": "#/$defs/AgentView"
+      },
+      "propertyNames": {
+        "enum": [
+          "vulnerable",
+          "repaired"
+        ]
+      },
+      "title": "Agent Views",
+      "type": "object"
+    },
+    "budget": {
+      "$ref": "#/$defs/Budget",
+      "default": {
+        "max_attempts": 1,
+        "max_seconds": 900,
+        "max_tokens": 400000
+      }
+    },
+    "canary_id": {
+      "minLength": 1,
+      "title": "Canary Id",
+      "type": "string"
+    },
+    "cluster_id": {
+      "minLength": 1,
+      "title": "Cluster Id",
+      "type": "string"
+    },
+    "dataset_id": {
+      "minLength": 1,
+      "title": "Dataset Id",
+      "type": "string"
+    },
+    "dataset_revision": {
+      "minLength": 1,
+      "title": "Dataset Revision",
+      "type": "string"
+    },
+    "family": {
+      "const": "security-discovery",
+      "title": "Family",
+      "type": "string"
+    },
+    "labels": {
+      "$ref": "#/$defs/FileDigest"
+    },
+    "task_id": {
+      "minLength": 1,
+      "title": "Task Id",
+      "type": "string"
+    },
+    "task_revision": {
+      "minLength": 1,
+      "title": "Task Revision",
+      "type": "string"
+    }
+  },
+  "required": [
+    "task_id",
+    "task_revision",
+    "dataset_id",
+    "dataset_revision",
+    "family",
+    "cluster_id",
+    "canary_id",
+    "agent_views",
+    "labels"
+  ],
+  "title": "TaskSpec",
+  "type": "object"
+}

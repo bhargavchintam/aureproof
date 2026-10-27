@@ -47,6 +47,12 @@ public API and the specs may change between minor versions).
   export and import with a property-based round-trip test, generated JSON Schema
   2020-12 files in `specs/contracts/v0.1/` with a drift check, and conformance
   vectors checked against both the models and the schemas.
+- Task, system, episode and attempt contracts (issue #10): `TaskSpec`, `SystemSpec`,
+  `EpisodeSpec` and `AttemptRecord`, with content-derived identities (RFC 8785
+  digests). Provider identity fields are explicit, episode and attempt IDs are
+  bound before dispatch, and the agent view and labels are kept apart. Includes
+  JSON Schemas and 26 conformance vectors, among them a real `authz-001`
+  `TaskSpec`.
 - The v0.1 oracle (`aureproof.scoring`, issue #15): a pure, deterministic label
   matcher (rules M1–M9), strict submission parsing, the episode disposition
   decision list, and cohort metrics with explicit support. All 44 golden vectors

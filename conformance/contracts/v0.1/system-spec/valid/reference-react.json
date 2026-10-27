@@ -1,0 +1,42 @@
+{
+  "description": "Reference subject, controlled-interface.",
+  "instance": {
+    "subject": {
+      "kind": "reference",
+      "name": "inspect_react",
+      "version": "0.3.283",
+      "scaffold": "inspect_ai.agent.react"
+    },
+    "interface_mode": "controlled-interface",
+    "hosted_tools": "closed-world",
+    "models": {
+      "main": {
+        "provider": "anthropic",
+        "model": "claude-haiku-4-5-20251001",
+        "protocol": "anthropic-messages",
+        "provider_identity": {
+          "model_snapshot": null,
+          "api_version": "2023-06-01",
+          "endpoint": null,
+          "region": null
+        }
+      }
+    },
+    "prompts": {
+      "instruction": "e72b38a2805b60d77f70dd8340c33a8851f47ecd51801fb1c6a4ca491926acbc"
+    },
+    "tools": [
+      "bash"
+    ],
+    "memory": "none",
+    "settings": {},
+    "runner": {
+      "name": "inspect",
+      "version": "0.3.283",
+      "adapter_revision": "spike-0.1"
+    },
+    "telemetry": {
+      "inspect_sharing": "off"
+    }
+  }
+}

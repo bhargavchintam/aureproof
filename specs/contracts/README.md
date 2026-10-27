@@ -25,6 +25,17 @@ uv run python scripts/export_schemas.py --check   # CI-style drift check
 | `metric-record.schema.json` | A metric with its numerator and denominator (§6) |
 | `event.schema.json` | An evidence event with its `observation_source` trust tier |
 | `submission.schema.json` | Captured submission by digest (`findings`, or `poc_ref`, never executed in v0.1) |
+| `task-spec.schema.json` | A task by content: revisions, agent views (file digests), evaluator-only label reference, cluster, canary, budget |
+| `system-spec.schema.json` | Everything that can change agent behavior: subject, interface mode, hosted tools, models with explicit provider identity, prompts, tools, settings, runner, telemetry, budget |
+| `episode-spec.schema.json` | Task × variant × system × protocol × repetition, with an `episode_id` derived from those bindings |
+| `attempt-record.schema.json` | One runner dispatch owned by Aureproof (ADR-0003) |
+
+**Identities are content-derived** (issue #10). `TaskSpec.identity` and `SystemSpec.identity` are the
+`sha256:` digests of the record's RFC 8785 canonical JSON. Any change to a revision, a file, a
+model, a prompt, a tool, a setting, the runner or the budget therefore produces a new identity.
+Provider identity fields are required and nullable: `null` records *not returned by the provider*,
+instead of silently omitting the field. `episode_id` is derived from its bindings, and `attempt_id` is
+`<episode_id>/a<n>`, so both are fixed before dispatch and checked when a record is loaded.
 
 **Schemas are necessary, not sufficient.** The models also enforce two rules
 that JSON Schema can't express: `end_line ≥ start_line`, and rejecting

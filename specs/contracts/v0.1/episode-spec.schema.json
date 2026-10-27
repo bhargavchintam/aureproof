@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The stable scheduled unit: task x variant x system x protocol x repetition.",
+  "properties": {
+    "episode_id": {
+      "minLength": 1,
+      "title": "Episode Id",
+      "type": "string"
+    },
+    "protocol": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Protocol",
+      "type": "string"
+    },
+    "repetition": {
+      "minimum": 0,
+      "title": "Repetition",
+      "type": "integer"
+    },
+    "system": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "System",
+      "type": "string"
+    },
+    "task": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Task",
+      "type": "string"
+    },
+    "variant": {
+      "enum": [
+        "vulnerable",
+        "repaired"
+      ],
+      "title": "Variant",
+      "type": "string"
+    }
+  },
+  "required": [
+    "task",
+    "variant",
+    "system",
+    "protocol",
+    "repetition",
+    "episode_id"
+  ],
+  "title": "EpisodeSpec",
+  "type": "object"
+}
