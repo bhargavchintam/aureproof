@@ -1,0 +1,157 @@
+{
+  "description": "A control that did not run cannot be called healthy.",
+  "instance": {
+    "thr_version": "0.1",
+    "task": {
+      "task_id": "authz-001",
+      "task_revision": "0.1.0",
+      "task_identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "environment": {
+      "runner": "inspect",
+      "runner_version": "0.3.283",
+      "image_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "platform": "linux/amd64"
+    },
+    "scoring_identity": "sha256:512fa1e98bb368ad6f60639518041beed77f982664827b242d3f49114c1616f0",
+    "controls": [
+      {
+        "kind": "label_lint",
+        "variant": null,
+        "input_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "expected": [],
+        "observed": [],
+        "passed": true,
+        "run_ids": [
+          "r1"
+        ]
+      },
+      {
+        "kind": "reference_positive",
+        "variant": "vulnerable",
+        "input_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "expected": {
+          "credited": [
+            "authz-001-d1"
+          ]
+        },
+        "observed": {
+          "credited": [
+            "authz-001-d1"
+          ]
+        },
+        "passed": true,
+        "run_ids": [
+          "r1"
+        ]
+      },
+      {
+        "kind": "repaired_negative",
+        "variant": "repaired",
+        "input_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "expected": "refuted",
+        "observed": "refuted",
+        "passed": true,
+        "run_ids": [
+          "r1"
+        ]
+      },
+      {
+        "kind": "nop",
+        "variant": "vulnerable",
+        "input_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "expected": {
+          "recall": 0
+        },
+        "observed": {
+          "recall": 0
+        },
+        "passed": null,
+        "run_ids": [
+          "r1"
+        ]
+      },
+      {
+        "kind": "spray_cheat",
+        "variant": "vulnerable",
+        "input_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "expected": {
+          "recall_at_least": 1,
+          "yield_at_most": 0.05
+        },
+        "observed": {
+          "recall": 1,
+          "yield": 0.02
+        },
+        "passed": true,
+        "run_ids": [
+          "r1"
+        ]
+      },
+      {
+        "kind": "malformed",
+        "variant": "vulnerable",
+        "input_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "expected": "invalid_output",
+        "observed": "invalid_output",
+        "passed": true,
+        "run_ids": [
+          "r1"
+        ]
+      },
+      {
+        "kind": "calibration_poc",
+        "variant": "vulnerable",
+        "input_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "expected": {
+          "vulnerable": "triggered",
+          "repaired": "not_triggered"
+        },
+        "observed": {
+          "vulnerable": "triggered",
+          "repaired": "not_triggered"
+        },
+        "passed": true,
+        "run_ids": [
+          "r1"
+        ]
+      }
+    ],
+    "determinism": {
+      "rerun_ids": [
+        "r2"
+      ],
+      "reproduced": true
+    },
+    "difficulty_probe": {
+      "bandit": {
+        "probe": "bandit",
+        "system_identity": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "solved": false,
+        "detail": "no B-rule fires on a missing check"
+      },
+      "single_shot_model": null
+    },
+    "status": "healthy",
+    "status_reason": "all required controls pass and reproduce",
+    "known_limits": [
+      "single-file Python only"
+    ],
+    "reviewed_by": [
+      {
+        "name": "Fixture author",
+        "role": "author"
+      },
+      {
+        "name": "Independent reviewer",
+        "role": "independent_reviewer"
+      }
+    ],
+    "frozen_at": "2026-10-27T12:00:00Z",
+    "canary_id": "7effd90b-bc48-4bf8-ab0b-72dfff0d0f97",
+    "provenance": {
+      "authorship": "self-authored",
+      "license": "CC-BY-4.0"
+    }
+  }
+}
