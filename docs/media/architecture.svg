@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 410" width="1000" height="410" role="img" aria-labelledby="title desc">
+  <title id="title">How Aureproof certifies an AI-agent evaluation</title>
+  <desc id="desc">An agent evaluation run passes through three checks: a per-task health record that proves the grader works, a signed and re-scorable evidence bundle, and a pre-registered regression gate that returns pass, fail or inconclusive.</desc>
+  <style>
+    :root {
+      --card: #ffffff; --stroke: #d0d7de; --title: #1f2328; --text: #59636e;
+      --accent: #8250df; --accent-soft: #fbefff; --wire: #8c959f;
+      --pass: #1a7f37; --fail: #cf222e; --inc: #9a6700;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --card: #161b22; --stroke: #30363d; --title: #e6edf3; --text: #9198a1;
+        --accent: #a371f7; --accent-soft: #271c3d; --wire: #6e7681;
+        --pass: #3fb950; --fail: #f85149; --inc: #d29922;
+      }
+    }
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+    .card { fill: var(--card); stroke: var(--stroke); stroke-width: 1.5; }
+    .step { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; }
+    .num { fill: var(--accent); font-size: 15px; font-weight: 700; }
+    .kicker { fill: var(--accent); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; }
+    .title { fill: var(--title); font-size: 17px; font-weight: 700; }
+    .body { fill: var(--text); font-size: 13px; }
+    .wire { stroke: var(--wire); stroke-width: 2; fill: none; stroke-dasharray: 6 6; animation: flow 1.2s linear infinite; }
+    .token { fill: var(--accent); }
+    .pill { fill: none; stroke-width: 1.8; }
+    .pill-text { font-size: 13px; font-weight: 700; letter-spacing: 0.04em; }
+    .note { fill: var(--text); font-size: 12px; font-style: italic; }
+    @keyframes flow { to { stroke-dashoffset: -12; } }
+  </style>
+
+  <!-- connectors and the travelling token sit under the cards, so the token shows only between them -->
+  <path class="wire" d="M150 180 H195 M435 180 H470 M710 180 H745 M865 312 V340"/>
+  <circle class="token" r="6">
+    <animateMotion dur="5s" repeatCount="indefinite" path="M150 180 H865 V342" keyPoints="0;1" keyTimes="0;1" calcMode="linear"/>
+  </circle>
+
+  <!-- the run -->
+  <rect class="card" x="12" y="128" width="138" height="104" rx="12"/>
+  <text class="kicker" x="81" y="160" text-anchor="middle">YOUR RUN</text>
+  <text class="title" x="81" y="186" text-anchor="middle">Agent eval</text>
+  <text class="body" x="81" y="208" text-anchor="middle">Inspect AI today,</text>
+  <text class="body" x="81" y="224" text-anchor="middle">Harbor next</text>
+
+  <!-- 1 · the instrument -->
+  <rect class="card" x="195" y="40" width="240" height="272" rx="14"/>
+  <circle class="step" cx="227" cy="76" r="16"/>
+  <text class="num" x="227" y="81" text-anchor="middle">1</text>
+  <text class="kicker" x="252" y="72">THE INSTRUMENT</text>
+  <text class="title" x="252" y="92">Task health record</text>
+  <text class="body" x="215" y="134">The grader has to prove it works</text>
+  <text class="body" x="215" y="152">before a task may count:</text>
+  <text class="body" x="227" y="182">· reference-positive passes</text>
+  <text class="body" x="227" y="202">· repaired-negative fails</text>
+  <text class="body" x="227" y="222">· no-op scores nothing</text>
+  <text class="body" x="227" y="242">· anti-cheat controls hold</text>
+  <text class="body" x="215" y="282">Tasks that fail are excluded.</text>
+
+  <!-- 2 · the record -->
+  <rect class="card" x="470" y="40" width="240" height="272" rx="14"/>
+  <circle class="step" cx="502" cy="76" r="16"/>
+  <text class="num" x="502" y="81" text-anchor="middle">2</text>
+  <text class="kicker" x="527" y="72">THE RECORD</text>
+  <text class="title" x="527" y="92">Evidence bundle</text>
+  <text class="body" x="490" y="134">A signed record of the whole run:</text>
+  <text class="body" x="502" y="164">· content-addressed artifacts</text>
+  <text class="body" x="502" y="184">· a hash-chained journal</text>
+  <text class="body" x="502" y="204">· an in-toto statement</text>
+  <text class="body" x="502" y="224">· a Sigstore signature</text>
+  <text class="body" x="490" y="264">Anyone can verify and re-score it</text>
+  <text class="body" x="490" y="282">offline.</text>
+
+  <!-- 3 · the decision -->
+  <rect class="card" x="745" y="40" width="240" height="272" rx="14"/>
+  <circle class="step" cx="777" cy="76" r="16"/>
+  <text class="num" x="777" y="81" text-anchor="middle">3</text>
+  <text class="kicker" x="802" y="72">THE DECISION</text>
+  <text class="title" x="802" y="92">Pre-registered gate</text>
+  <text class="body" x="765" y="134">The pass/fail rule is fixed before</text>
+  <text class="body" x="765" y="152">the run, with cluster-aware</text>
+  <text class="body" x="765" y="170">statistics.</text>
+  <text class="body" x="765" y="206">A result the data cannot support</text>
+  <text class="body" x="765" y="224">is reported as inconclusive,</text>
+  <text class="body" x="765" y="242">not as a win.</text>
+
+  <!-- outcomes -->
+  <rect class="pill" x="709" y="346" width="74" height="30" rx="15" style="stroke: var(--pass)"/>
+  <text class="pill-text" x="746" y="366" text-anchor="middle" style="fill: var(--pass)">PASS</text>
+  <rect class="pill" x="793" y="346" width="70" height="30" rx="15" style="stroke: var(--fail)"/>
+  <text class="pill-text" x="828" y="366" text-anchor="middle" style="fill: var(--fail)">FAIL</text>
+  <rect class="pill" x="873" y="346" width="120" height="30" rx="15" style="stroke: var(--inc)"/>
+  <text class="pill-text" x="933" y="366" text-anchor="middle" style="fill: var(--inc)">INCONCLUSIVE</text>
+
+  <text class="note" x="12" y="366">Design of v0.1, pre-alpha: no benchmark result is claimed yet.</text>
+</svg>

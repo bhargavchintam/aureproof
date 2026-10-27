@@ -22,6 +22,10 @@ SPDX-License-Identifier: Apache-2.0
 
 ## What it does
 
+<p align="center">
+  <img src="docs/media/architecture.svg" alt="An agent evaluation run passes three checks: a task health record that proves the grader works, a signed evidence bundle anyone can verify and re-score offline, and a pre-registered gate that returns pass, fail or inconclusive" width="900">
+</p>
+
 On top of the runners teams already use (Inspect AI first; Harbor next),
 Aureproof certifies three things about an evaluation:
 
