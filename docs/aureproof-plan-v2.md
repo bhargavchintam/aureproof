@@ -343,7 +343,7 @@ bundle/
 ### 4.3 Decision Protocol v0.1
 | Field | Content |
 |---|---|
-| Estimand | Metric (primary: e.g. strict confirmed yield or known-defect recall, chosen in M0), population = the frozen healthy cohort, contrast = B − A, summary = mean of cluster-level differences |
+| Estimand | Metric (primary: **strict confirmed yield**, ADR-0006), population = the frozen healthy cohort, contrast = B − A, summary = mean of cluster-level differences |
 | Cohort and clusters | Task IDs + THR digests; cluster map (vulnerable/repaired variants, templates and repositories grouped) |
 | Configurations | SystemSpec digests for A and B; repetitions *n*; budgets |
 | Failure handling | How `infra_failure`, `safety_refusal`, `budget_exhausted` and `evidence_incomplete` enter (default: reported separately, scored as non-success for operational completion, excluded from quality metrics) |
