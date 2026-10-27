@@ -47,6 +47,12 @@ public API and the specs may change between minor versions).
   export and import with a property-based round-trip test, generated JSON Schema
   2020-12 files in `specs/contracts/v0.1/` with a drift check, and conformance
   vectors checked against both the models and the schemas.
+- Alpha readiness (issue #37): `release.yml`, which publishes to PyPI via Trusted
+  Publishing with PEP 740 attestations from a protected `pypi` environment, only on a
+  published GitHub Release. The release checks the tag against the version and re-runs
+  the Phase-1 gate from a fresh wheel install; a new CI job runs that check on every
+  PR. Adds `specs/COMPATIBILITY.md` (readers fail closed on unknown versions; enforced
+  by tests) and `docs/guides/releasing.md`.
 - CLI (issue #16): `aureproof validate`, `score --offline` and `report`
   (HTML or Markdown), working from saved records only, with exit codes 0/1/2. Adds run
   bundles (`aureproof.bundle.run`: seal scored episodes; byte-exact offline re-score),
