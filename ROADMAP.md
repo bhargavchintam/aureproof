@@ -8,6 +8,10 @@ The authoritative plan is [`docs/aureproof-plan-v2.md`](docs/aureproof-plan-v2.m
 this is the milestone summary. Effort is in focused days and is a planning
 estimate, not a commitment. **The M2 stop/go is the real commitment point.**
 
+v0.1 scope is **frozen** in [`docs/scope.md`](docs/scope.md) (2026-10-27): primary
+metric strict confirmed yield (ADR-0006); Claude Code over Anthropic Messages as
+the external subject (ADR-0007).
+
 | Milestone | Focus | Exit gate | Kill / pivot |
 | --- | --- | --- | --- |
 | **M0 Foundations** | Practitioner interviews; repo + OSS kit + CI; worked example (pair #1); Inspect runner spike; Linux host | Interview notes; clone green; spike verdict | No pull → narrow to benchmark + report; bridge can't isolate keys → Docker runner + own proxy |

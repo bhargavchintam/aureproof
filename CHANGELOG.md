@@ -63,6 +63,11 @@ public API and the specs may change between minor versions).
   truncated, reordered and missing evidence.
 
 ### Changed
+- v0.1 scope frozen (issue #5): ADR-0006 makes strict confirmed yield the
+  primary metric; ADR-0007 fixes Claude Code over Anthropic Messages as the
+  external subject, native versus controlled interface modes, the `closed-world`
+  (default) and `web-search` hosted-tool configurations, and a per-episode budget
+  of 400k tokens, 15 minutes and one attempt.
 - The Inspect spike grades through `aureproof.scoring` with the current labels
   (issue #34); it no longer carries its own matcher. Its pure grading, key-file and
   leak-scan tests run in ordinary CI, and an optional `Inspect lane` workflow runs
