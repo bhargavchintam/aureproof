@@ -188,6 +188,8 @@ This is a trust-boundary diagram, not a deployment requirement. On day one every
 **Fallback:** a plain-Docker runner (~300 LOC) for synthetic Python fixtures, with its own minimal proxy.
 
 ### 3.4 Lifecycle and durable authority
+Implemented by `aureproof.bundle.ledger` (pure lifecycle rules) and `aureproof.storage.ledger_store` (durable journal, restart recovery, rebuildable SQLite index), issue #19.
+
 `planned → dispatched → submitted → verified → scored → sealed`
 
 Terminal states are `failed` and `incomplete`, with cleanup bookkeeping. `dispatched` is the runner's single attempt; Aureproof records it and does not mirror the runner's internal state machine.

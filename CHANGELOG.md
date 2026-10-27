@@ -47,6 +47,14 @@ public API and the specs may change between minor versions).
   export and import with a property-based round-trip test, generated JSON Schema
   2020-12 files in `specs/contracts/v0.1/` with a drift check, and conformance
   vectors checked against both the models and the schemas.
+- Aureproof-owned attempts (issue #19). `bundle.ledger` folds lifecycle events
+  (planned, dispatched with the request identity, outcome, finalized) and rejects illegal
+  transitions. `storage.journal` is a durable, fsynced, hash-chained journal (same format
+  as a bundle's): a torn final line is recovered explicitly, and corruption elsewhere
+  fails. `storage.ledger_store` assigns IDs before dispatch and is idempotent on duplicate
+  outcomes and finalization. Restart recovery records in-doubt attempts as `unknown`,
+  `close_run` gives every episode exactly one disposition, and a SQLite index can be
+  rebuilt from the journal.
 - Alpha readiness (issue #37): `release.yml`, which publishes to PyPI via Trusted
   Publishing with PEP 740 attestations from a protected `pypi` environment, only on a
   published GitHub Release. The release checks the tag against the version and re-runs
