@@ -1,0 +1,11 @@
+{
+  "description": "3 of 10.",
+  "instance": {
+    "metric": "strict_confirmed_yield",
+    "kind": "proportion",
+    "metric_version": "0.1.0",
+    "numerator": 3,
+    "denominator": 10,
+    "value": 0.3
+  }
+}

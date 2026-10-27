@@ -1,0 +1,11 @@
+{
+  "description": "A rate may exceed 1 (scoped false-alarm rate).",
+  "instance": {
+    "metric": "scoped_false_alarm_rate",
+    "kind": "rate",
+    "metric_version": "0.1.0",
+    "numerator": 4,
+    "denominator": 3,
+    "value": 1.3333333333333333
+  }
+}

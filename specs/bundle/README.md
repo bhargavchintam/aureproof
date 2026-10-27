@@ -106,13 +106,14 @@ The chain makes a removed, reordered or edited entry detectable. **Tail truncati
     "event_count": 3,
     "journal_head": "sha256:<hex>",
     "completeness": "complete",
-    "versions": {"matcher": "0.1.0", "disposition": "0.1.0", "metrics": "0.1.0", "contracts": "0.1", "scoring_spec": "0.1"},
+    "versions": {"matcher": "0.1.0", "disposition": "0.1.0", "metrics": "0.1.0", "contracts": "0.1", "scoring_spec": "0.1", "scoring_profile": "sha256:<scoring identity>"},
     "generator": {"name": "aureproof", "version": "<package version>"}
   }
 }
 ```
 
 **Predicate v0.1.**
+- `versions.scoring_profile` is the scoring identity: the digest of the matcher, disposition and metrics versions and every matcher parameter (`aureproof.scoring.scoring_identity`). An offline re-score MUST use the same identity (issue #36).
 - `completeness` is `complete` or `redacted`. A redacted public bundle is a distinct product from the private complete one (plan §4.2).
 - No timestamps are sealed in v0.1. The pure core has no clock, and trustworthy time comes with signing (M2).
 

@@ -1,0 +1,12 @@
+{
+  "description": "Zero denominator: value null with a reason.",
+  "instance": {
+    "metric": "strict_confirmed_yield",
+    "kind": "proportion",
+    "metric_version": "0.1.0",
+    "numerator": 0,
+    "denominator": 0,
+    "value": null,
+    "undefined_reason": "denominator is 0"
+  }
+}

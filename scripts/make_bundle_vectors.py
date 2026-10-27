@@ -20,6 +20,7 @@ from typing import Any
 
 from aureproof.bundle import GENESIS, Member, build_bundle, canonical_json, digest_ref, sha256_hex
 from aureproof.contracts import Event
+from aureproof.scoring import scoring_identity
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "conformance" / "bundle" / "v0.1"
@@ -33,6 +34,7 @@ VERSIONS = {
     "metrics": "0.1.0",
     "contracts": "0.1",
     "scoring_spec": "0.1",
+    "scoring_profile": scoring_identity(),  # versions + parameters (issue #36)
 }
 Files = dict[str, bytes]
 

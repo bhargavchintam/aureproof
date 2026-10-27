@@ -1,0 +1,12 @@
+{
+  "description": "A positive denominator must give a value.",
+  "instance": {
+    "metric": "strict_confirmed_yield",
+    "kind": "proportion",
+    "metric_version": "0.1.0",
+    "numerator": 1,
+    "denominator": 2,
+    "value": null,
+    "undefined_reason": "x"
+  }
+}
