@@ -69,7 +69,7 @@ def test_scripted_subject_grades_from_captured_findings_only(
         sample = by_id[sample_id]
         assert sample.error is None
         score = (sample.scores or {})["findings_matcher"]
-        assert (score.metadata or {})["verdicts"] == verdicts
+        assert [v["verdict"] for v in (score.metadata or {})["verdicts"]] == verdicts
         # The agent planted verdict.json and reward.txt claiming success; the
         # repaired sample is still refuted, so the forgeries were not read.
         workspace = next(m.text for m in sample.messages if m.role == "tool")
@@ -94,28 +94,3 @@ def test_bridge_works_without_network_and_without_provider_env(
         assert report["egress"].startswith("blocked"), report["egress"]
         assert not [n for n in report["env_names"] if n.startswith(("ANTHROPIC", "OPENAI"))]
         assert any(e.event == "model" for e in sample.events)  # controller-observed call
-
-
-def test_leak_scan_finds_a_planted_secret(tmp_path: Path, spike_modules: None) -> None:
-    import zipfile
-
-    from live import leak_hits
-
-    log = tmp_path / "fake.eval"
-    with zipfile.ZipFile(log, "w") as archive:
-        archive.writestr("samples/1.json", '{"env": "sk-ant-canary-123"}')
-        archive.writestr("header.json", "{}")
-    assert leak_hits(str(log), "sk-ant-canary-123") == ["samples/1.json"]
-    assert leak_hits(str(log), "sk-ant-other") == []
-
-
-def test_key_file_must_be_private(tmp_path: Path, spike_modules: None) -> None:
-    from live import load_key
-
-    env_file = tmp_path / "spike.env"
-    env_file.write_text("export ANTHROPIC_API_KEY='sk-ant-test'\n")
-    env_file.chmod(0o644)
-    with pytest.raises(SystemExit, match="chmod 600"):
-        load_key(env_file)
-    env_file.chmod(0o600)
-    assert load_key(env_file) == "sk-ant-test"

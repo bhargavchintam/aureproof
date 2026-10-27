@@ -63,6 +63,10 @@ public API and the specs may change between minor versions).
   truncated, reordered and missing evidence.
 
 ### Changed
+- The Inspect spike grades through `aureproof.scoring` with the current labels
+  (issue #34); it no longer carries its own matcher. Its pure grading, key-file and
+  leak-scan tests run in ordinary CI, and an optional `Inspect lane` workflow runs
+  the Docker + mockllm regression with no provider key.
 - `MetricRecord` gains `kind` (`proportion` or `rate`): the scoped false-alarm
   rate can exceed 1.
 - `authz-001` labels migrated to the v0.1 label schema (`variants[]`; the focal

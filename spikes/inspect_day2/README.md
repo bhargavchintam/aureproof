@@ -14,7 +14,9 @@ code from `src/`.
 | --- | --- |
 | `task.py` | Inspect task over both `authz-001` variants. `-T subject=scripted\|bridge_probe\|claude_code` |
 | `agents.py` | Scripted `mockllm` policy (plants forged verdict files), bridge probe, failure injection |
-| `scorer.py` | `collect_findings` (sandbox → logged store) and `findings_matcher` (pure, stand-in for AP-007) |
+| `scorer.py` | `collect_findings` (sandbox → logged store) and `findings_matcher` (grades via `grading.py`) |
+| `grading.py` | Grading through `aureproof.scoring` with the agent view read from the fixture (no Inspect import; tested in ordinary CI) |
+| `keys.py` | Key-file loading and log leak scan (no Inspect import; tested in ordinary CI) |
 | `rescore.py` | Offline re-score of a saved log; must equal the live verdicts |
 | `live.py` | One-command live Claude Code run with key-isolation and leak checks (`--dry-run` needs no key) |
 | `compose.yaml` | Digest-pinned sandbox with `network_mode: none` |
