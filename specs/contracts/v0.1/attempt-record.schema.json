@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "One runner dispatch, owned by Aureproof (ADR-0003). Never merged silently.",
+  "properties": {
+    "attempt_id": {
+      "minLength": 1,
+      "title": "Attempt Id",
+      "type": "string"
+    },
+    "attempt_index": {
+      "minimum": 0,
+      "title": "Attempt Index",
+      "type": "integer"
+    },
+    "ended_at": {
+      "anyOf": [
+        {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,9})?Z$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Ended At"
+    },
+    "episode_id": {
+      "minLength": 1,
+      "title": "Episode Id",
+      "type": "string"
+    },
+    "error_class": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Error Class"
+    },
+    "reason": {
+      "enum": [
+        "initial",
+        "infra_retry"
+      ],
+      "title": "Reason",
+      "type": "string"
+    },
+    "runner_run_id": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Runner Run Id"
+    },
+    "started_at": {
+      "anyOf": [
+        {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,9})?Z$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Started At"
+    },
+    "status": {
+      "enum": [
+        "planned",
+        "dispatched",
+        "completed",
+        "failed",
+        "incomplete"
+      ],
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "episode_id",
+    "attempt_index",
+    "attempt_id",
+    "reason",
+    "status"
+  ],
+  "title": "AttemptRecord",
+  "type": "object"
+}

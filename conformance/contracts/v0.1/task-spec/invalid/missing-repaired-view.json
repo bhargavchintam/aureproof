@@ -1,0 +1,47 @@
+{
+  "description": "A findings task has both variants.",
+  "instance": {
+    "task_id": "authz-001",
+    "task_revision": "0.1.0",
+    "dataset_id": "aureproof-security-fixtures",
+    "dataset_revision": "0.1.0-dev",
+    "family": "security-discovery",
+    "cluster_id": "authz-001",
+    "canary_id": "7effd90b-bc48-4bf8-ab0b-72dfff0d0f97",
+    "agent_views": {
+      "vulnerable": {
+        "root": "fixtures/security/authz-001/variants/vulnerable",
+        "instruction": {
+          "path": "fixtures/security/authz-001/instruction.md",
+          "sha256": "e72b38a2805b60d77f70dd8340c33a8851f47ecd51801fb1c6a4ca491926acbc"
+        },
+        "files": [
+          {
+            "path": "docstore/__init__.py",
+            "sha256": "ba5b4ec8afe60cd6e4ab1c20fbc9a16998ee322254b09a3739f758cd8a58b6f9"
+          },
+          {
+            "path": "docstore/api.py",
+            "sha256": "65535c8c0f24d4f7139aeb70fd22a516bced60197c7f6abe2d89ed63afb84360"
+          },
+          {
+            "path": "docstore/auth.py",
+            "sha256": "728e1ef2828c904ae62c4ade04d30209bfd6d2f158caa36acec0af5227850b17"
+          },
+          {
+            "path": "docstore/models.py",
+            "sha256": "ae7a4f89e7bfec9458c00f0b6b46afd67b35518012d57816148d26f54a98810e"
+          },
+          {
+            "path": "docstore/service.py",
+            "sha256": "0933a33fe80610ea01cc611fcf11ac3ff1806e0d9e90db96ebc2cb03cfcaf391"
+          }
+        ]
+      }
+    },
+    "labels": {
+      "path": "fixtures/oracles/authz-001/labels.json",
+      "sha256": "2efadf1a8787515e9c021e5f3762406bfe51503d3150c8e42037c799485066ce"
+    }
+  }
+}

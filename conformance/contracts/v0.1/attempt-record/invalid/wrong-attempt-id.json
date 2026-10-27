@@ -1,0 +1,10 @@
+{
+  "description": "attempt_id is <episode_id>/a<index>.",
+  "instance": {
+    "episode_id": "ep-34fb7ab82e42d2cc76c3e7359c0750eb",
+    "attempt_index": 0,
+    "attempt_id": "x",
+    "reason": "initial",
+    "status": "planned"
+  }
+}

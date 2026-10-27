@@ -1,0 +1,13 @@
+{
+  "description": "Agent self-repair is not an attempt reason.",
+  "instance": {
+    "episode_id": "ep-34fb7ab82e42d2cc76c3e7359c0750eb",
+    "attempt_index": 1,
+    "attempt_id": "ep-34fb7ab82e42d2cc76c3e7359c0750eb/a1",
+    "reason": "self_repair",
+    "status": "completed",
+    "runner_run_id": "run-123",
+    "started_at": "2026-10-27T10:00:00Z",
+    "ended_at": "2026-10-27T10:04:12.5Z"
+  }
+}
