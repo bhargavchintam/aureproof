@@ -47,6 +47,12 @@ public API and the specs may change between minor versions).
   export and import with a property-based round-trip test, generated JSON Schema
   2020-12 files in `specs/contracts/v0.1/` with a drift check, and conformance
   vectors checked against both the models and the schemas.
+- Provider-terms review (`docs/provider-terms.md`, issue #18), dated 2026-10-27,
+  with primary-source links for Anthropic (in use) and OpenAI (later). Adds
+  responsible-use rules: API keys only, the Cyber Verification Program instead of
+  workarounds, human review and AI labeling before publishing transcripts.
+  `SystemSpec` now rejects configurations that retry refusals, and requires Claude
+  Code systems to set ADR-0007's no-retry and closed-world settings explicitly.
 - STRIDE threat model with a control-to-test matrix (`docs/threat-model.md`,
   issue #17). Each of the 15 v0.1 controls is tested in CI, tested in the optional
   lane, partial, or pending with its delivering issue; v0.2 PoC controls are listed

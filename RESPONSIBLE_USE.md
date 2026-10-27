@@ -34,7 +34,16 @@ where possible, by tests and CI.
   Dataset cards state this, and fixtures carry canaries.
 - Name models **factually**; do not imply endorsement or use provider logos.
 - Never retry or reframe a request to bypass a provider's safety refusal.
-  Record it as a `safety_refusal` outcome instead (plan v2 §5.5).
+  Record it as a `safety_refusal` outcome instead (plan v2 §5.5). The system
+  contract rejects any configuration that retries refusals. Never rotate
+  accounts to get around a block. If cyber safeguards block legitimate fixture
+  work, apply to Anthropic's Cyber Verification Program instead.
+- Call providers through **API keys under commercial terms**, never by routing
+  requests through a consumer subscription.
+- Before publishing transcripts or excerpts, a person reviews them, and they are
+  attributed to the project and **labeled as AI-generated**.
+- The dated, sourced review behind these rules is in
+  [`docs/provider-terms.md`](docs/provider-terms.md) (checked 2026-10-27).
 
 ## Isolation
 

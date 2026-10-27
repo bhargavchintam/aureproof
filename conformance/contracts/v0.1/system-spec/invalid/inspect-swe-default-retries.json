@@ -1,0 +1,52 @@
+{
+  "description": "inspect_swe defaults must be overridden explicitly (ADR-0007).",
+  "instance": {
+    "subject": {
+      "kind": "external",
+      "name": "claude_code",
+      "version": "2.1.287",
+      "scaffold": "inspect_swe.claude_code"
+    },
+    "interface_mode": "native-capability",
+    "hosted_tools": "closed-world",
+    "models": {
+      "main": {
+        "provider": "anthropic",
+        "model": "claude-haiku-4-5-20251001",
+        "protocol": "anthropic-messages",
+        "provider_identity": {
+          "model_snapshot": null,
+          "api_version": "2023-06-01",
+          "endpoint": null,
+          "region": null
+        }
+      }
+    },
+    "prompts": {
+      "instruction": "e72b38a2805b60d77f70dd8340c33a8851f47ecd51801fb1c6a4ca491926acbc"
+    },
+    "tools": [
+      "Bash",
+      "Edit",
+      "Read",
+      "Write"
+    ],
+    "memory": "none",
+    "settings": {
+      "disallowed_tools": [
+        "WebSearch",
+        "WebFetch"
+      ],
+      "retry_refusals": 0,
+      "attempts": 1
+    },
+    "runner": {
+      "name": "inspect",
+      "version": "0.3.283",
+      "adapter_revision": "spike-0.1"
+    },
+    "telemetry": {
+      "inspect_sharing": "off"
+    }
+  }
+}

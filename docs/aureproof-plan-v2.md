@@ -527,7 +527,7 @@ Use one Linux evaluation host. Docker alone is not claimed to be a hardened boun
 - **Evaluation only, not for training.** Anthropic's commercial terms and OpenAI's Services Agreement §3.3 prohibit using outputs to build competing models [R29, R30]. The dataset card states "evaluation only; not for training", and transcripts carry canaries.
 - **No provider names as endorsement or logos.** OpenAI's agreement restricts using its name or logo, so models are only named factually.
 - **Never retry to bypass safeguards** (OpenAI §3.3). Record `safety_refusal`.
-- **Read OpenAI's Sharing & Publication Policy** before the first public results. Its content is *unverified*. Check any additional provider's terms (e.g. NIM) before use.
+- **Read OpenAI's Sharing & Publication Policy** before the first public results. *Verified 2026-10-27*: see [`provider-terms.md`](provider-terms.md), which also covers Anthropic's Usage Policy (new version effective Nov 12, 2026), the Commercial Terms and the Cyber Verification Program. Check any additional provider's terms (e.g. NIM) before use.
 
 ### 7.5 Disclosure
 - `SECURITY.md` + **GitHub private vulnerability reporting** [R38].
