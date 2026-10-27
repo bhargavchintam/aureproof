@@ -47,6 +47,14 @@ public API and the specs may change between minor versions).
   export and import with a property-based round-trip test, generated JSON Schema
   2020-12 files in `specs/contracts/v0.1/` with a drift check, and conformance
   vectors checked against both the models and the schemas.
+- Task Health Record v0.1 (issue #12): `specs/thr/README.md`, `thr.schema.json`,
+  and `aureproof.contracts.thr`. `status` is derived from 7 required controls
+  (including `label_lint`, `nop` and `spray_cheat`) and a determinism re-run, and
+  can't be asserted by hand. A frozen record needs an independent reviewer. Also adds
+  label lint L1–L4 with code-span drift detection (`aureproof.oracles.python_spans`),
+  and health-based exclusion where only pre-registered records apply and excluded
+  tasks never count against an agent. 11 conformance vectors cover healthy,
+  unhealthy and unknown records.
 - Scoring identity (issue #36). Each matcher version has one registered
   parameter profile, and overrides are rejected. Scored episodes and sealed bundles
   carry `scoring_identity`, a digest of all versions and parameters, which the golden

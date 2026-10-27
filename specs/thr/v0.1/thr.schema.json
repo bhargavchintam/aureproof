@@ -1,0 +1,415 @@
+{
+  "$defs": {
+    "ControlKind": {
+      "enum": [
+        "label_lint",
+        "reference_positive",
+        "repaired_negative",
+        "nop",
+        "spray_cheat",
+        "malformed",
+        "calibration_poc"
+      ],
+      "title": "ControlKind",
+      "type": "string"
+    },
+    "ControlResult": {
+      "additionalProperties": false,
+      "properties": {
+        "expected": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "input_digest": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Input Digest",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/ControlKind"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "observed": {
+          "$ref": "#/$defs/JsonValue",
+          "default": null
+        },
+        "passed": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Passed"
+        },
+        "run_ids": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Run Ids",
+          "type": "array"
+        },
+        "variant": {
+          "anyOf": [
+            {
+              "enum": [
+                "vulnerable",
+                "repaired"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Variant"
+        }
+      },
+      "required": [
+        "kind",
+        "input_digest",
+        "expected",
+        "passed"
+      ],
+      "title": "ControlResult",
+      "type": "object"
+    },
+    "Determinism": {
+      "additionalProperties": false,
+      "description": "Every control re-run; outcomes must be identical.",
+      "properties": {
+        "reproduced": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Reproduced"
+        },
+        "rerun_ids": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Rerun Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "rerun_ids",
+        "reproduced"
+      ],
+      "title": "Determinism",
+      "type": "object"
+    },
+    "DifficultyProbe": {
+      "additionalProperties": false,
+      "description": "Does a pattern scanner or a single-shot model already solve the task? (plan C4).\n\nOptional for health; required before benchmark expansion (M2 gate, issue #44).",
+      "properties": {
+        "bandit": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProbeResult"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "single_shot_model": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProbeResult"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "bandit",
+        "single_shot_model"
+      ],
+      "title": "DifficultyProbe",
+      "type": "object"
+    },
+    "Environment": {
+      "additionalProperties": false,
+      "description": "Health is per environment: an oracle can pass on one backend and fail on another.",
+      "properties": {
+        "image_digest": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Image Digest",
+          "type": "string"
+        },
+        "platform": {
+          "minLength": 1,
+          "title": "Platform",
+          "type": "string"
+        },
+        "runner": {
+          "minLength": 1,
+          "title": "Runner",
+          "type": "string"
+        },
+        "runner_version": {
+          "minLength": 1,
+          "title": "Runner Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "runner",
+        "runner_version",
+        "image_digest",
+        "platform"
+      ],
+      "title": "Environment",
+      "type": "object"
+    },
+    "HealthStatus": {
+      "enum": [
+        "healthy",
+        "unhealthy",
+        "unknown"
+      ],
+      "title": "HealthStatus",
+      "type": "string"
+    },
+    "JsonValue": {},
+    "ProbeResult": {
+      "additionalProperties": false,
+      "properties": {
+        "detail": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Detail"
+        },
+        "probe": {
+          "enum": [
+            "bandit",
+            "single_shot_model"
+          ],
+          "title": "Probe",
+          "type": "string"
+        },
+        "solved": {
+          "title": "Solved",
+          "type": "boolean"
+        },
+        "system_identity": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "System Identity",
+          "type": "string"
+        }
+      },
+      "required": [
+        "probe",
+        "system_identity",
+        "solved"
+      ],
+      "title": "ProbeResult",
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "authorship": {
+          "enum": [
+            "self-authored",
+            "authorized-third-party"
+          ],
+          "title": "Authorship",
+          "type": "string"
+        },
+        "license": {
+          "minLength": 1,
+          "title": "License",
+          "type": "string"
+        }
+      },
+      "required": [
+        "authorship",
+        "license"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "Reviewer": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "author",
+            "independent_reviewer"
+          ],
+          "title": "Role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "role"
+      ],
+      "title": "Reviewer",
+      "type": "object"
+    },
+    "TaskRef": {
+      "additionalProperties": false,
+      "properties": {
+        "task_id": {
+          "minLength": 1,
+          "title": "Task Id",
+          "type": "string"
+        },
+        "task_identity": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Task Identity",
+          "type": "string"
+        },
+        "task_revision": {
+          "minLength": 1,
+          "title": "Task Revision",
+          "type": "string"
+        }
+      },
+      "required": [
+        "task_id",
+        "task_revision",
+        "task_identity"
+      ],
+      "title": "TaskRef",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "canary_id": {
+      "minLength": 1,
+      "title": "Canary Id",
+      "type": "string"
+    },
+    "controls": {
+      "items": {
+        "$ref": "#/$defs/ControlResult"
+      },
+      "minItems": 1,
+      "title": "Controls",
+      "type": "array"
+    },
+    "determinism": {
+      "$ref": "#/$defs/Determinism"
+    },
+    "difficulty_probe": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/DifficultyProbe"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "environment": {
+      "$ref": "#/$defs/Environment"
+    },
+    "frozen_at": {
+      "anyOf": [
+        {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,9})?Z$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Frozen At"
+    },
+    "known_limits": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "title": "Known Limits",
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    },
+    "reviewed_by": {
+      "items": {
+        "$ref": "#/$defs/Reviewer"
+      },
+      "title": "Reviewed By",
+      "type": "array"
+    },
+    "scoring_identity": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Scoring Identity",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/HealthStatus"
+    },
+    "status_reason": {
+      "minLength": 1,
+      "title": "Status Reason",
+      "type": "string"
+    },
+    "task": {
+      "$ref": "#/$defs/TaskRef"
+    },
+    "thr_version": {
+      "const": "0.1",
+      "title": "Thr Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "thr_version",
+    "task",
+    "environment",
+    "scoring_identity",
+    "controls",
+    "determinism",
+    "status",
+    "status_reason",
+    "canary_id",
+    "provenance"
+  ],
+  "title": "TaskHealthRecord",
+  "type": "object"
+}
