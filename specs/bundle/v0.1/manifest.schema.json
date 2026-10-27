@@ -1,0 +1,82 @@
+{
+  "$defs": {
+    "ManifestMember": {
+      "additionalProperties": false,
+      "properties": {
+        "mandatory": {
+          "title": "Mandatory",
+          "type": "boolean"
+        },
+        "media_type": {
+          "minLength": 1,
+          "title": "Media Type",
+          "type": "string"
+        },
+        "path": {
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "journal",
+            "verdicts",
+            "metrics",
+            "adjudications",
+            "protocol",
+            "system",
+            "task_health",
+            "submission",
+            "decision",
+            "blob",
+            "other"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "size": {
+          "minimum": 0,
+          "title": "Size",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "path",
+        "sha256",
+        "size",
+        "media_type",
+        "role",
+        "mandatory"
+      ],
+      "title": "ManifestMember",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "bundle_version": {
+      "const": "0.1",
+      "title": "Bundle Version",
+      "type": "string"
+    },
+    "members": {
+      "items": {
+        "$ref": "#/$defs/ManifestMember"
+      },
+      "title": "Members",
+      "type": "array"
+    }
+  },
+  "required": [
+    "bundle_version",
+    "members"
+  ],
+  "title": "Manifest",
+  "type": "object"
+}

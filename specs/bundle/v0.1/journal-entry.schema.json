@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "One journal line. ``event`` stays raw: V3 hashes exactly what was recorded and\nvalidates its shape against ``Event`` separately (issue #35).",
+  "properties": {
+    "event": {
+      "additionalProperties": true,
+      "title": "Event",
+      "type": "object"
+    },
+    "hash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Hash",
+      "type": "string"
+    },
+    "prev": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Prev",
+      "type": "string"
+    },
+    "seq": {
+      "minimum": 0,
+      "title": "Seq",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "seq",
+    "prev",
+    "event",
+    "hash"
+  ],
+  "title": "JournalEntry",
+  "type": "object"
+}

@@ -1,0 +1,142 @@
+{
+  "$defs": {
+    "Generator": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ],
+      "title": "Generator",
+      "type": "object"
+    },
+    "Predicate": {
+      "additionalProperties": false,
+      "properties": {
+        "bundle_version": {
+          "const": "0.1",
+          "title": "Bundle Version",
+          "type": "string"
+        },
+        "completeness": {
+          "enum": [
+            "complete",
+            "redacted"
+          ],
+          "title": "Completeness",
+          "type": "string"
+        },
+        "event_count": {
+          "minimum": 0,
+          "title": "Event Count",
+          "type": "integer"
+        },
+        "generator": {
+          "$ref": "#/$defs/Generator"
+        },
+        "journal_head": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Journal Head",
+          "type": "string"
+        },
+        "versions": {
+          "additionalProperties": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Versions",
+          "type": "object"
+        }
+      },
+      "required": [
+        "bundle_version",
+        "event_count",
+        "journal_head",
+        "completeness",
+        "versions",
+        "generator"
+      ],
+      "title": "Predicate",
+      "type": "object"
+    },
+    "Subject": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "$ref": "#/$defs/SubjectDigest"
+        },
+        "name": {
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "digest"
+      ],
+      "title": "Subject",
+      "type": "object"
+    },
+    "SubjectDigest": {
+      "additionalProperties": false,
+      "properties": {
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sha256"
+      ],
+      "title": "SubjectDigest",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "in-toto Statement v1 (https://github.com/in-toto/attestation/blob/main/spec/v1/statement.md).",
+  "properties": {
+    "_type": {
+      "const": "https://in-toto.io/Statement/v1",
+      "title": "Type",
+      "type": "string"
+    },
+    "predicate": {
+      "$ref": "#/$defs/Predicate"
+    },
+    "predicateType": {
+      "const": "https://github.com/bhargavchintam/aureproof/blob/main/specs/bundle/README.md#predicate-v01",
+      "title": "Predicatetype",
+      "type": "string"
+    },
+    "subject": {
+      "items": {
+        "$ref": "#/$defs/Subject"
+      },
+      "minItems": 1,
+      "title": "Subject",
+      "type": "array"
+    }
+  },
+  "required": [
+    "_type",
+    "subject",
+    "predicateType",
+    "predicate"
+  ],
+  "title": "Statement",
+  "type": "object"
+}

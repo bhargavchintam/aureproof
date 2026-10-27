@@ -8,7 +8,8 @@
     "max_line_span": 30,
     "max_locations": 4,
     "max_findings": 256,
-    "max_bytes": 1048576
+    "max_bytes": 1048576,
+    "max_depth": 32
   },
   "submission_encoding": "'findings' is serialized with json.dumps (UTF-8); 'raw' is used verbatim; 'absent' means no file was captured; 'repeat' is the finding repeated 'count' times in an array.",
   "metric_encoding": "Each metric is {numerator, denominator}; the value is numerator/denominator, or null with an undefined_reason when the denominator is 0.",
@@ -1881,6 +1882,29 @@
         "credited": [
           "g1-d1"
         ],
+        "annotations": []
+      }
+    },
+    {
+      "id": "G-42",
+      "title": "Nesting deeper than max_depth (bounded rejection)",
+      "rules": [
+        "D6"
+      ],
+      "label_set": "g1",
+      "variant": "vulnerable",
+      "signals": {
+        "evidence_complete": true,
+        "runner_outcome": "ok",
+        "refusal_signal": false
+      },
+      "submission": {
+        "raw": "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]"
+      },
+      "expected": {
+        "disposition": "invalid_output",
+        "verdicts": null,
+        "credited": [],
         "annotations": []
       }
     }
