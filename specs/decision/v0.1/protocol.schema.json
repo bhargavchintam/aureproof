@@ -1,0 +1,317 @@
+{
+  "$defs": {
+    "Budget": {
+      "additionalProperties": false,
+      "description": "Per-episode limits (ADR-0007 defaults: 400k tokens, 15 minutes, 1 attempt).",
+      "properties": {
+        "max_attempts": {
+          "const": 1,
+          "default": 1,
+          "title": "Max Attempts",
+          "type": "integer"
+        },
+        "max_seconds": {
+          "default": 900,
+          "minimum": 1,
+          "title": "Max Seconds",
+          "type": "integer"
+        },
+        "max_tokens": {
+          "default": 400000,
+          "minimum": 1,
+          "title": "Max Tokens",
+          "type": "integer"
+        }
+      },
+      "title": "Budget",
+      "type": "object"
+    },
+    "CohortTask": {
+      "additionalProperties": false,
+      "properties": {
+        "cluster_id": {
+          "minLength": 1,
+          "title": "Cluster Id",
+          "type": "string"
+        },
+        "task_identity": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Task Identity",
+          "type": "string"
+        },
+        "thr_digest": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Thr Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "task_identity",
+        "thr_digest",
+        "cluster_id"
+      ],
+      "title": "CohortTask",
+      "type": "object"
+    },
+    "Configurations": {
+      "additionalProperties": false,
+      "properties": {
+        "A": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "A",
+          "type": "string"
+        },
+        "B": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "B",
+          "type": "string"
+        }
+      },
+      "required": [
+        "A",
+        "B"
+      ],
+      "title": "Configurations",
+      "type": "object"
+    },
+    "Estimand": {
+      "additionalProperties": false,
+      "properties": {
+        "contrast": {
+          "const": "B-A",
+          "default": "B-A",
+          "title": "Contrast",
+          "type": "string"
+        },
+        "metric": {
+          "const": "strict_confirmed_yield",
+          "default": "strict_confirmed_yield",
+          "title": "Metric",
+          "type": "string"
+        },
+        "summary": {
+          "const": "mean_of_cluster_differences",
+          "default": "mean_of_cluster_differences",
+          "title": "Summary",
+          "type": "string"
+        },
+        "undefined_yield": {
+          "default": "zero",
+          "enum": [
+            "zero",
+            "exclude_cluster"
+          ],
+          "title": "Undefined Yield",
+          "type": "string"
+        }
+      },
+      "title": "Estimand",
+      "type": "object"
+    },
+    "FailurePolicy": {
+      "additionalProperties": false,
+      "description": "How non-completed episodes enter (scoring.md \u00a75.3; fixed in v0.1).",
+      "properties": {
+        "agent_error": {
+          "const": "graded",
+          "default": "graded",
+          "title": "Agent Error",
+          "type": "string"
+        },
+        "budget_exhausted": {
+          "const": "graded",
+          "default": "graded",
+          "title": "Budget Exhausted",
+          "type": "string"
+        },
+        "evidence_incomplete": {
+          "const": "blocks_sealing",
+          "default": "blocks_sealing",
+          "title": "Evidence Incomplete",
+          "type": "string"
+        },
+        "infra_failure": {
+          "const": "rerun_new_attempt_then_report",
+          "default": "rerun_new_attempt_then_report",
+          "title": "Infra Failure",
+          "type": "string"
+        },
+        "invalid_output": {
+          "const": "graded",
+          "default": "graded",
+          "title": "Invalid Output",
+          "type": "string"
+        },
+        "safety_refusal": {
+          "const": "report_separately_not_a_miss",
+          "default": "report_separately_not_a_miss",
+          "title": "Safety Refusal",
+          "type": "string"
+        }
+      },
+      "title": "FailurePolicy",
+      "type": "object"
+    },
+    "Stopping": {
+      "additionalProperties": false,
+      "properties": {
+        "exploratory_analyses": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Exploratory Analyses",
+          "type": "array"
+        },
+        "fixed_repetitions": {
+          "const": true,
+          "default": true,
+          "title": "Fixed Repetitions",
+          "type": "boolean"
+        },
+        "peeking": {
+          "const": false,
+          "default": false,
+          "title": "Peeking",
+          "type": "boolean"
+        }
+      },
+      "title": "Stopping",
+      "type": "object"
+    },
+    "TestSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "alpha": {
+          "default": 0.025,
+          "exclusiveMaximum": 0.5,
+          "exclusiveMinimum": 0,
+          "title": "Alpha",
+          "type": "number"
+        },
+        "ci": {
+          "const": "test_inversion",
+          "default": "test_inversion",
+          "title": "Ci",
+          "type": "string"
+        },
+        "method": {
+          "const": "exact_sign_flip",
+          "default": "exact_sign_flip",
+          "title": "Method",
+          "type": "string"
+        }
+      },
+      "title": "TestSpec",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "budget": {
+      "$ref": "#/$defs/Budget",
+      "default": {
+        "max_attempts": 1,
+        "max_seconds": 900,
+        "max_tokens": 400000
+      }
+    },
+    "cohort": {
+      "items": {
+        "$ref": "#/$defs/CohortTask"
+      },
+      "minItems": 1,
+      "title": "Cohort",
+      "type": "array"
+    },
+    "configurations": {
+      "$ref": "#/$defs/Configurations"
+    },
+    "estimand": {
+      "$ref": "#/$defs/Estimand",
+      "default": {
+        "contrast": "B-A",
+        "metric": "strict_confirmed_yield",
+        "summary": "mean_of_cluster_differences",
+        "undefined_yield": "zero"
+      }
+    },
+    "failure_policy": {
+      "$ref": "#/$defs/FailurePolicy",
+      "default": {
+        "agent_error": "graded",
+        "budget_exhausted": "graded",
+        "evidence_incomplete": "blocks_sealing",
+        "infra_failure": "rerun_new_attempt_then_report",
+        "invalid_output": "graded",
+        "safety_refusal": "report_separately_not_a_miss"
+      }
+    },
+    "margin": {
+      "minimum": 0,
+      "title": "Margin",
+      "type": "number"
+    },
+    "name": {
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "pilot_mde": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Pilot Mde"
+    },
+    "protocol_version": {
+      "const": "0.1",
+      "title": "Protocol Version",
+      "type": "string"
+    },
+    "repetitions": {
+      "minimum": 1,
+      "title": "Repetitions",
+      "type": "integer"
+    },
+    "require_complete_adjudication": {
+      "const": true,
+      "default": true,
+      "title": "Require Complete Adjudication",
+      "type": "boolean"
+    },
+    "stopping": {
+      "$ref": "#/$defs/Stopping",
+      "default": {
+        "exploratory_analyses": [],
+        "fixed_repetitions": true,
+        "peeking": false
+      }
+    },
+    "test": {
+      "$ref": "#/$defs/TestSpec",
+      "default": {
+        "alpha": 0.025,
+        "ci": "test_inversion",
+        "method": "exact_sign_flip"
+      }
+    }
+  },
+  "required": [
+    "protocol_version",
+    "name",
+    "cohort",
+    "configurations",
+    "repetitions",
+    "margin"
+  ],
+  "title": "DecisionProtocol",
+  "type": "object"
+}

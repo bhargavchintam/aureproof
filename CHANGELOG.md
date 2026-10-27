@@ -47,6 +47,13 @@ public API and the specs may change between minor versions).
   export and import with a property-based round-trip test, generated JSON Schema
   2020-12 files in `specs/contracts/v0.1/` with a drift check, and conformance
   vectors checked against both the models and the schemas.
+- Decision Protocol v0.1 and the exact gate (issue #14): `specs/decision/README.md`,
+  protocol and decision schemas, and `aureproof.stats`: an exact paired sign-flip test
+  in rational arithmetic, a test-inversion interval from subset-mean order statistics,
+  Wilson intervals, and pass/fail/inconclusive with strict inequalities. Fewer than 6
+  clusters is reported as unable to decide at alpha = 0.025, and incomplete
+  adjudication can't pass. 10 hand-derived vectors, plus a brute-force check of the
+  interval against the test definition.
 - Task Health Record v0.1 (issue #12): `specs/thr/README.md`, `thr.schema.json`,
   and `aureproof.contracts.thr`. `status` is derived from 7 required controls
   (including `label_lint`, `nop` and `spray_cheat`) and a determinism re-run, and
