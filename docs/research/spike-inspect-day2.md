@@ -52,6 +52,20 @@ The plain-Docker fallback is not needed.
 7. **Fast release cadence.** inspect-ai 0.3.278 shipped two days before this spike. Pin exact versions and keep `test_inspect_spike.py` as the contract test that upgrades must pass.
 8. **macOS is fine for this spike, not for qualification.** Docker Desktop enforced `network_mode: none` here. Isolation *qualification* (plan §7) still happens on the Linux host (`scripts/check_host.sh`).
 
+## Mocked plumbing versus a real episode (issue #34)
+
+Keep these two kinds of evidence apart:
+
+| Evidence | What it shows | Where it runs |
+| --- | --- | --- |
+| **Mocked plumbing** (`mockllm`) | Sandbox at `network_mode: none`; the bridge relays model calls; `findings.json` is captured into the log; grading uses only the captured bytes; offline re-score is identical; no provider key reaches the sandbox or the logs | `tests/integration/test_inspect_spike.py` in the optional **Inspect lane** CI workflow, and `live.py --dry-run` locally |
+| **Pure grading** (no Inspect, no Docker) | The spike grades through `aureproof.scoring` with the current `authz-001` labels: positive, repaired focal site and source, duplicate, wrong class, empty, missing submission, refusal, missing evidence. Also key-file permissions and the log leak scan | `tests/spike/test_spike_grading.py` in ordinary CI |
+| **A real Claude Code episode** | Whether a real model, driven by Claude Code, writes a gradable `findings.json` | **Not run yet.** It needs a provider key (`live.py` without `--dry-run`; issue #7) |
+
+Mocked runs prove the pipeline, not agent capability. Every Claude Code result in this document so far is plumbing only.
+
+After AP-004 migrated the `authz-001` labels, the spike's stand-in matcher broke (it read `variant` and `anchor`). Ordinary CI skipped the Docker module, so the break went unnoticed until the 2026-10-27 audit. The spike now has no matcher of its own: `grading.py` calls the core.
+
 ## Reproduce
 
 ```bash

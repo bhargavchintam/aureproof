@@ -1,0 +1,55 @@
+# SPDX-FileCopyrightText: 2026 Bindu Bhargava R Chintam
+# SPDX-License-Identifier: Apache-2.0
+#
+# Optional Inspect lane (issue #34): the pinned Inspect stack in a Docker sandbox
+# with network_mode none and mockllm only. No provider key and no paid inference.
+# It exercises capture, offline re-score and bridge readiness. It is not a
+# required check; it runs when the spike, the core it uses, or the lock changes.
+name: Inspect lane (mockllm)
+
+on:
+  pull_request:
+    paths:
+      - "spikes/**"
+      - "tests/integration/**"
+      - "src/aureproof/contracts/**"
+      - "src/aureproof/scoring/**"
+      - "fixtures/**"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/inspect-lane.yml"
+  push:
+    branches: [main]
+    paths:
+      - "spikes/**"
+      - "src/aureproof/contracts/**"
+      - "src/aureproof/scoring/**"
+      - "uv.lock"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: inspect-lane-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  inspect:
+    name: Inspect + Docker + mockllm
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: "0.12.19"
+          enable-cache: true
+      - name: Install (locked, with the inspect extra)
+        run: uv sync --frozen --extra inspect
+      - name: Docker is available
+        run: docker version --format '{{.Server.Version}}' && docker compose version
+      - name: Spike regression (scripted subject + bridge probe, mockllm)
+        run: uv run --extra inspect pytest tests/integration/test_inspect_spike.py --no-cov -ra

@@ -27,10 +27,8 @@ import argparse
 import hashlib
 import json
 import os
-import stat
 import sys
 import uuid
-import zipfile
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -38,37 +36,13 @@ from typing import Any
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
+from keys import KEY_VAR, KeyFileError, leak_hits, load_key, sha256_file  # noqa: E402
 from rescore import rescore  # noqa: E402
 from task import CLAUDE_CODE_VERSION, authz_spike  # noqa: E402
 
 DEFAULT_ENV_FILE = Path.home() / ".aureproof-spike.env"
 DEFAULT_MODEL = "anthropic/claude-haiku-4-5-20251001"
-KEY_VAR = "ANTHROPIC_API_KEY"
 SANDBOX_PLATFORM = "linux-arm64" if os.uname().machine in ("arm64", "aarch64") else "linux-x64"
-
-
-def load_key(env_file: Path) -> str:
-    """Read KEY_VAR from a private env file without echoing it."""
-    if not env_file.is_file():
-        sys.exit(f"missing {env_file}: add '{KEY_VAR}=...' and chmod 600")
-    if stat.S_IMODE(env_file.stat().st_mode) & 0o077:
-        sys.exit(f"{env_file} is readable by others; run: chmod 600 {env_file}")
-    for line in env_file.read_text().splitlines():
-        name, sep, value = line.strip().removeprefix("export ").partition("=")
-        if sep and name.strip() == KEY_VAR and value.strip().strip("'\""):
-            return value.strip().strip("'\"")
-    sys.exit(f"{KEY_VAR} not found in {env_file}")
-
-
-def leak_hits(log_path: str, secret: str) -> list[str]:
-    """Names of archive members that contain the secret verbatim."""
-    needle = secret.encode()
-    with zipfile.ZipFile(log_path) as archive:
-        return [name for name in archive.namelist() if needle in archive.read(name)]
-
-
-def sha256_file(path: str) -> str:
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
 def run(
@@ -156,7 +130,10 @@ def main() -> None:
     if args.dry_run:
         secret, model = f"sk-ant-dryrun-{uuid.uuid4().hex}", "mockllm/model"
     else:
-        secret, model = load_key(args.env_file), args.model
+        try:
+            secret, model = load_key(args.env_file), args.model
+        except KeyFileError as exc:
+            sys.exit(str(exc))
     os.environ[KEY_VAR] = secret  # this process only; the bridge must keep it out of the sandbox
 
     log_dir = HERE / "logs"
