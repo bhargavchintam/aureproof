@@ -491,6 +491,8 @@ bundle/
 ## 7. Threat model, security, and policy
 
 ### 7.1 STRIDE summary (v0.1). Every control has a test.
+Maintained, with test IDs and status, in [`threat-model.md`](threat-model.md) (AP-002).
+
 | Threat | Example | Control | Test |
 |---|---|---|---|
 | Spoofing | Agent output claims to be a verifier event | Agent data is tagged `agent_reported`; only the controller writes trusted events | Inject a fake verifier event → it stays `agent_reported` |

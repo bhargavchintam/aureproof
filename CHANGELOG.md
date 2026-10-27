@@ -47,6 +47,12 @@ public API and the specs may change between minor versions).
   export and import with a property-based round-trip test, generated JSON Schema
   2020-12 files in `specs/contracts/v0.1/` with a drift check, and conformance
   vectors checked against both the models and the schemas.
+- STRIDE threat model with a control-to-test matrix (`docs/threat-model.md`,
+  issue #17). Each of the 15 v0.1 controls is tested in CI, tested in the optional
+  lane, partial, or pending with its delivering issue; v0.2 PoC controls are listed
+  separately. `tests/test_threat_model.py` fails on a cited test that does not
+  exist, or on lane-only evidence claimed as CI. New regression test for
+  oversized submissions.
 - Task, system, episode and attempt contracts (issue #10): `TaskSpec`, `SystemSpec`,
   `EpisodeSpec` and `AttemptRecord`, with content-derived identities (RFC 8785
   digests). Provider identity fields are explicit, episode and attempt IDs are
