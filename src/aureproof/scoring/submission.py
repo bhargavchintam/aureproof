@@ -9,7 +9,7 @@ from enum import StrEnum
 from typing import Any
 
 from aureproof.contracts.strict_json import JsonInputError, loads_strict
-from aureproof.scoring.params import V0_1, MatcherParams
+from aureproof.scoring.params import V0_1, MatcherParams, matcher_version_of
 
 
 class SubmissionStatus(StrEnum):
@@ -31,6 +31,7 @@ def parse_submission(data: bytes | None, params: MatcherParams = V0_1) -> Parsed
     Bounded: depth is checked before parsing, so hostile nesting cannot exhaust
     the interpreter stack (issue #35).
     """
+    matcher_version_of(params)  # limits are part of the version (issue #36)
     if data is None:
         return ParsedSubmission(SubmissionStatus.ABSENT, reason="no submission captured")
     if len(data) > params.max_bytes:

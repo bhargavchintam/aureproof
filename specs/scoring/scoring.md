@@ -21,6 +21,9 @@ This spec defines how one episode's submission becomes **finding verdicts** and 
 3. **`unknown` is not `false`.** A finding the labels cannot decide is `unresolved` and goes to adjudication. It never becomes a silent false positive.
 4. **Every verdict names the rule that produced it** (`M1`–`M9`, `N*`), so any count can be traced back to a rule.
 5. **Versioned.** Any change to a rule, a parameter (§3), or tie-breaking bumps `matcher_version`. Results from different versions are never pooled.
+   - **Enforced** (issue #36): each `matcher_version` has exactly one registered parameter profile, and scoring with any other parameters raises `UnregisteredParams`.
+   - Every scored episode carries a **scoring identity**: `sha256` over the matcher, disposition and metrics versions plus all parameters. Sealed bundles record it as `versions.scoring_profile`.
+   - The golden vectors pin the identity, so a parameter change can't go unnoticed.
 
 ## 2. Inputs
 
@@ -230,6 +233,7 @@ Each metric is a **MetricRecord**: `{metric, kind: proportion|rate, numerator, d
 Further definitions:
 
 - **Negative units** for an episode = the number of `reviewed_negative_scope` entries, plus 1 for the focal negative when the episode ran on `focal_negative.variant`.
+- **Consistency.** A defined value MUST be finite and equal numerator/denominator within a relative tolerance of 1e-12. A zero denominator is always undefined (`null`), never 0. Checked by `MetricRecord` (issue #36).
 - **Proportions and rates.** Every metric is a proportion (numerator ≤ denominator) except the scoped false-alarm rate. That one is a **rate**: several refuted findings can land on one negative unit, so it can exceed 1. `MetricRecord.kind` records which is which.
 - **Precision before and after adjudication.** Before adjudication, precision is *provisional*: unresolved findings are left out and shown through the unresolved fraction. After adjudication, each adjudicated finding counts under its adjudicated verdict (§7).
 - **Budget usage** (actions, wall time, tokens and requests) is reported as distributions per configuration, never normalized across tokenizers.

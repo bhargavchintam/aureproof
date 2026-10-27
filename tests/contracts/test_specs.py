@@ -12,7 +12,7 @@ from typing import Any
 import pytest
 from pydantic import BaseModel, ValidationError
 
-from aureproof.contracts import AttemptRecord, EpisodeSpec, SystemSpec, TaskSpec
+from aureproof.contracts import AttemptRecord, EpisodeSpec, MetricRecord, SystemSpec, TaskSpec
 
 ROOT = Path(__file__).resolve().parents[2]
 VECTORS = ROOT / "conformance" / "contracts" / "v0.1"
@@ -21,6 +21,7 @@ MODELS: dict[str, type[BaseModel]] = {
     "system-spec": SystemSpec,
     "episode-spec": EpisodeSpec,
     "attempt-record": AttemptRecord,
+    "metric-record": MetricRecord,
 }
 CASES = sorted(p for kind in MODELS for p in (VECTORS / kind).glob("*/*.json"))
 

@@ -47,6 +47,11 @@ public API and the specs may change between minor versions).
   export and import with a property-based round-trip test, generated JSON Schema
   2020-12 files in `specs/contracts/v0.1/` with a drift check, and conformance
   vectors checked against both the models and the schemas.
+- Scoring identity (issue #36). Each matcher version has one registered
+  parameter profile, and overrides are rejected. Scored episodes and sealed bundles
+  carry `scoring_identity`, a digest of all versions and parameters, which the golden
+  vectors pin. `MetricRecord` values must be finite and match numerator/denominator
+  within 1e-12. New metric-record conformance vectors.
 - Provider-terms review (`docs/provider-terms.md`, issue #18), dated 2026-10-27,
   with primary-source links for Anthropic (in use) and OpenAI (later). Adds
   responsible-use rules: API keys only, the Cyber Verification Program instead of

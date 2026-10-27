@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from aureproof.contracts.labels import LabelSet
 from aureproof.contracts.verdicts import Disposition, EpisodeSignals, RunnerOutcome, VerdictRecord
 from aureproof.scoring.matcher import match
-from aureproof.scoring.params import V0_1, MatcherParams
+from aureproof.scoring.params import V0_1, MatcherParams, scoring_identity
 from aureproof.scoring.submission import SubmissionStatus, parse_submission
 
 # Dispositions whose episodes enter quality metrics (§5.3 "Graded").
@@ -33,6 +33,7 @@ class EpisodeScore:
     annotations: tuple[str, ...]
     positives: int  # labeled defects present in this episode's variant
     negative_units: int  # reviewed-negative entries (+1 focal on its variant)
+    scoring_identity: str  # versions + parameters that produced this score (issue #36)
 
     @property
     def graded(self) -> bool:
@@ -49,6 +50,7 @@ def score_episode(
     params: MatcherParams = V0_1,
 ) -> EpisodeScore:
     """Apply the decision list D1-D8 in order; the first match wins."""
+    identity = scoring_identity(params)  # raises on unregistered parameters
     positives = sum(variant in d.variants for d in labels.defects)
     focal = labels.focal_negative
     units = len(labels.reviewed_negative_scope) + int(
@@ -65,7 +67,9 @@ def score_episode(
         verdicts: tuple[VerdictRecord, ...] | None = None,
         credited: tuple[str, ...] = (),
     ) -> EpisodeScore:
-        return EpisodeScore(disposition, verdicts, credited, tuple(annotations), positives, units)
+        return EpisodeScore(
+            disposition, verdicts, credited, tuple(annotations), positives, units, identity
+        )
 
     def graded(disposition: Disposition) -> EpisodeScore:
         result = match(
