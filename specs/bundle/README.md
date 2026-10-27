@@ -7,6 +7,7 @@ SPDX-License-Identifier: Apache-2.0
 - Spec: `bundle/v0.1`. Status: **draft, pending a second review** (issue #13, AP-036; ADR-0005).
 - Normative source: [`docs/aureproof-plan-v2.md`](../../docs/aureproof-plan-v2.md) §3.5 and §4.2. This document refines them; where they differ, this document wins.
 - Reference implementation: `aureproof.bundle` (pure; no file or network I/O). Conformance vectors: [`conformance/bundle/v0.1/`](../../conformance/bundle/v0.1/).
+- JSON Schemas, generated from the models with a drift check: [`v0.1/manifest.schema.json`](v0.1/manifest.schema.json), [`v0.1/seal-statement.schema.json`](v0.1/seal-statement.schema.json), [`v0.1/journal-entry.schema.json`](v0.1/journal-entry.schema.json).
 - Signing with Sigstore is M2. A v0.1 bundle is **sealed** (integrity and completeness) but may be **unsigned** (no identity).
 
 The key words MUST, MUST NOT, SHOULD and MAY are used as in RFC 2119.
@@ -33,6 +34,12 @@ Validators report V5 (signature) as `skipped`, never as a pass. A validator SHOU
 - **Canonical JSON** is RFC 8785 (JCS). Every JSON document defined here is stored as exactly its JCS bytes, so a document has a single valid byte sequence. Validation rejects non-canonical bytes.
 - **Digests** are SHA-256, written as lowercase hex. A *digest reference* is `sha256:<64 hex>`.
 - **The digest of a JSON value** is the SHA-256 of its JCS bytes.
+- **Parsing is strict and bounded** (issue #35):
+  - UTF-8 only; no duplicate object keys; no `NaN` or `Infinity`;
+  - nesting at most 32 levels deep, checked by a linear scan before parsing;
+  - values must be I-JSON (RFC 7493): finite numbers, no lone surrogates.
+  - Numbers are IEEE doubles, as in RFC 8785: an integer token beyond ±(2⁵³−1) denotes the nearest double. Text that isn't that double's canonical form fails the byte comparison.
+  - A document that breaks any of these rules fails its check. It never raises an exception in the validator.
 
 ## 3. Layout
 
@@ -64,6 +71,7 @@ Every file other than `manifest.json` and `seal.*` MUST be listed in the manifes
 - `role` is one of `journal`, `verdicts`, `metrics`, `adjudications`, `protocol`, `system`, `task_health`, `submission`, `decision`, `blob` or `other`.
 - **Mandatory roles in v0.1:** `journal`, `verdicts` and `metrics`. Each MUST appear exactly once, with `mandatory: true`. A producer MAY mark further members mandatory; their absence then makes the bundle invalid.
 - **A producer MUST refuse to seal** when mandatory evidence is missing (plan §3.4). Incomplete evidence is reported, never sealed as if complete.
+- A producer MUST also refuse a mandatory role marked `mandatory: false`, an unknown role, an empty media type, or invalid seal metadata. Before returning, the reference builder validates its own output, so it never hands back a bundle that fails V1–V6.
 
 ## 5. Journal
 
@@ -77,6 +85,8 @@ Every file other than `manifest.json` and `seal.*` MUST be listed in the manifes
 - `prev` is the `hash` of the previous entry. The first entry's `prev` is the **genesis** reference: `sha256:` followed by 64 zeros.
 - `hash` = digest of the JCS form of `{"seq", "prev", "event"}`.
 - `event` is an `Event` (`specs/contracts/v0.1/event.schema.json`), and `event.seq` MUST equal `seq`.
+- **`hash` covers the event exactly as recorded.** The validator hashes the raw event object from the line and checks its shape against `Event` separately. A producer may omit defaulted fields or write explicit nulls (vector `valid/raw-event-defaults`).
+- Event payloads MUST be canonicalizable. NaN, infinities, unsafe integers and lone surrogates are rejected when the event is created, never silently converted.
 - Every `blob_refs` entry in an event MUST resolve to a `blobs/sha256/<hex>` member.
 - The **journal head** is the last entry's `hash`, or genesis for an empty journal.
 
@@ -136,7 +146,7 @@ The validator never stops at the first problem. It reports every failed check, s
 - a forged seal subject;
 - a blob whose path is not its digest.
 
-Each vector names the checks that must fail. `scripts/make_bundle_vectors.py` regenerates them deterministically, and a test fails if the committed vectors drift.
+It also covers adversarial inputs: NaN in the manifest, an unsafe integer and a lone surrogate in the seal, and a journal line nested 10,000 deep. Each vector names the checks that must fail. `scripts/make_bundle_vectors.py` regenerates them deterministically, and a test fails if the committed vectors drift.
 
 ## 9. Open questions for the second reviewer
 

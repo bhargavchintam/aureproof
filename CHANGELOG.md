@@ -63,6 +63,15 @@ public API and the specs may change between minor versions).
   truncated, reordered and missing evidence.
 
 ### Changed
+- Hardened untrusted JSON (issue #35). A shared strict, bounded loader
+  (`aureproof.contracts.strict_json`) handles submissions, manifests, seals and
+  journal lines: no duplicate keys or NaN, depth at most 32 checked before parsing,
+  I-JSON values. Hostile input now fails a check instead of raising. The journal
+  check (V3) hashes the event exactly as recorded. Events reject values with no
+  RFC 8785 form. The builder rejects invalid metadata and `mandatory=false` on a
+  required role, and validates its own output. The bundle manifest, seal and
+  journal-entry JSON Schemas are published with a drift check. New scoring
+  parameter `max_depth` (32) and golden vector G-42.
 - v0.1 scope frozen (issue #5): ADR-0006 makes strict confirmed yield the
   primary metric; ADR-0007 fixes Claude Code over Anthropic Messages as the
   external subject, native versus controlled interface modes, the `closed-world`
