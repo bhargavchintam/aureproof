@@ -119,6 +119,7 @@ forbidden_modules = [
   "aureproof.exporters",
   "aureproof.oracles",
   "aureproof.cli",
+  "aureproof.storage",
 ]
 
 [[tool.importlinter.contracts]]

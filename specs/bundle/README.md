@@ -61,6 +61,19 @@ A bundle is a set of files keyed by path. Paths are workspace-style:
 
 Every file other than `manifest.json` and `seal.*` MUST be listed in the manifest. An unlisted file makes the bundle invalid, because nothing seals it.
 
+### 3a. Run bundles
+
+A run bundle (`aureproof.bundle.run`) records scored episodes so they can be re-scored offline:
+
+| Path | Role | Content |
+| --- | --- | --- |
+| `episodes.json` | `episodes` | One record per scheduled episode: `{episode_id, task_id, variant, labels, agent_view, signals, submission}`. `submission` is the blob reference of the captured `findings.json`, or `null` |
+| `tasks/<task_id>/labels.json` | `labels` | The evaluator labels used. A `redacted` public bundle may omit them, and is then not re-scorable |
+| `verdicts.json` | `verdicts` | Per episode: disposition, verdict records, credited defects, annotations, scoring identity |
+| `metrics.json` | `metrics` | `{cohort, metrics: {name: MetricRecord}}` |
+
+`aureproof score --offline` recomputes `verdicts.json` and `metrics.json` from the episodes, labels and blobs, and requires byte equality.
+
 ## 4. Manifest
 
 ```json
@@ -68,7 +81,7 @@ Every file other than `manifest.json` and `seal.*` MUST be listed in the manifes
 ```
 
 - `members` is sorted by `path` (byte order), with no duplicates.
-- `role` is one of `journal`, `verdicts`, `metrics`, `adjudications`, `protocol`, `system`, `task_health`, `submission`, `decision`, `blob` or `other`.
+- `role` is one of `journal`, `verdicts`, `metrics`, `adjudications`, `protocol`, `system`, `task_health`, `submission`, `decision`, `episodes`, `labels`, `blob` or `other`.
 - **Mandatory roles in v0.1:** `journal`, `verdicts` and `metrics`. Each MUST appear exactly once, with `mandatory: true`. A producer MAY mark further members mandatory; their absence then makes the bundle invalid.
 - **A producer MUST refuse to seal** when mandatory evidence is missing (plan §3.4). Incomplete evidence is reported, never sealed as if complete.
 - A producer MUST also refuse a mandatory role marked `mandatory: false`, an unknown role, an empty media type, or invalid seal metadata. Before returning, the reference builder validates its own output, so it never hands back a bundle that fails V1–V6.

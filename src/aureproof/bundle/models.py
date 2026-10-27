@@ -30,6 +30,8 @@ Role = Literal[
     "task_health",
     "submission",
     "decision",
+    "episodes",
+    "labels",
     "blob",
     "other",
 ]
