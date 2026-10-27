@@ -42,6 +42,26 @@ jobs:
       - name: REUSE / license compliance
         run: uvx --with charset-normalizer --from reuse reuse lint
 
+  fresh-install:
+    name: fresh install + Phase-1 gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: "0.12.19"
+      - name: Build the wheel
+        run: uv build --wheel
+      - name: Install into a clean venv and re-score the tutorial bundle offline
+        run: |
+          uv venv --python 3.12 /tmp/fresh
+          uv pip install --python /tmp/fresh/bin/python dist/*.whl
+          /tmp/fresh/bin/aureproof validate examples/bundles/tutorial-v0.1
+          /tmp/fresh/bin/aureproof score examples/bundles/tutorial-v0.1 --offline --json > /tmp/phase1.json
+          /tmp/fresh/bin/python scripts/check_phase1.py /tmp/phase1.json
+
   secrets:
     name: secret scan (gitleaks)
     runs-on: ubuntu-latest
