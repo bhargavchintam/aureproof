@@ -47,6 +47,14 @@ public API and the specs may change between minor versions).
   export and import with a property-based round-trip test, generated JSON Schema
   2020-12 files in `specs/contracts/v0.1/` with a drift check, and conformance
   vectors checked against both the models and the schemas.
+- CLI (issue #16): `aureproof validate`, `score --offline` and `report`
+  (HTML or Markdown), working from saved records only, with exit codes 0/1/2. Adds run
+  bundles (`aureproof.bundle.run`: seal scored episodes; byte-exact offline re-score),
+  a `storage` adapter (regular files only, symlinks rejected, canonical paths, size
+  limit, atomic writes, content-addressed store), escaped reports with a no-script CSP,
+  and an offline tutorial (`docs/guides/tutorial.md`, `examples/bundles/tutorial-v0.1`).
+  **Phase-1 gate:** the offline re-score reproduces golden cohort C-01's independently
+  calculated counts.
 - Decision Protocol v0.1 and the exact gate (issue #14): `specs/decision/README.md`,
   protocol and decision schemas, and `aureproof.stats`: an exact paired sign-flip test
   in rational arithmetic, a test-inversion interval from subset-mean order statistics,

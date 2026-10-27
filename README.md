@@ -62,6 +62,19 @@ the cited landscape.
 | Every Eval Ever | — | interchange, no signing | — |
 | **Aureproof (planned)** | **persistent + exclusion** | **yes** | **yes** |
 
+## Try it offline
+
+Validate, re-score and report a sealed example bundle. No credentials, no network:
+
+```bash
+uv sync --frozen
+uv run aureproof validate examples/bundles/tutorial-v0.1
+uv run aureproof score examples/bundles/tutorial-v0.1 --offline
+uv run aureproof report examples/bundles/tutorial-v0.1 --out report.html
+```
+
+Walkthrough: [`docs/guides/tutorial.md`](docs/guides/tutorial.md).
+
 ## Quickstart (development)
 
 Requires [uv](https://docs.astral.sh/uv/) and Python 3.12+.
