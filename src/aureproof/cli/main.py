@@ -542,6 +542,46 @@ def adjudicate_report(
     raise typer.Exit(0 if complete or not items else 1)
 
 
+@app.command()
+def migrate(
+    source: Annotated[Path, typer.Argument(help="A record of an older version (JSON).")],
+    out: Annotated[Path, typer.Option("--out", help="New file to write; never the input.")],
+) -> None:
+    """Upgrade a record into a new file with a provenance sidecar; never edits the input."""
+    from aureproof.bundle.canonical import digest_ref
+    from aureproof.bundle.models import SEAL
+    from aureproof.contracts.migrate import MigrationError
+    from aureproof.contracts.migrate import migrate as run_migrate
+    from aureproof.contracts.strict_json import JsonInputError, loads_strict
+
+    inside = [d for d in source.resolve().parents if (d / SEAL).exists()]
+    if source.is_dir() or inside:
+        typer.echo("error: sealed evidence is never migrated; re-score into a new bundle", err=True)
+        raise typer.Exit(2)
+    sidecar = out.with_name(out.name + ".provenance.json")
+    if out.exists() or sidecar.exists() or out.resolve() == source.resolve():
+        typer.echo(f"error: {out} or its provenance file exists", err=True)
+        raise typer.Exit(2)
+    data = source.read_bytes()
+    try:
+        result = run_migrate(loads_strict(data, i_json=True))
+    except (JsonInputError, MigrationError) as exc:
+        typer.echo(f"error: {exc}", err=True)
+        raise typer.Exit(2) from None
+    out.write_text(json.dumps(result.record, indent=2) + "\n", encoding="utf-8")
+    provenance = {
+        "migrated_from": {"path": source.name, "sha256": digest_ref(data)},
+        "source_version": result.source_version,
+        "target_version": result.target_version,
+        "losses": result.losses,
+        "tool": {"name": "aureproof", "version": __version__},
+    }
+    sidecar.write_text(json.dumps(provenance, indent=2) + "\n", encoding="utf-8")
+    typer.echo(f"wrote {out} ({result.source_version} -> {result.target_version})")
+    for loss in result.losses:
+        typer.echo(f"  loss: {loss}")
+
+
 EXIT = {"pass": 0, "fail": 1, "inconclusive": 3}  # 2: the evidence cannot be compared
 
 
