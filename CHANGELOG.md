@@ -47,6 +47,12 @@ public API and the specs may change between minor versions).
   export and import with a property-based round-trip test, generated JSON Schema
   2020-12 files in `specs/contracts/v0.1/` with a drift check, and conformance
   vectors checked against both the models and the schemas.
+- Calibration runner and `aureproof task validate` (issue #38). All seven THR controls
+  run through the real scoring core and the evaluator's calibration PoC, every control is
+  re-run, and the status is derived. `authz-001` is **healthy**: spraying reaches recall
+  1/1 with yield 1/88, and the PoC fires on the vulnerable variant only. Unhealthy,
+  unknown and canary-leak cases exit 1, and CI runs the command on every push. Records
+  stay unreviewed and unfrozen until the independent reviewer (#31).
 - Canaries and splits (issue #45): `fixtures/dataset.json` (registry: splits, revisions,
   exposure, overlap; assessment membership by digest only) validated by
   `aureproof.contracts.dataset`. A second, evaluator-only `oracle_canary` per task

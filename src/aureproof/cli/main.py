@@ -163,5 +163,53 @@ def report(
     raise typer.Exit(0 if ok else 1)
 
 
+task_app = typer.Typer(help="Task health: calibration and qualification.", no_args_is_help=True)
+app.add_typer(task_app, name="task")
+
+
+@task_app.command("validate")
+def task_validate(
+    task_id: Annotated[str, typer.Argument(help="Task ID, e.g. authz-001.")],
+    root: Annotated[Path, typer.Option("--root", help="Repository root.")] = Path(),
+    out: Annotated[Path | None, typer.Option("--out", help="Write the THR JSON here.")] = None,
+    as_json: JsonOpt = False,
+) -> None:
+    """Run every THR control twice, label lint, and canary checks. Exit 1 unless healthy."""
+    from aureproof.oracles.calibration import calibrate, qualification_problems
+
+    if not (root / "fixtures" / "security" / task_id).is_dir():
+        typer.echo(f"error: no fixture for task {task_id!r} under {root}", err=True)
+        raise typer.Exit(2)
+    problems = qualification_problems(root, task_id)
+    record = calibrate(root, task_id)
+    if out is not None:
+        if out.exists():
+            typer.echo(f"error: {out} exists", err=True)
+            raise typer.Exit(2)
+        out.write_text(record.model_dump_json(indent=2) + "\n", encoding="utf-8")
+    if as_json:
+        typer.echo(
+            json.dumps(
+                {
+                    "status": record.status.value,
+                    "reason": record.status_reason,
+                    "qualification_problems": problems,
+                    "record": record.model_dump(mode="json"),
+                },
+                indent=2,
+            )
+        )
+    else:
+        for c in record.controls:
+            state = {True: "pass", False: "FAIL", None: "not run"}[c.passed]
+            typer.echo(f"{c.kind.value:<20} {state}")
+        typer.echo(f"determinism          {record.determinism.reproduced}")
+        for p in problems:
+            typer.echo(f"  - {p}")
+        typer.echo(f"{task_id}: {record.status.value.upper()} ({record.status_reason})")
+        typer.echo("note: unreviewed and unfrozen until an independent reviewer signs off (#31)")
+    raise typer.Exit(0 if record.status.value == "healthy" and not problems else 1)
+
+
 if __name__ == "__main__":  # pragma: no cover
     sys.exit(app())
