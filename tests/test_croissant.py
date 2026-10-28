@@ -79,4 +79,6 @@ def test_the_card_states_use_license_provenance_and_provider_terms() -> None:
     for task in REGISTRY["tasks"]:
         assert f"`{task['task_id']}`" in CARD
         assert task["exposure"][0]["since"] in CARD
+        assert task["canary"] in CARD  # RESPONSIBLE_USE.md: dataset cards carry canaries
+        assert task["oracle_canary"] not in CARD  # the evaluator-only canary stays out
     assert "private" in CARD and "Its labels are never" in CARD
