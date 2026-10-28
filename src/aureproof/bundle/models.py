@@ -18,7 +18,8 @@ PREDICATE_TYPE = (
 MANIFEST = "manifest.json"
 SEAL = "seal.intoto.json"
 JOURNAL = "journal.jsonl"
-RESERVED = frozenset({MANIFEST, SEAL, "seal.sigstore.json"})
+SIGNATURE = "seal.sigstore.json"
+RESERVED = frozenset({MANIFEST, SEAL, SIGNATURE})
 BLOB_PREFIX = "blobs/sha256/"
 Role = Literal[
     "journal",

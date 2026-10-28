@@ -21,6 +21,7 @@ import typer
 from aureproof import __version__
 from aureproof.bundle import validate as validate_bundle
 from aureproof.bundle.run import rescore
+from aureproof.bundle.validate import SignatureCheck
 from aureproof.cli.report import collect, render_html, render_markdown
 from aureproof.storage import StorageError, read_bundle
 
@@ -69,17 +70,65 @@ def _read(bundle: Path) -> dict[str, bytes]:
         raise typer.Exit(2) from exc
 
 
+IdentityOpt = Annotated[
+    str | None,
+    typer.Option("--expect-identity", help="Expected signer identity (default: project policy)."),
+]
+IssuerOpt = Annotated[str | None, typer.Option("--expect-issuer", help="Expected OIDC issuer.")]
+
+
+def _signature(files: dict[str, bytes], identity: str | None, issuer: str | None) -> SignatureCheck:
+    try:
+        from aureproof.signing import EXPECTED_IDENTITY, EXPECTED_ISSUER, verify_bundle
+    except ImportError as exc:  # pragma: no cover - depends on the installed extras
+        typer.echo("error: signature verification needs the `sign` extra", err=True)
+        raise typer.Exit(2) from exc
+    return verify_bundle(
+        files, identity=identity or EXPECTED_IDENTITY, issuer=issuer or EXPECTED_ISSUER
+    )
+
+
 @app.command()
 def validate(
-    bundle: BundleArg, trusted_seal_digest: TrustedOpt = None, as_json: JsonOpt = False
+    bundle: BundleArg,
+    trusted_seal_digest: TrustedOpt = None,
+    verify_signature: Annotated[
+        bool, typer.Option("--verify-signature", help="Verify seal.sigstore.json offline (V5).")
+    ] = False,
+    require_signature: Annotated[
+        bool,
+        typer.Option("--require-signature", help="Fail unless V5 passes (signed-evidence gate)."),
+    ] = False,
+    public: Annotated[
+        bool,
+        typer.Option("--public", help="Also require a redacted, label-free, secret-free bundle."),
+    ] = False,
+    expect_identity: IdentityOpt = None,
+    expect_issuer: IssuerOpt = None,
+    as_json: JsonOpt = False,
 ) -> None:
     """Validate a bundle offline (checks V1-V6)."""
-    report = validate_bundle(_read(bundle), trusted_seal_digest=trusted_seal_digest)
+    from aureproof.bundle.public import public_problems
+
+    files = _read(bundle)
+    signature: SignatureCheck | None = None
+    if verify_signature or require_signature:
+        signature = _signature(files, expect_identity, expect_issuer)
+    report = validate_bundle(files, trusted_seal_digest=trusted_seal_digest, signature=signature)
+    gate: list[str] = []
+    if require_signature and not report.signed:
+        gate.append("signed-evidence gate: no verified signature (V5 did not pass)")
+    if public:
+        gate += [f"public: {p}" for p in public_problems(files)]
+    ok = report.valid and not gate
     if as_json:
         typer.echo(
             json.dumps(
                 {
                     "valid": report.valid,
+                    "signed": report.signed,
+                    "ok": ok,
+                    "gate_problems": gate,
                     "checks": [
                         {"id": c.id, "name": c.name, "status": c.status, "problems": c.problems}
                         for c in report.checks
@@ -93,8 +142,82 @@ def validate(
             typer.echo(f"{c.id} {c.name:<20} {c.status}")
             for p in c.problems:
                 typer.echo(f"    - {p}")
-        typer.echo("VALID" if report.valid else "INVALID")
-    raise typer.Exit(0 if report.valid else 1)
+        for p in gate:
+            typer.echo(f"GATE {p}")
+        typer.echo("VALID" if ok else "INVALID")
+    raise typer.Exit(0 if ok else 1)
+
+
+@app.command()
+def sign(
+    path: Annotated[Path, typer.Argument(help="Bundle directory, or a canonical JSON file.")],
+) -> None:
+    """Sign keylessly with the ambient OIDC identity (the sign.yml workflow)."""
+    from aureproof.bundle.canonical import canonical_json
+    from aureproof.bundle.models import SEAL
+    from aureproof.contracts.strict_json import JsonInputError, loads_strict
+
+    try:
+        from aureproof.signing import sign_bytes, signature_path, verify_bytes
+    except ImportError as exc:  # pragma: no cover
+        typer.echo("error: signing needs the `sign` extra", err=True)
+        raise typer.Exit(2) from exc
+    target = path / SEAL if path.is_dir() else path
+    if not target.is_file() or target.is_symlink():
+        typer.echo(f"error: {target} is not a regular file", err=True)
+        raise typer.Exit(2)
+    data = target.read_bytes()
+    try:
+        if canonical_json(loads_strict(data, i_json=True)) != data:
+            raise JsonInputError("not RFC 8785 canonical")
+    except JsonInputError as exc:
+        typer.echo(f"error: refusing to sign non-canonical JSON: {exc}", err=True)
+        raise typer.Exit(2) from exc
+    out = signature_path(path)
+    if out.exists():
+        typer.echo(f"error: {out} exists", err=True)
+        raise typer.Exit(2)
+    bundle_json = sign_bytes(data)
+    check = verify_bytes(data, bundle_json)
+    out.write_text(bundle_json, encoding="utf-8")
+    typer.echo(f"wrote {out}; verified={check.verified} identity={check.identity}")
+    raise typer.Exit(0 if check.verified else 1)
+
+
+@app.command()
+def verify(
+    path: Annotated[Path, typer.Argument(help="Bundle directory, or a signed file.")],
+    expect_identity: IdentityOpt = None,
+    expect_issuer: IssuerOpt = None,
+) -> None:
+    """Verify a signature offline against the expected signer identity."""
+    try:
+        from aureproof.signing import (
+            EXPECTED_IDENTITY,
+            EXPECTED_ISSUER,
+            signature_path,
+            verify_bytes,
+        )
+    except ImportError as exc:  # pragma: no cover
+        typer.echo("error: verification needs the `sign` extra", err=True)
+        raise typer.Exit(2) from exc
+    from aureproof.bundle.models import SEAL
+
+    target = path / SEAL if path.is_dir() else path
+    sig = signature_path(path)
+    if not target.is_file() or not sig.is_file():
+        typer.echo(f"error: need both {target} and {sig}", err=True)
+        raise typer.Exit(2)
+    check = verify_bytes(
+        target.read_bytes(),
+        sig.read_bytes(),
+        identity=expect_identity or EXPECTED_IDENTITY,
+        issuer=expect_issuer or EXPECTED_ISSUER,
+    )
+    typer.echo(f"verified={check.verified} identity={check.identity} issuer={check.issuer}")
+    for p in check.problems:
+        typer.echo(f"  - {p}")
+    raise typer.Exit(0 if check.verified else 1)
 
 
 @app.command()

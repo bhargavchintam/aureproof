@@ -22,6 +22,7 @@ from aureproof.bundle.canonical import canonical_json, digest_ref
 from aureproof.bundle.run import EpisodeInput, labels_path, seal_run
 
 ROOT = Path(__file__).resolve().parents[1]
+SIGNATURE = "seal.sigstore.json"
 GOLDEN = ROOT / "conformance" / "scoring" / "v0.1" / "golden.json"
 OUT = ROOT / "examples" / "bundles" / "tutorial-v0.1"
 
@@ -77,6 +78,7 @@ def main() -> int:
         if OUT.exists()
         else {}
     )
+    on_disk.pop(SIGNATURE, None)  # made by the sign.yml workflow; kept, never regenerated
     if args.check:
         stale = sorted(set(files) ^ set(on_disk)) + sorted(
             k for k in files if k in on_disk and files[k] != on_disk[k]
