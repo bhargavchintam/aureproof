@@ -79,6 +79,10 @@ uv run aureproof report examples/bundles/tutorial-v0.1 --out report.html
 
 Walkthrough: [`docs/guides/tutorial.md`](docs/guides/tutorial.md).
 
+Guides: [authoring a task](docs/guides/authoring-tasks.md) (task-health controls, licensing),
+[reading results](docs/guides/reading-results.md) (verdicts, denominators, exclusions,
+refusals) and [the comparison gate](docs/guides/gate-action.md) (pass, fail, inconclusive).
+
 ## Quickstart (development)
 
 Requires [uv](https://docs.astral.sh/uv/) and Python 3.12+.

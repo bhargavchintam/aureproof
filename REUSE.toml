@@ -16,6 +16,7 @@ path = [
   "NOTICE",
   "CODEOWNERS",
   "CITATION.cff",
+  ".zenodo.json",
   "uv.lock",
   ".python-version",
   ".gitignore",

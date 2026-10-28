@@ -66,6 +66,10 @@ jobs:
           /tmp/fresh/bin/aureproof validate examples/bundles/tutorial-v0.1
           /tmp/fresh/bin/aureproof score examples/bundles/tutorial-v0.1 --offline --json > /tmp/phase1.json
           /tmp/fresh/bin/python scripts/check_phase1.py /tmp/phase1.json
+      - name: SBOM (CycloneDX 1.5) from the lockfile
+        run: |
+          uv export --format cyclonedx1.5 --frozen --no-dev -o /tmp/sbom.cdx.json
+          uv run python scripts/check_sbom.py /tmp/sbom.cdx.json
 
   signatures:
     name: signatures (offline Sigstore verification)
