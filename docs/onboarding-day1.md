@@ -26,13 +26,16 @@ progress and work order are in [`project-status.md`](project-status.md).
 
 ## To do (maintainer)
 
-- [ ] **Freeze scope, the primary metric, and the external agent + protocol** in ADRs ([#5](https://github.com/bhargavchintam/aureproof/issues/5), AP-001). This is an M0 issue, and #6 and #9 depend on it.
+The open items, each as one action with what it unblocks, are in
+[`maintainer-actions.md`](maintainer-actions.md).
+
+- [x] **Freeze scope, the primary metric, and the external agent + protocol** in ADRs ([#5](https://github.com/bhargavchintam/aureproof/issues/5), AP-001). This is an M0 issue, and #6 and #9 depend on it.
 - [ ] **Name the second reviewer** in `MAINTAINERS.md` and accept ADR-0005 (blocks the M2 calibration gate; [#31](https://github.com/bhargavchintam/aureproof/issues/31)).
 - [ ] **Set the Code of Conduct contact** and reconcile license provenance ([#33](https://github.com/bhargavchintam/aureproof/issues/33)).
 - [ ] **Run 3–5 practitioner interviews** with the kit and record the go / narrow decision ([#6](https://github.com/bhargavchintam/aureproof/issues/6)).
 - [ ] **Provision the Linux host** and get all `PASS` from `scripts/check_host.sh` ([#32](https://github.com/bhargavchintam/aureproof/issues/32)).
 - [x] **Day-2 Inspect spike** on `authz-001`: ADR-0002/0003 accepted. Notes: [`research/spike-inspect-day2.md`](research/spike-inspect-day2.md).
-- [ ] **Repair and re-run the spike with current labels** ([#34](https://github.com/bhargavchintam/aureproof/issues/34)); the historical mock result predates the label migration.
+- [x] **Repair and re-run the spike with current labels** ([#34](https://github.com/bhargavchintam/aureproof/issues/34)); the historical mock result predates the label migration.
 - [ ] **Run the authorized, budgeted live Claude Code episode** to finish spike check 2 ([#7](https://github.com/bhargavchintam/aureproof/issues/7)) after its listed dependencies. Follow the spike README's private key-file procedure.
 - [ ] **Set up PyPI Trusted Publishing and qualify the offline alpha** ([#37](https://github.com/bhargavchintam/aureproof/issues/37), M1).
 - [x] **Dependabot PRs** #1–#4 superseded by the grouped #21 (merged); #23 (pydantic 2.14) merged.
