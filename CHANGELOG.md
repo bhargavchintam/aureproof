@@ -47,6 +47,14 @@ public API and the specs may change between minor versions).
   export and import with a property-based round-trip test, generated JSON Schema
   2020-12 files in `specs/contracts/v0.1/` with a drift check, and conformance
   vectors checked against both the models and the schemas.
+- Sigstore signing (issue #46). Keyless signing by the `sign.yml` GitHub Actions workflow on
+  `main` (the project's only signer identity), offline verification against the pinned
+  package's trust root, `aureproof sign`/`verify`, and `validate --verify-signature`,
+  `--require-signature` (signed-evidence gate) and `--public` (redacted, label-free,
+  secret-free). V5 is now pass/fail/skipped, and signature status is distinct from
+  validity. Adds pure redaction and a secret scan (`bundle.public`), the `sign` extra
+  (`sigstore==4.5.1`), kept out of the pure core, and a CI job that verifies signatures
+  offline.
 - Inspect runner adapter (issue #39): a `Runner` port with per-sample classification
   (`runners.port`), the Inspect adapter (`runners.inspect_runner`: one sample per
   attempt, `retry_on_error=0`, `fail_on_error=False`, no agent retries, raw-byte capture

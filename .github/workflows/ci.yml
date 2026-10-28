@@ -64,6 +64,21 @@ jobs:
           /tmp/fresh/bin/aureproof score examples/bundles/tutorial-v0.1 --offline --json > /tmp/phase1.json
           /tmp/fresh/bin/python scripts/check_phase1.py /tmp/phase1.json
 
+  signatures:
+    name: signatures (offline Sigstore verification)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: "0.12.19"
+      - name: Install (locked, with the sign extra)
+        run: uv sync --frozen --extra sign
+      - name: Signing tests (no network needed for verification)
+        run: uv run pytest tests/signing --no-cov -ra
+
   secrets:
     name: secret scan (gitleaks)
     runs-on: ubuntu-latest

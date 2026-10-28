@@ -45,6 +45,9 @@ inspect = [
     "inspect-ai==0.3.283",
     "inspect-swe==0.2.72",
 ]
+sign = [
+    "sigstore==4.5.1",
+]
 
 [dependency-groups]
 dev = [
@@ -81,7 +84,7 @@ explicit_package_bases = true
 
 [[tool.mypy.overrides]]
 # Optional extra: type-checked when installed, skipped otherwise.
-module = ["inspect_ai", "inspect_ai.*", "inspect_swe", "inspect_swe.*"]
+module = ["inspect_ai", "inspect_ai.*", "inspect_swe", "inspect_swe.*", "sigstore", "sigstore.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
@@ -97,7 +100,11 @@ branch = true
 source = ["aureproof"]
 # Needs the `inspect` extra and Docker: covered by the Inspect lane workflow
 # (tests/integration/test_inspect_runner.py), not by the default job.
-omit = ["*/aureproof/runners/inspect_runner.py"]
+omit = [
+  "*/aureproof/runners/inspect_runner.py",
+  # Needs the `sign` extra: covered by the CI job "signatures" (tests/signing).
+  "*/aureproof/signing/sigstore_adapter.py",
+]
 
 [tool.coverage.report]
 show_missing = true
@@ -128,6 +135,7 @@ forbidden_modules = [
   "aureproof.oracles",
   "aureproof.cli",
   "aureproof.storage",
+  "aureproof.signing",
 ]
 
 [[tool.importlinter.contracts]]

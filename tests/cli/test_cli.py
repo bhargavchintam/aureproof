@@ -53,7 +53,8 @@ def test_tutorial_bundle_is_committed_exactly_as_generated() -> None:
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    assert module.build() == read_bundle(TUTORIAL)
+    on_disk = {k: v for k, v in read_bundle(TUTORIAL).items() if k != "seal.sigstore.json"}
+    assert module.build() == on_disk  # the workflow-made signature is kept beside it
 
 
 # ---- validate ------------------------------------------------------------------------
