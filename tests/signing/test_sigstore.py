@@ -65,3 +65,8 @@ def test_signed_evidence_gate_through_the_cli(tmp_path: Path) -> None:
     gate = runner.invoke(app, ["validate", str(copy), "--require-signature"])
     assert gate.exit_code == 1 and "signed-evidence gate" in gate.output
     assert runner.invoke(app, ["verify", str(TUTORIAL)]).exit_code == 0
+
+
+def test_the_tutorial_bundle_is_signed() -> None:
+    """From #46 on, the signature is required evidence, not an optional extra."""
+    assert SIGNED, "examples/bundles/tutorial-v0.1/seal.sigstore.json is missing"

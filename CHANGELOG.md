@@ -47,7 +47,8 @@ public API and the specs may change between minor versions).
   export and import with a property-based round-trip test, generated JSON Schema
   2020-12 files in `specs/contracts/v0.1/` with a drift check, and conformance
   vectors checked against both the models and the schemas.
-- Sigstore signing (issue #46). Keyless signing by the `sign.yml` GitHub Actions workflow on
+- Sigstore signing (issue #46). The tutorial bundle is signed by `sign.yml` (Actions
+  run 40654544677), and CI verifies it offline on every push. Keyless signing by the `sign.yml` GitHub Actions workflow on
   `main` (the project's only signer identity), offline verification against the pinned
   package's trust root, `aureproof sign`/`verify`, and `validate --verify-signature`,
   `--require-signature` (signed-evidence gate) and `--public` (redacted, label-free,
