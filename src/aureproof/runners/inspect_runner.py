@@ -33,6 +33,7 @@ from typing import Any, Literal
 
 from aureproof import __version__
 from aureproof.contracts import Budget, SystemSpec
+from aureproof.runners.collect import ARTIFACT, COLLECT_LIMIT, COLLECTOR, interpret
 from aureproof.runners.port import AttemptRequest, AttemptResult, SampleFacts, classify
 
 CAPTURE_KEY = "aureproof_capture"
@@ -152,19 +153,22 @@ def _collect_findings() -> Any:
     @solver  # type: ignore[untyped-decorator, unused-ignore]
     def collect_findings() -> Any:
         async def solve(state: TaskState, generate: Generate) -> TaskState:
-            try:
-                raw = await sandbox().read_file(FINDINGS_FILE, text=False)
-            except FileNotFoundError:
-                store().set(CAPTURE_KEY, {"status": "absent"})
-                return state
-            store().set(
-                CAPTURE_KEY,
-                {
-                    "status": "captured",
-                    "sha256": hashlib.sha256(raw).hexdigest(),
-                    "b64": base64.b64encode(raw).decode("ascii"),
-                },
+            # Bounded, symlink-free collection inside the sandbox (issue #40).
+            result = await sandbox().exec(
+                ["python3", "-c", COLLECTOR, ".", ARTIFACT, str(COLLECT_LIMIT)], timeout=60
             )
+            if not result.success:
+                store().set(
+                    CAPTURE_KEY,
+                    {"status": "rejected", "reason": f"collector_failed: {result.stderr[-200:]}"},
+                )
+                return state
+            capture = interpret(result.stdout)
+            record: dict[str, Any] = {"status": capture.status, "reason": capture.reason}
+            if capture.data is not None:
+                record["sha256"] = capture.sha256
+                record["b64"] = base64.b64encode(capture.data).decode("ascii")
+            store().set(CAPTURE_KEY, record)
             return state
 
         return solve
@@ -202,9 +206,10 @@ def facts_from_sample(sample: Any, log_path: Path, run_id: str | None) -> Sample
     request_ids = [rid for e in model_events for rid in (getattr(e, "request_ids", None) or [])]
     capture = (sample.store or {}).get(CAPTURE_KEY)
     submission: bytes | None = None
-    status: Literal["captured", "absent", "missing"] = "missing"
+    status: Literal["captured", "absent", "rejected", "missing"] = "missing"
+    detail = None
     if capture is not None:
-        status = capture["status"]
+        status, detail = capture["status"], capture.get("reason")
         if status == "captured":
             submission = base64.b64decode(capture["b64"])
             if hashlib.sha256(submission).hexdigest() != capture["sha256"]:
@@ -216,6 +221,7 @@ def facts_from_sample(sample: Any, log_path: Path, run_id: str | None) -> Sample
         error=error,
         limit_type=sample.limit.type if sample.limit is not None else None,
         capture_status=status,
+        capture_detail=detail,
         submission=submission,
         stop_reasons=stops,
         model_requests=len(model_events),

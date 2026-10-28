@@ -44,7 +44,8 @@ class SampleFacts:
 
     error: str | None = None
     limit_type: str | None = None
-    capture_status: Literal["captured", "absent", "missing"] = "missing"
+    capture_status: Literal["captured", "absent", "rejected", "missing"] = "missing"
+    capture_detail: str | None = None  # why a capture was rejected (issue #40)
     submission: bytes | None = None
     stop_reasons: Sequence[str] = ()
     model_requests: int = 0
@@ -62,12 +63,13 @@ class AttemptResult:
     outcome: Outcome
     signals: EpisodeSignals
     submission: bytes | None
-    capture: Literal["captured", "absent"] | None
+    capture: Literal["captured", "absent", "rejected"] | None
     error_class: str | None
     log_digest: str | None
     runner_run_id: str | None
     provider: dict[str, object] = field(default_factory=dict)
     offered_tools: frozenset[str] = frozenset()
+    capture_detail: str | None = None  # why a capture was rejected (issue #40)
 
 
 class Runner(Protocol):
@@ -93,6 +95,7 @@ def classify(facts: SampleFacts, *, declared_tools: Sequence[str]) -> AttemptRes
             ),
             submission=facts.submission if captured else None,
             capture=None if facts.capture_status == "missing" else facts.capture_status,
+            capture_detail=facts.capture_detail,
             error_class=error_class,
             log_digest=facts.log_digest,
             runner_run_id=facts.runner_run_id,
