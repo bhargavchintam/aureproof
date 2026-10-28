@@ -211,6 +211,13 @@ public API and the specs may change between minor versions).
   repository's `action.yml` wraps it; inconclusive fails unless set to `neutral`,
   and is never reported as pass. `examples/gate` holds hand-worked pass, fail and
   inconclusive examples, which the `Gate examples` workflow runs through the Action.
+- Fault qualification (issue #55): `docs/fault-qualification.md` maps every v0.1
+  recovery scenario to the tests that inject it, and a test keeps each citation
+  real. New fault tests: a crash while writing a bundle leaves nothing behind; a
+  missing, truncated or torn bundle member never validates; a torn blob is
+  detected and never reused; re-delivering a finished episode dispatches nothing.
+  One spec conflict is recorded for the reviewer: `seal_run` seals an
+  `evidence_incomplete` episode as complete, which scoring rule D1 forbids.
 
 ### Changed
 - `CODE_OF_CONDUCT.md` is now licensed CC-BY-SA-4.0 in `REUSE.toml`, matching

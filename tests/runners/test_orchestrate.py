@@ -10,6 +10,7 @@ from pathlib import Path
 
 import pytest
 
+from aureproof.bundle.ledger import LedgerError
 from aureproof.contracts import Disposition, EpisodeSpec, LabelSet
 from aureproof.oracles.calibration import task_spec
 from aureproof.oracles.python_spans import line_counts
@@ -212,3 +213,25 @@ def test_agent_reported_tool_calls_keep_their_lower_trust_tier(setup: tuple) -> 
     [tool] = [e for e in store.journal.events if e.kind == "tool_observed"]
     assert tool.observation_source == "agent_reported"
     assert (tool.payload or {})["output_sha256"] is None
+
+
+def test_a_duplicate_delivery_publishes_one_result(setup: tuple) -> None:  # type: ignore[type-arg]
+    """Issue #55: delivering a finished episode again adds no attempt and no second result."""
+    store, blobs, request = setup
+    first = run_episode(
+        store,
+        blobs,
+        FakeRunner([ok(capture_status="captured", submission=FINDING)]),
+        request,
+        LABELS,
+        VIEW,
+    )
+    events = len(store.journal.events)
+    runner = FakeRunner([ok(capture_status="captured", submission=b"[]")])
+    with pytest.raises(LedgerError):
+        run_episode(store, blobs, runner, request, LABELS, VIEW)
+    assert runner.seen == []  # nothing was dispatched again
+    assert len(store.journal.events) == events
+    kinds = [e.kind for e in store.journal.events]
+    assert kinds.count("episode_finalized") == 1 and kinds.count("attempt_dispatched") == 1
+    assert first.score.credited == ("authz-001-d1",)
