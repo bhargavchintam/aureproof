@@ -193,4 +193,12 @@ public API and the specs may change between minor versions).
   negative lists its site and source anchors).
 - Dependencies: grouped GitHub Actions updates (#21) and pydantic 2.14.0 (#23).
 
+### Fixed
+- An agent error could be classified as an infrastructure failure and
+  re-dispatched when its traceback's frames matched an infrastructure pattern:
+  a path under `/tmp/claude-501`, a frame at `line 512`, or an `inspect_ai`
+  sandbox module. Classification now reads only the error message and the
+  traceback's exception lines, including chained causes and exception-group
+  members (issue #39).
+
 [Unreleased]: https://github.com/bhargavchintam/aureproof/commits/main

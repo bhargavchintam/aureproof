@@ -66,6 +66,57 @@ def test_errors_split_into_infrastructure_and_agent(
     )
 
 
+# Frames carry paths, line numbers and source; none of it is the failure's cause.
+AGENT_TRACEBACK = """ValueError("the agent's model call failed")
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/site-packages/inspect_ai/_sandbox/docker.py", line 512, in exec
+    return await self.call(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ci/proxy/policy.py", line 214, in generate
+    raise ValueError("the agent's model call failed")
+ValueError: the agent's model call failed"""
+
+CHAINED_CONNECT = """RuntimeError('model call failed')
+Traceback (most recent call last):
+  File "/srv/app.py", line 3, in call
+    connect()
+httpx.ConnectError: [Errno 111] Connection refused
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/srv/app.py", line 9, in run
+    raise RuntimeError("model call failed") from exc
+RuntimeError: model call failed"""
+
+GROUPED_CONNECT = """ExceptionGroup('unhandled errors in a TaskGroup', [ConnectError(...)])
+  + Exception Group Traceback (most recent call last):
+  |   File "/srv/app.py", line 7, in run
+  |     async with anyio.create_task_group() as tg:
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/srv/app.py", line 3, in call
+    |     await connect()
+    | httpx.ConnectError: [Errno 111] Connection refused
+    +------------------------------------"""
+
+
+@pytest.mark.parametrize(
+    ("error", "error_class"),
+    [
+        (AGENT_TRACEBACK, "agent:error"),
+        (CHAINED_CONNECT, "infra:proxy_not_ready"),
+        (GROUPED_CONNECT, "infra:proxy_not_ready"),
+    ],
+    ids=["frames-are-not-causes", "chained-cause", "exception-group-cause"],
+)
+def test_only_exception_lines_of_a_traceback_classify(error: str, error_class: str) -> None:
+    r = classify(facts(error=error, model_requests=0), declared_tools=TOOLS)
+    assert r.error_class == error_class
+    assert redispatchable(r) is error_class.startswith("infra:")
+
+
 def test_limits_are_graded_responses_not_retries() -> None:
     r = classify(facts(limit_type="token", capture_status="absent"), declared_tools=TOOLS)
     assert r.outcome == "response" and r.signals.runner_outcome is RunnerOutcome.LIMIT_EXCEEDED
