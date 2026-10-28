@@ -181,3 +181,34 @@ def test_redispatch_is_capped_and_runner_exceptions_are_recorded(setup: tuple) -
         first.status == "incomplete" and first.error_class == "infra:runner_exception:RuntimeError"
     )
     assert sum(e.kind == "episode_finalized" for e in store.journal.events) == 1
+
+
+def test_tool_calls_are_journaled_before_the_outcome(setup: tuple) -> None:  # type: ignore[type-arg]
+    """Issue #43: each tool call lands in the journal with its trust tier."""
+    from aureproof.runners.port import ToolCall
+
+    store, blobs, request = setup
+    calls = [
+        ToolCall("bash", "1" * 64, "2" * 64),
+        ToolCall("submit", "3" * 64, "4" * 64, error="timeout"),
+    ]
+    runner = FakeRunner([ok(capture_status="captured", submission=FINDING, tool_calls=calls)])
+    run_episode(store, blobs, runner, request, LABELS, VIEW)
+    kinds = [e.kind for e in store.journal.events]
+    assert kinds.index("tool_observed") > kinds.index("attempt_dispatched")
+    assert kinds.count("tool_observed") == 2 and kinds[-2] == "attempt_outcome"
+    tools = [e for e in store.journal.events if e.kind == "tool_observed"]
+    assert [(e.payload or {})["tool"] for e in tools] == ["bash", "submit"]
+    assert {e.observation_source for e in tools} == {"controller_observed"}
+    assert (tools[1].payload or {})["error"] == "timeout"
+
+
+def test_agent_reported_tool_calls_keep_their_lower_trust_tier(setup: tuple) -> None:  # type: ignore[type-arg]
+    from aureproof.runners.port import ToolCall
+
+    store, blobs, request = setup
+    facts = ok(tool_calls=[ToolCall("Bash", "1" * 64, None)], tool_source="agent_reported")
+    run_episode(store, blobs, FakeRunner([facts]), request, LABELS, VIEW)
+    [tool] = [e for e in store.journal.events if e.kind == "tool_observed"]
+    assert tool.observation_source == "agent_reported"
+    assert (tool.payload or {})["output_sha256"] is None

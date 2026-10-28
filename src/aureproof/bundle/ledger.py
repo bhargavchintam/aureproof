@@ -19,7 +19,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from dataclasses import dataclass, field
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import Field, ValidationError
 
@@ -30,6 +30,7 @@ from aureproof.contracts.verdicts import Disposition
 
 Outcome = Literal["response", "terminal_error", "unknown"]
 KINDS = (
+    "tool_observed",
     "episode_planned",
     "attempt_planned",
     "attempt_dispatched",
@@ -80,6 +81,21 @@ class AttemptOutcome(Contract):
     provider: ProviderCalls | None = None
 
 
+class ToolObserved(Contract):
+    """One tool call during an attempt, by digest (content stays in the runner log).
+
+    ``controller_observed`` when the harness executed the tool (reference
+    subject); ``agent_reported`` when only the agent's own account of the call
+    is visible (Claude Code runs its tools itself), so there may be no output.
+    """
+
+    attempt_id: NonEmptyStr
+    tool: NonEmptyStr
+    input_sha256: Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
+    output_sha256: Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")] | None
+    error: NonEmptyStr | None = None
+
+
 class EpisodeFinalized(Contract):
     disposition: Disposition
     attempt_id: NonEmptyStr | None  # the attempt whose evidence was scored, if any
@@ -99,6 +115,7 @@ class AttemptState:
     request_identity: str | None = None
     dispatched_at: str | None = None
     outcome: AttemptOutcome | None = None
+    tool_events: int = 0
 
     @property
     def status(self) -> str:
@@ -149,8 +166,13 @@ class Ledger:
     def apply(self, event: Event) -> None:
         if event.kind not in KINDS:
             raise LedgerError(f"unknown lifecycle event kind {event.kind!r}")
-        if event.observation_source != "controller_observed":
-            raise LedgerError("lifecycle events are controller-observed only")
+        allowed = (
+            {"controller_observed", "agent_reported"}
+            if event.kind == "tool_observed"
+            else {"controller_observed"}
+        )
+        if event.observation_source not in allowed:
+            raise LedgerError(f"{event.kind} cannot be {event.observation_source}")
         try:
             getattr(self, f"_on_{event.kind}")(event)
         except ValidationError as exc:
@@ -198,6 +220,14 @@ class Ledger:
             raise LedgerError(f"{attempt.attempt_id} dispatched twice")
         attempt.request_identity = dispatched.request_identity
         attempt.dispatched_at = dispatched.at
+
+    def _on_tool_observed(self, event: Event) -> None:
+        episode = self._episode(event)
+        observed = ToolObserved.model_validate(event.payload)
+        attempt = self._attempt(episode, observed.attempt_id)
+        if attempt.request_identity is None or attempt.outcome is not None:
+            raise LedgerError("tool events belong between dispatch and outcome")
+        attempt.tool_events += 1
 
     def _on_attempt_outcome(self, event: Event) -> None:
         episode = self._episode(event)

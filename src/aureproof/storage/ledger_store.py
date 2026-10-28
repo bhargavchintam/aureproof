@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Any
 
 from aureproof.bundle.ledger import AttemptState, Ledger, LedgerError, Outcome
-from aureproof.contracts.events import Event
+from aureproof.contracts.events import Event, ObservationSource
 from aureproof.contracts.specs import AttemptRecord, EpisodeSpec
 from aureproof.contracts.verdicts import Disposition
 from aureproof.storage.journal import Journal
@@ -41,6 +41,7 @@ class AttemptLedgerStore:
         payload: dict[str, Any],
         attempt_id: str | None = None,
         blob_refs: list[str] | None = None,
+        observation_source: ObservationSource = ObservationSource.CONTROLLER_OBSERVED,
     ) -> None:
         probe = Event(
             seq=len(self.journal.events),
@@ -48,7 +49,7 @@ class AttemptLedgerStore:
             attempt_id=attempt_id,
             actor="aureproof",
             kind=kind,
-            observation_source="controller_observed",  # type: ignore[arg-type]
+            observation_source=observation_source,
             payload=payload,
             blob_refs=blob_refs or [],
         )
@@ -59,6 +60,7 @@ class AttemptLedgerStore:
             payload=payload,
             attempt_id=attempt_id,
             blob_refs=blob_refs,
+            observation_source=observation_source,
         )
         self.ledger.apply(event)
 
@@ -105,6 +107,31 @@ class AttemptLedgerStore:
                 "request_identity": request_identity,
                 "at": self.clock(),
             },
+        )
+
+    def record_tool(
+        self,
+        attempt_id: str,
+        *,
+        tool: str,
+        input_sha256: str,
+        output_sha256: str | None,
+        error: str | None,
+        source: ObservationSource,
+    ) -> None:
+        """One tool call of a dispatched attempt, before its outcome (issue #43)."""
+        self._append(
+            episode_id=attempt_id.rsplit("/", 1)[0],
+            kind="tool_observed",
+            attempt_id=attempt_id,
+            payload={
+                "attempt_id": attempt_id,
+                "tool": tool,
+                "input_sha256": input_sha256,
+                "output_sha256": output_sha256,
+                "error": error,
+            },
+            observation_source=source,
         )
 
     def record_outcome(

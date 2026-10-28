@@ -39,6 +39,19 @@ class AttemptRequest:
 
 
 @dataclass(frozen=True)
+class ToolCall:
+    """One tool call by digest; contents stay in the runner log (issue #43)."""
+
+    tool: str
+    input_sha256: str
+    output_sha256: str | None  # None: the agent reported the call; no output was observed
+    error: str | None = None
+
+
+ToolSource = Literal["controller_observed", "agent_reported"]
+
+
+@dataclass(frozen=True)
 class SampleFacts:
     """What the runner observed for the single sample of one attempt."""
 
@@ -56,6 +69,8 @@ class SampleFacts:
     log_path: Path | None = None
     log_digest: str | None = None
     runner_run_id: str | None = None
+    tool_calls: Sequence[ToolCall] = ()
+    tool_source: ToolSource = "controller_observed"
 
 
 @dataclass(frozen=True)
@@ -70,6 +85,8 @@ class AttemptResult:
     provider: dict[str, object] = field(default_factory=dict)
     offered_tools: frozenset[str] = frozenset()
     capture_detail: str | None = None  # why a capture was rejected (issue #40)
+    tool_calls: Sequence[ToolCall] = ()
+    tool_source: ToolSource = "controller_observed"
 
 
 class Runner(Protocol):
@@ -101,6 +118,8 @@ def classify(facts: SampleFacts, *, declared_tools: Sequence[str]) -> AttemptRes
             runner_run_id=facts.runner_run_id,
             provider=provider,
             offered_tools=facts.offered_tools,
+            tool_calls=tuple(facts.tool_calls),
+            tool_source=facts.tool_source,
         )
 
     if facts.hidden_retries:
