@@ -79,6 +79,11 @@ packages = ["aureproof"]
 mypy_path = "src"
 explicit_package_bases = true
 
+[[tool.mypy.overrides]]
+# Optional extra: type-checked when installed, skipped otherwise.
+module = ["inspect_ai", "inspect_ai.*", "inspect_swe", "inspect_swe.*"]
+ignore_missing_imports = true
+
 [tool.pytest.ini_options]
 minversion = "8.0"
 testpaths = ["tests"]
@@ -90,6 +95,9 @@ markers = [
 [tool.coverage.run]
 branch = true
 source = ["aureproof"]
+# Needs the `inspect` extra and Docker: covered by the Inspect lane workflow
+# (tests/integration/test_inspect_runner.py), not by the default job.
+omit = ["*/aureproof/runners/inspect_runner.py"]
 
 [tool.coverage.report]
 show_missing = true

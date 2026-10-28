@@ -39,6 +39,8 @@ jobs:
         run: uv run lint-imports
       - name: Tests (pytest + coverage)
         run: uv run pytest
+      - name: Fixture qualification (task health)
+        run: uv run aureproof task validate authz-001
       - name: REUSE / license compliance
         run: uvx --with charset-normalizer --from reuse reuse lint
 

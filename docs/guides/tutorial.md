@@ -81,6 +81,15 @@ The report escapes every agent-authored string and ships a Content-Security-Poli
 allows no scripts. It shows every metric with its numerator and denominator, every episode's
 disposition, every finding's verdict and rule, and the bundle's limitations.
 
+## 4. Check a task's health (optional)
+
+```bash
+uv run aureproof task validate authz-001
+```
+
+This runs the fixture's seven task-health controls twice and checks its canaries. The
+record stays *unreviewed* until an independent reviewer signs it off.
+
 ## Exit codes
 
 | Code | Meaning |

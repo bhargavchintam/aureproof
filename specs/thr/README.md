@@ -58,6 +58,13 @@ on one runner backend and fail on another (Harbor #136).
 A record whose `status` differs from the derived status is invalid. Health can't be
 asserted by hand.
 
+**Reference implementation** (`aureproof.oracles.calibration`, `aureproof task validate`):
+- `reference_positive`: one finding per present defect, at its first anchor with its first accepted CWE.
+- `repaired_negative`: one finding at every focal anchor.
+- `spray_cheat`: a finding at every symbol of every file with every accepted CWE (capped at `max_findings`). It passes only if recall is complete **and** strict yield is ≤ 0.25. The threshold is recorded in the control's `expected`.
+- `calibration_poc`: the evaluator PoC runs in a subprocess, once per variant.
+- The determinism re-run repeats all seven controls and compares `observed` and `passed`.
+
 ## 4. Label lint (control `label_lint`)
 
 `aureproof.contracts.labels_lint.lint_labels(labels, agent_views, spans)`:

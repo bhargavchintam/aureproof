@@ -1,0 +1,276 @@
+# SPDX-FileCopyrightText: 2026 Bindu Bhargava R Chintam
+# SPDX-License-Identifier: Apache-2.0
+"""Inspect AI runner adapter (issue #39; ADR-0002, ADR-0003, ADR-0007).
+
+Requires the ``inspect`` extra; Inspect is imported lazily so the core never
+depends on it. One call runs **one** attempt as a one-sample Inspect eval:
+
+- the sandbox is Docker with ``network_mode: none`` and only the variant's
+  files; labels never enter it;
+- ``retry_on_error=0`` and ``fail_on_error=False`` (Aureproof owns retries);
+  Claude Code runs with retry_refusals=0, retry_uncaught_errors=0 and
+  attempts=1, so there are no agent-side retries or hidden continuations;
+- after the agent, ``collect_findings`` reads ``findings.json`` once as raw
+  bytes and stores them (base64) with their SHA-256 in the logged sample store,
+  so a saved log can be re-scored without a sandbox;
+- facts come from the sample (error, limit, store, model events), never from
+  the log header.
+
+Proxy readiness: Inspect's ``sandbox_agent_bridge`` yields before its in-sandbox
+proxy accepts connections (inspect-ai 0.3.283, ``agent/_bridge/sandbox/bridge.py``).
+A connection failure before any model call is classified ``infra:proxy_not_ready``
+and re-dispatched as a recorded attempt, never retried silently.
+"""
+
+from __future__ import annotations
+
+import base64
+import hashlib
+import importlib.metadata as md
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Literal
+
+from aureproof import __version__
+from aureproof.contracts import Budget, SystemSpec
+from aureproof.runners.port import AttemptRequest, AttemptResult, SampleFacts, classify
+
+CAPTURE_KEY = "aureproof_capture"
+FINDINGS_FILE = "findings.json"
+COMPOSE = Path(__file__).with_name("compose.yaml")
+REFERENCE_TOOLS = ("bash", "submit")
+# Offered by inspect_swe's claude_code 2.1.287 with WebSearch/WebFetch disallowed (Day-2 spike).
+CLAUDE_CODE_TOOLS = (
+    "Agent",
+    "Bash",
+    "CronCreate",
+    "CronDelete",
+    "CronList",
+    "Edit",
+    "EnterWorktree",
+    "ExitWorktree",
+    "ListAgents",
+    "NotebookEdit",
+    "Read",
+    "ReportFindings",
+    "ScheduleWakeup",
+    "SendMessage",
+    "Skill",
+    "TaskStop",
+    "Workflow",
+    "Write",
+)
+CLAUDE_CODE_SETTINGS: dict[str, Any] = {
+    "disallowed_tools": ["WebSearch", "WebFetch"],
+    "retry_refusals": 0,
+    "retry_uncaught_errors": 0,
+    "attempts": 1,
+}
+RUNNER_SETTINGS: dict[str, Any] = {"inspect_retry_on_error": 0, "inspect_fail_on_error": False}
+
+
+@dataclass
+class InspectRunnerConfig:
+    subject: Literal["reference", "claude_code"]
+    model: Any  # model name, or an Inspect Model (e.g. mockllm in tests)
+    log_dir: Path
+    model_name: str = "mockllm/model"  # the identity recorded in SystemSpec
+    claude_code_version: str = "2.1.287"
+    hosted_tools: Literal["closed-world", "web-search"] = "closed-world"
+    compose: Path = COMPOSE
+    budget: Budget = field(default_factory=Budget)
+
+
+def _protocol(cfg: InspectRunnerConfig) -> str:
+    return "anthropic-messages" if cfg.subject == "claude_code" else "inspect"
+
+
+def declared_tools(cfg: InspectRunnerConfig) -> list[str]:
+    return sorted(CLAUDE_CODE_TOOLS if cfg.subject == "claude_code" else REFERENCE_TOOLS)
+
+
+def system_spec(cfg: InspectRunnerConfig) -> SystemSpec:
+    """The system identity: subject, pins, protocol, tools and effective settings."""
+    inspect_version = md.version("inspect-ai")
+    if cfg.subject == "claude_code":
+        subject = {
+            "kind": "external",
+            "name": "claude_code",
+            "version": cfg.claude_code_version,
+            "scaffold": f"inspect_swe.claude_code@{md.version('inspect-swe')}",
+        }
+        mode = "native-capability"
+        settings = {**CLAUDE_CODE_SETTINGS, **RUNNER_SETTINGS}
+        if cfg.hosted_tools == "web-search":
+            settings["disallowed_tools"] = ["WebFetch"]
+    else:
+        subject = {
+            "kind": "reference",
+            "name": "inspect_react",
+            "version": inspect_version,
+            "scaffold": "inspect_ai.agent.react",
+        }
+        mode, settings = "controlled-interface", dict(RUNNER_SETTINGS)
+    provider = cfg.model_name.split("/", 1)[0]
+    return SystemSpec.model_validate(
+        {
+            "subject": subject,
+            "interface_mode": mode,
+            "hosted_tools": cfg.hosted_tools,
+            "models": {
+                "main": {
+                    "provider": provider,
+                    "model": cfg.model_name,
+                    "protocol": _protocol(cfg),
+                    "provider_identity": {
+                        "model_snapshot": None,
+                        "api_version": None,
+                        "endpoint": None,
+                        "region": None,
+                    },
+                }
+            },
+            "prompts": {},
+            "tools": declared_tools(cfg),
+            "memory": "none",
+            "settings": settings,
+            "runner": {
+                "name": "inspect",
+                "version": inspect_version,
+                "adapter_revision": f"aureproof-{__version__}",
+            },
+            "telemetry": {"inspect_log_sharing": "off"},
+            "budget": cfg.budget.model_dump(),
+        }
+    )
+
+
+def _collect_findings() -> Any:
+    from inspect_ai.solver import Generate, TaskState, solver
+    from inspect_ai.util import sandbox, store
+
+    @solver  # type: ignore[untyped-decorator, unused-ignore]
+    def collect_findings() -> Any:
+        async def solve(state: TaskState, generate: Generate) -> TaskState:
+            try:
+                raw = await sandbox().read_file(FINDINGS_FILE, text=False)
+            except FileNotFoundError:
+                store().set(CAPTURE_KEY, {"status": "absent"})
+                return state
+            store().set(
+                CAPTURE_KEY,
+                {
+                    "status": "captured",
+                    "sha256": hashlib.sha256(raw).hexdigest(),
+                    "b64": base64.b64encode(raw).decode("ascii"),
+                },
+            )
+            return state
+
+        return solve
+
+    return collect_findings()
+
+
+def _subject(cfg: InspectRunnerConfig) -> Any:
+    from inspect_ai.agent import as_solver, react
+    from inspect_ai.tool import bash
+
+    if cfg.subject == "reference":
+        return as_solver(react(tools=[bash(timeout=60)]))
+    from inspect_swe import claude_code
+
+    configured = system_spec(cfg).settings["disallowed_tools"]
+    disallowed = [str(t) for t in configured] if isinstance(configured, list) else []
+    return as_solver(
+        claude_code(
+            version=cfg.claude_code_version,
+            cwd="/work",
+            disallowed_tools=disallowed,
+            retry_refusals=0,
+            retry_uncaught_errors=0,
+            attempts=1,
+        )
+    )
+
+
+def facts_from_sample(sample: Any, log_path: Path, run_id: str | None) -> SampleFacts:
+    """Per-sample facts from an Inspect log sample (never the log header)."""
+    model_events = [e for e in sample.events if getattr(e, "event", None) == "model"]
+    tools = {t.name for e in model_events for t in (e.tools or [])}
+    stops = [e.output.stop_reason for e in model_events if e.output is not None]
+    request_ids = [rid for e in model_events for rid in (getattr(e, "request_ids", None) or [])]
+    capture = (sample.store or {}).get(CAPTURE_KEY)
+    submission: bytes | None = None
+    status: Literal["captured", "absent", "missing"] = "missing"
+    if capture is not None:
+        status = capture["status"]
+        if status == "captured":
+            submission = base64.b64decode(capture["b64"])
+            if hashlib.sha256(submission).hexdigest() != capture["sha256"]:
+                status, submission = "missing", None  # corrupt capture: not evidence
+    error = None
+    if sample.error is not None:
+        error = f"{sample.error.message}\n{sample.error.traceback[-2000:]}"
+    return SampleFacts(
+        error=error,
+        limit_type=sample.limit.type if sample.limit is not None else None,
+        capture_status=status,
+        submission=submission,
+        stop_reasons=stops,
+        model_requests=len(model_events),
+        provider_retries=sum(int(getattr(e, "retries", 0) or 0) for e in model_events),
+        request_ids=request_ids,
+        offered_tools=frozenset(tools),
+        hidden_retries=len(sample.error_retries or []),
+        log_path=log_path,
+        log_digest="sha256:" + hashlib.sha256(log_path.read_bytes()).hexdigest(),
+        runner_run_id=run_id,
+    )
+
+
+class InspectRunner:
+    def __init__(self, config: InspectRunnerConfig) -> None:
+        self.config = config
+
+    def system_spec(self) -> SystemSpec:
+        return system_spec(self.config)
+
+    def run_attempt(self, request: AttemptRequest) -> AttemptResult:
+        from inspect_ai import Task
+        from inspect_ai import eval as inspect_eval
+        from inspect_ai.dataset import Sample
+        from inspect_ai.log import read_eval_log
+
+        cfg = self.config
+        view = request.task.agent_views[request.variant]  # type: ignore[index]
+        base = request.root / view.root
+        sample = Sample(
+            id=request.attempt_id,
+            input=(request.root / view.instruction.path).read_text(encoding="utf-8"),
+            files={f.path: str(base / f.path) for f in view.files},
+            metadata={"episode_id": request.episode.episode_id, "variant": request.variant},
+        )
+        task = Task(
+            dataset=[sample],
+            solver=[_subject(cfg), _collect_findings()],
+            sandbox=("docker", str(cfg.compose)),
+            token_limit=cfg.budget.max_tokens,
+            time_limit=cfg.budget.max_seconds,
+        )
+        [log] = inspect_eval(
+            task,
+            model=cfg.model,
+            log_dir=str(cfg.log_dir),
+            display="none",
+            retry_on_error=0,
+            fail_on_error=False,
+        )
+        if log.location is None or not log.samples:
+            path = Path(str(log.location)) if log.location else None
+            facts = SampleFacts(error="inspect produced no sample", log_path=path, log_digest=None)
+            return classify(facts, declared_tools=declared_tools(cfg))
+        path = Path(str(log.location))
+        saved = read_eval_log(str(path))
+        facts = facts_from_sample((saved.samples or log.samples)[0], path, log.eval.run_id)
+        return classify(facts, declared_tools=declared_tools(cfg))

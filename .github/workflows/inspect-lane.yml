@@ -14,6 +14,8 @@ on:
       - "tests/integration/**"
       - "src/aureproof/contracts/**"
       - "src/aureproof/scoring/**"
+      - "src/aureproof/runners/**"
+      - "src/aureproof/storage/**"
       - "fixtures/**"
       - "pyproject.toml"
       - "uv.lock"
@@ -24,6 +26,7 @@ on:
       - "spikes/**"
       - "src/aureproof/contracts/**"
       - "src/aureproof/scoring/**"
+      - "src/aureproof/runners/**"
       - "uv.lock"
   workflow_dispatch:
 
@@ -51,5 +54,5 @@ jobs:
         run: uv sync --frozen --extra inspect
       - name: Docker is available
         run: docker version --format '{{.Server.Version}}' && docker compose version
-      - name: Spike regression (scripted subject + bridge probe, mockllm)
-        run: uv run --extra inspect pytest tests/integration/test_inspect_spike.py --no-cov -ra
+      - name: Runner + spike regression (scripted subjects, bridge probe, mockllm)
+        run: uv run --extra inspect pytest tests/integration --no-cov -ra
