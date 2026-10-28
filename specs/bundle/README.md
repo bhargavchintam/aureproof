@@ -142,10 +142,25 @@ The predicate follows in-toto `test-result/v0.1` in spirit. The `predicateType` 
 | V2 | Members | A manifest member is missing, or its size or digest differs; an unlisted file is present; a blob's path is not its own digest |
 | V3 | Journal | A line is not JCS, `seq` is not consecutive, `prev` or `hash` doesn't recompute, an event is invalid, or `event.seq ≠ seq`; event count or head differs from the seal (**truncation**) |
 | V4 | Mandatory | A mandatory role is missing, duplicated or not flagged mandatory; a member flagged mandatory is absent |
-| V5 | Signature | Reported as `skipped` in v0.1 (signing is M2). Never a pass |
+| V5 | Signature | **pass** only when a signing adapter verified `seal.sigstore.json` over the exact seal bytes against the expected identity; **fail** when verification was requested and failed; **skipped** otherwise, whether no signature is present or it wasn't checked. Signature status (`Report.signed`) is distinct from validity, and a signed-evidence gate (`--require-signature`) fails unless V5 passed |
 | V6 | Identity | The seal subject is not `manifest.json` with the manifest's digest; `bundle_version` differs between seal and manifest; an event `blob_ref` doesn't resolve; a **trusted seal digest** was supplied and differs |
 
 The validator never stops at the first problem. It reports every failed check, so a reader sees everything that is wrong at once.
+
+## 7a. Signing (issue #46)
+
+- **Signer identity policy:** evidence is signed only by this repository's workflow
+  `https://github.com/bhargavchintam/aureproof/.github/workflows/sign.yml@refs/heads/main`,
+  with issuer `https://token.actions.githubusercontent.com`. Signing is keyless (Sigstore:
+  Fulcio certificate, Rekor transparency log); no long-lived signing key exists.
+- `seal.sigstore.json` is a Sigstore bundle over the exact bytes of `seal.intoto.json`. A
+  protocol `P.json` is signed as `P.json.sigstore.json`. Only RFC 8785 canonical JSON is signed.
+- **Verification is offline.** The verifier uses the trust root shipped in the pinned `sigstore`
+  package, never one supplied by the bundle, plus the certificate, signature and log inclusion
+  proof in the signature bundle. Altered bytes, another identity or another issuer fail.
+- **Public bundles** declare `completeness: redacted`, carry no `labels` members, and must pass
+  a secret scan (`aureproof validate --public`). Redaction re-seals, so a public bundle is
+  signed separately.
 
 ## 8. Conformance vectors
 

@@ -25,6 +25,7 @@ from aureproof.bundle.models import (
     MANIFEST,
     RESERVED,
     SEAL,
+    SIGNATURE,
     JournalEntry,
     Manifest,
     Statement,
@@ -58,6 +59,20 @@ class Check:
         self.problems.append(problem)
 
 
+@dataclass(frozen=True)
+class SignatureCheck:
+    """The result of verifying ``seal.sigstore.json``, computed by a signing adapter.
+
+    The pure core cannot verify signatures (no crypto, no trust root); an adapter
+    such as ``aureproof.signing`` does, and hands the result to ``validate``.
+    """
+
+    verified: bool
+    identity: str | None = None
+    issuer: str | None = None
+    problems: tuple[str, ...] = ()
+
+
 @dataclass
 class Report:
     checks: list[Check]
@@ -65,6 +80,11 @@ class Report:
     @property
     def valid(self) -> bool:
         return all(c.status != "fail" for c in self.checks)
+
+    @property
+    def signed(self) -> bool:
+        """True only when a signature was verified (V5 pass). Distinct from validity."""
+        return any(c.id == "V5" and c.status == "pass" for c in self.checks)
 
     def problems(self) -> list[str]:
         return [f"{c.id} {c.name}: {p}" for c in self.checks for p in c.problems]
@@ -87,13 +107,28 @@ def _canonical_doc(data: bytes, what: str, check: Check) -> Any:
     return value
 
 
-def validate(files: Mapping[str, bytes], *, trusted_seal_digest: str | None = None) -> Report:
+def validate(
+    files: Mapping[str, bytes],
+    *,
+    trusted_seal_digest: str | None = None,
+    signature: SignatureCheck | None = None,
+) -> Report:
     """Run V1-V6. ``trusted_seal_digest`` (``sha256:<hex>`` of ``seal.intoto.json``,
     recorded out of band) is the trust root for an unsigned bundle: without it, the
     seal's own metadata cannot be authenticated (spec §1)."""
     v1, v2, v3, v4, v5, v6 = (Check(i) for i in ("V1", "V2", "V3", "V4", "V5", "V6"))
-    v5.status = "skipped"
-    v5.problems.append("unsigned: Sigstore signing arrives in M2")
+    if signature is None:
+        v5.status = "skipped"
+        v5.problems.append(
+            "signature present but not verified"
+            if SIGNATURE in files
+            else "unsigned: no seal.sigstore.json"
+        )
+    elif signature.verified:
+        v5.problems.append(f"verified: {signature.identity} (issuer {signature.issuer})")
+    else:
+        v5.status = "fail"
+        v5.problems.extend(signature.problems or ("signature verification failed",))
     report = Report([v1, v2, v3, v4, v5, v6])
 
     # V1 structure
