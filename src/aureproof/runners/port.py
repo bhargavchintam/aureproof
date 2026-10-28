@@ -26,6 +26,23 @@ _INFRA = re.compile(
     r"|timed? ?out|rate.?limit|overloaded|service unavailable|\b5\d\d\b|apiconnectionerror)"
 )
 _PROXY = re.compile(r"(?i)(connection refused|econnrefused|connecterror|proxy)")
+_GROUP_MARGIN = re.compile(r"^ *\| ?")  # an exception group's "| " margin
+
+
+def _exception_lines(error: str) -> str:
+    """The message and a traceback's exception lines, without its frames.
+
+    Frame lines hold file paths, line numbers and source code, which say
+    nothing about the cause: a path under ``/tmp/claude-501`` or a frame at
+    ``line 512`` must not make an agent error look like an HTTP 5xx. Exception
+    lines, including chained causes and exception-group members, are kept.
+    """
+    lines = (_GROUP_MARGIN.sub("", line) for line in error.splitlines())
+    return "\n".join(
+        line
+        for line in lines
+        if line and not line[0].isspace() and not line.startswith(("Traceback ", "+"))
+    )
 
 
 @dataclass(frozen=True)
@@ -133,9 +150,10 @@ def classify(facts: SampleFacts, *, declared_tools: Sequence[str]) -> AttemptRes
             "config:tool_surface_mismatch:" + ",".join(undeclared),
         )
     if facts.error is not None:
-        if _PROXY.search(facts.error) and facts.model_requests == 0:
+        cause = _exception_lines(facts.error)
+        if _PROXY.search(cause) and facts.model_requests == 0:
             return result("terminal_error", RunnerOutcome.INFRA_ERROR, "infra:proxy_not_ready")
-        if _INFRA.search(facts.error):
+        if _INFRA.search(cause):
             return result("terminal_error", RunnerOutcome.INFRA_ERROR, "infra:runner_error")
         return result("terminal_error", RunnerOutcome.AGENT_ERROR, "agent:error")
     if facts.limit_type is not None:
