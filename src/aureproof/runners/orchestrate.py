@@ -15,7 +15,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 
 from aureproof.bundle.canonical import digest_ref
-from aureproof.contracts import Disposition, LabelSet
+from aureproof.contracts import Disposition, EpisodeSignals, LabelSet, RunnerOutcome
 from aureproof.contracts.events import ObservationSource
 from aureproof.runners.port import AttemptRequest, AttemptResult, Runner, redispatchable
 from aureproof.scoring import EpisodeScore, score_episode
@@ -31,6 +31,7 @@ class EpisodeRun:
     attempts: list[str]
     score: EpisodeScore
     submission: str | None
+    signals: EpisodeSignals  # what the score used; sealed with the episode
 
 
 def run_episode(
@@ -107,25 +108,26 @@ def run_episode(
         break
 
     if result is None:
-        score = _infra_only(labels, request, agent_view)
+        score, signals = _infra_only(labels, request, agent_view)
         store.finalize(
             episode_id,
             Disposition.INFRA_FAILURE,
             attempt_id=attempts[-1],
             reason="runner raised on every attempt",
         )
-        return EpisodeRun(episode_id, attempts, score, None)
+        return EpisodeRun(episode_id, attempts, score, None, signals)
     data = blobs.get(submission_ref) if submission_ref else None
     score = score_episode(
         data, result.signals, labels, variant=request.variant, agent_view=agent_view
     )
     reason = result.error_class
     store.finalize(episode_id, score.disposition, attempt_id=attempts[-1], reason=reason)
-    return EpisodeRun(episode_id, attempts, score, submission_ref)
+    return EpisodeRun(episode_id, attempts, score, submission_ref, result.signals)
 
 
-def _infra_only(labels: LabelSet, request: AttemptRequest, view: Mapping[str, int]) -> EpisodeScore:
-    from aureproof.contracts import EpisodeSignals, RunnerOutcome
-
+def _infra_only(
+    labels: LabelSet, request: AttemptRequest, view: Mapping[str, int]
+) -> tuple[EpisodeScore, EpisodeSignals]:
     signals = EpisodeSignals(evidence_complete=True, runner_outcome=RunnerOutcome.INFRA_ERROR)
-    return score_episode(None, signals, labels, variant=request.variant, agent_view=view)
+    score = score_episode(None, signals, labels, variant=request.variant, agent_view=view)
+    return score, signals

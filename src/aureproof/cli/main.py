@@ -334,6 +334,65 @@ def task_validate(
     raise typer.Exit(0 if record.status.value == "healthy" and not problems else 1)
 
 
+@app.command()
+def run(
+    protocol: Annotated[Path, typer.Option("--protocol", help="Decision Protocol JSON.")],
+    thr: Annotated[
+        list[Path], typer.Option("--thr", help="A Task Health Record the protocol names.")
+    ],
+    model: Annotated[str, typer.Option("--model", help="Model, e.g. anthropic/<id>.")],
+    out: Annotated[Path, typer.Option("--out", help="Bundle directory to create.")],
+    subject: Annotated[
+        str, typer.Option("--subject", help="reference or claude_code.")
+    ] = "reference",
+    log_dir: Annotated[Path, typer.Option("--log-dir", help="Inspect logs.")] = Path("logs"),
+    root: Annotated[Path, typer.Option("--root", help="Repository root.")] = Path(),
+) -> None:
+    """Run a protocol's episodes live and seal them as one bundle (the M2 chain)."""
+    from aureproof.contracts.decision import DecisionProtocol
+    from aureproof.contracts.thr import TaskHealthRecord
+    from aureproof.runners.slice import SliceError, run_slice
+    from aureproof.storage import write_bundle
+
+    if out.exists():
+        typer.echo(f"error: {out} exists", err=True)
+        raise typer.Exit(2)
+    if subject not in ("reference", "claude_code"):
+        typer.echo(f"error: unknown subject {subject!r}", err=True)
+        raise typer.Exit(2)
+    try:
+        from aureproof.runners.inspect_runner import (
+            InspectRunner,
+            InspectRunnerConfig,
+            UnsupportedCapability,
+        )
+    except ModuleNotFoundError:
+        typer.echo("error: live runs need the `inspect` extra", err=True)
+        raise typer.Exit(2) from None
+    proto = DecisionProtocol.model_validate_json(protocol.read_bytes())
+    records = [TaskHealthRecord.model_validate_json(p.read_bytes()) for p in thr]
+    try:
+        runner = InspectRunner(
+            InspectRunnerConfig(
+                subject=subject,  # type: ignore[arg-type]
+                model=model,
+                model_name=model,
+                log_dir=log_dir,
+                budget=proto.budget,
+            )
+        )
+        files = run_slice(root, proto, records, runner)
+    except (SliceError, UnsupportedCapability) as exc:
+        typer.echo(f"error: {exc}", err=True)
+        raise typer.Exit(2) from None
+    write_bundle(files, out)
+    report = validate_bundle(files)
+    status = rescore(files).status
+    typer.echo(f"wrote {out}: valid={report.valid} offline re-score: {status}")
+    typer.echo("next: sign it with the sign.yml workflow, then `aureproof verify`")
+    raise typer.Exit(0 if report.valid and status == "reproduced" else 1)
+
+
 @task_app.command("probe")
 def task_probe(
     task_id: Annotated[str, typer.Argument(help="Task ID, e.g. authz-001.")],

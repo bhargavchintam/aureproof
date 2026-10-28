@@ -193,6 +193,14 @@ public API and the specs may change between minor versions).
   calls are journaled as controller-observed. `docs/bridge-coverage.md` declares
   what is enforced, observed and not covered.
 
+- `aureproof run` (issue #47): runs a Decision Protocol's episodes through the
+  orchestrator and seals one live run bundle that adds the protocol, the system
+  spec and the Task Health Records, plus the full attempt journal (model and tool
+  observations, outcomes) ahead of the scoring events. A run that does not match
+  its protocol is refused before any dispatch. `seal_run` takes the attempt
+  journal and extra members; `EpisodeRun` carries the signals it was scored with.
+  The procedure is in `docs/guides/live-slice.md`.
+
 ### Changed
 - `CODE_OF_CONDUCT.md` is now licensed CC-BY-SA-4.0 in `REUSE.toml`, matching
   the Contributor Covenant 3.0 terms its attribution states (issue #33); it was
