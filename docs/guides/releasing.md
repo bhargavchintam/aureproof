@@ -23,6 +23,8 @@ never publish.
 1. Make sure `main` is green, including the **fresh install + Phase-1 gate** job. The
    Recovery and Evidence-completeness gates rest on [`fault-qualification.md`](../fault-qualification.md);
    its open item must be resolved before a release claims them.
+   Compatibility and migrations follow [`specs/COMPATIBILITY.md`](../../specs/COMPATIBILITY.md);
+   a release that changes any record version adds its migration and N−1 vectors.
 2. Set `version` in `pyproject.toml` (e.g. `0.1.0a1`), update `CHANGELOG.md`, and merge.
 3. Create and publish a GitHub Release with the tag `v<version>` (e.g. `v0.1.0a1`).
 4. The workflow:

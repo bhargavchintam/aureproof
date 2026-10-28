@@ -4,7 +4,7 @@ SPDX-License-Identifier: Apache-2.0
 -->
 # Compatibility and versioning policy
 
-Issue #37 (the M1 part of AP-040, #58). The `aureproof migrate` command is M4 (#58).
+Issues #37 (the M1 part of AP-040) and #58 (`aureproof migrate`).
 
 ## What is versioned
 
@@ -24,8 +24,8 @@ Specs are versioned **independently** of the package (plan v2 §4).
    `0.1` records and rejects anything else with a validation error that names the field.
    From v0.2, readers accept the current version and N−1.
 2. **Artifacts are never rewritten in place.** Upgrading a record produces a new record
-   (and a new digest). The old one stays verifiable. `aureproof migrate` (M4, #58)
-   performs upgrades explicitly.
+   (and a new digest). The old one stays verifiable. `aureproof migrate` performs
+   upgrades explicitly (see Migrations).
 3. **A semantic change is a version change.** Matcher, disposition or metric changes
    bump their version, add a parameter profile, and update the golden vectors in a
    reviewed PR. Results under different scoring identities are never pooled, and an
@@ -42,3 +42,23 @@ Specs are versioned **independently** of the package (plan v2 §4).
 `protocol_version`, `decision_version`, `matcher_version` (unregistered parameters) and
 seal `predicateType` values are rejected, and that the scoring identity changes when any
 semantic version changes.
+
+## Migrations
+
+`aureproof migrate SOURCE --out NEW` upgrades one record into a new file and writes
+`NEW.provenance.json` next to it. That file holds the source's digest, the versions, the
+declared losses and the tool version. The command never edits its input or
+overwrites anything, and it refuses a file inside a sealed bundle: sealed evidence is
+re-scored into a new bundle, never migrated. An unknown or current version is refused
+by name.
+
+| From | To | Losses | Conformance |
+| --- | --- | --- | --- |
+| `aureproof.labels/draft-0` | `aureproof.labels/v0.1` | The draft focal negative had only its site anchor. v0.1 lists every anchor of the repaired defect, so source and sink anchors must be added by hand. Until they are, a source-end finding on the repaired variant is unresolved rather than refuted | `conformance/migrations/labels-draft-0-to-v0.1`: the real authz-001 history (`d85a543` to `d417444`). The migrated record matches the hand migration except for that loss (`tests/contracts/test_migrate.py`) |
+
+**Initial-version limit.** `bundle_version`, `thr_version`, `protocol_version`,
+`decision_version`, the scoring semantics and the `contracts/v0.1` records have only
+one released version, 0.1. They have no N−1 to validate or migrate from, so the
+policy for them is rule 1 (fail closed) until a 0.2 exists. A 0.2 must come with its
+migration and with N−1 vectors.
+

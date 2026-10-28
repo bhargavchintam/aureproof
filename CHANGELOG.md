@@ -227,6 +227,12 @@ public API and the specs may change between minor versions).
   adjudicate queue|record|report`, and `compare --adjudications-a/-b`: decided
   findings count, and any finding left unresolved keeps the gate inconclusive.
 
+- `aureproof migrate` (issue #58): explicit, registered migrations that write a new
+  file and a provenance sidecar (source digest, versions, declared losses), never
+  edit the input, and refuse sealed evidence and unknown or current versions. The
+  first is labels `draft-0` to `v0.1`, checked against the real authz-001 history.
+  `specs/COMPATIBILITY.md` states the migration rules and the initial-version limit.
+
 ### Changed
 - `CODE_OF_CONDUCT.md` is now licensed CC-BY-SA-4.0 in `REUSE.toml`, matching
   the Contributor Covenant 3.0 terms its attribution states (issue #33); it was
