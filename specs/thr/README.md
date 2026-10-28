@@ -99,6 +99,25 @@ model already solves the task. It does not affect health. It is **required befor
 benchmark expansion** (the M2 gate, #44 and #47). A task that both baselines solve does
 not discriminate between agents and should be redesigned (plan-review C4).
 
+Each baseline is a separately accounted system with its own `system_identity`, never an
+agent repetition. It gets one episode per variant, scored by the same labels and matcher
+as an agent, and its metrics keep their exact denominators.
+
+- **Solved** means the baseline credits every labeled defect on the vulnerable variant
+  and draws no focal refutation (M6) on the repaired one. Flagging both variants is not
+  solving.
+- **Bandit** is pinned (`bandit[sarif]==1.9.4`, arguments `-q -r . -f sarif`, run from the
+  variant root) and imported through SARIF. Declared mapping losses: no symbols (findings
+  match by line range), no data-flow roles, severity and confidence kept but never
+  scored, and a rule without a CWE tag yields a finding graded `invalid`.
+- **Single-shot model** is one Anthropic Messages call per variant: a pinned system
+  prompt, the instruction plus every source file, provider-default sampling (the Messages
+  API takes no temperature), 8192 output tokens, no tools and no provider retries. A refusal stays `safety_refusal`; a cut-off reply is
+  `budget_exhausted`. One surrounding Markdown code fence is removed from the reply, and
+  that transformation is declared.
+- **Saturation** is `saturated` (both solve), `partial` (one solves), `open` (neither) or
+  `incomplete` (a probe has not run). `aureproof task probe` exits 1 on `saturated`.
+
 ## 7. Open questions for the second reviewer
 
 - **H1.** Should `unknown` tasks be excluded like `unhealthy` ones (this draft says yes),

@@ -173,6 +173,15 @@ public API and the specs may change between minor versions).
   cluster. `tests/oracles/test_pairs.py` pins the controls and the graded
   scenarios, and CI validates every registered task.
 
+- Difficulty probes (issue #44, AP-019): `aureproof task probe` runs the pinned
+  Bandit baseline (`bandit[sarif]==1.9.4`, new `baseline` extra) and, with
+  `--model`, a single-shot Anthropic Messages baseline. Each is a separately
+  accounted system, scored by the same labels and matcher with exact
+  denominators, and attached to the THR as `difficulty_probe`. Bandit SARIF is
+  imported with declared mapping losses. Saturation is reported; the command
+  exits 1 when both baselines solve a task. Bandit solves none of the three
+  pairs (`docs/research/difficulty-probe.md`); the model baseline waits on a key.
+
 ### Changed
 - `CODE_OF_CONDUCT.md` is now licensed CC-BY-SA-4.0 in `REUSE.toml`, matching
   the Contributor Covenant 3.0 terms its attribution states (issue #33); it was
