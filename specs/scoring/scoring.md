@@ -242,7 +242,7 @@ Further definitions:
 
 ## 7. Adjudication interface
 
-Adjudication itself is AP-038. Here is how it affects scoring:
+Adjudication itself is AP-038, specified in [`specs/adjudication`](../adjudication/README.md). Here is how it affects scoring:
 
 - Every `unresolved:*` finding enters the queue.
 - **`confirmed` / `refuted`** (no label change): the finding counts under that verdict in post-adjudication metrics. The original matcher verdict is kept.

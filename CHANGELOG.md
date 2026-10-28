@@ -219,6 +219,14 @@ public API and the specs may change between minor versions).
   One spec conflict is recorded for the reviewer: `seal_run` seals an
   `evidence_incomplete` episode as complete, which scoring rule D1 forbids.
 
+- Adjudication (issue #51, `specs/adjudication`): append-only records bound to one
+  sealed bundle by its seal digest; a queue of every unresolved finding; final
+  decisions from primary, second and resolution records; Cohen's kappa with an
+  explicit undefined reason; post-adjudication metrics; `label_change` requires a
+  new dataset revision and stays unresolved under the old one. `aureproof
+  adjudicate queue|record|report`, and `compare --adjudications-a/-b`: decided
+  findings count, and any finding left unresolved keeps the gate inconclusive.
+
 ### Changed
 - `CODE_OF_CONDUCT.md` is now licensed CC-BY-SA-4.0 in `REUSE.toml`, matching
   the Contributor Covenant 3.0 terms its attribution states (issue #33); it was

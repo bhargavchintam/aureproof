@@ -16,12 +16,14 @@ and operational completion are reported separately.
 from __future__ import annotations
 
 from collections import Counter
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import Literal
 
 from pydantic import ValidationError
 
+from aureproof.bundle.canonical import digest_ref
+from aureproof.bundle.models import SEAL
 from aureproof.bundle.run import (
     EPISODES,
     JOURNAL_EPISODE_PLANNED,
@@ -31,10 +33,12 @@ from aureproof.bundle.run import (
     thr_path,
 )
 from aureproof.contracts import SystemSpec
+from aureproof.contracts.adjudication import Adjudication
 from aureproof.contracts.decision import ClusterRow, Decision, DecisionProtocol
 from aureproof.contracts.strict_json import JsonInputError, loads_strict
 from aureproof.contracts.thr import TaskHealthRecord, thr_digest
 from aureproof.scoring import compute_metrics
+from aureproof.scoring.adjudication import adjusted, check, queue, resolve
 from aureproof.scoring.episode import EpisodeScore
 from aureproof.stats.decide import decide
 
@@ -74,7 +78,7 @@ def _load(files: Mapping[str, bytes], path: str) -> object:
 
 def _check(
     side: Side, protocol: DecisionProtocol, files: Mapping[str, bytes]
-) -> tuple[list[str], dict[str, str], list[tuple[str, EpisodeScore]]]:
+) -> tuple[list[str], dict[str, str], list[tuple[str, str, EpisodeScore]]]:
     """Problems, the task-to-cluster map, and (task_id, score) pairs for one bundle."""
     problems: list[str] = []
     expected_system = getattr(protocol.configurations, side)
@@ -142,12 +146,12 @@ def _check(
     redo = rescore(files)
     if redo.status != "reproduced":
         problems.append(f"{side}: offline re-score {redo.status}: {'; '.join(redo.problems)}")
-    pairs = [(ep.task_id, score) for ep, score in redo.scored]
+    pairs = [(ep.task_id, ep.episode_id, score) for ep, score in redo.scored]
     return problems, clusters, pairs
 
 
-def _summary(side: Side, identity: str, pairs: list[tuple[str, EpisodeScore]]) -> SideSummary:
-    scores = [s for _, s in pairs]
+def _summary(side: Side, identity: str, pairs: list[tuple[str, str, EpisodeScore]]) -> SideSummary:
+    scores = [s for _, _, s in pairs]
     metrics = compute_metrics(scores)
     return SideSummary(
         side=side,
@@ -158,13 +162,48 @@ def _summary(side: Side, identity: str, pairs: list[tuple[str, EpisodeScore]]) -
     )
 
 
+def _adjudicated(
+    side: Side,
+    files: Mapping[str, bytes],
+    pairs: list[tuple[str, str, EpisodeScore]],
+    records: Sequence[Adjudication],
+) -> tuple[list[str], dict[str, tuple[int, int, int]]]:
+    """Problems with the records, and per task (confirmed, unresolved, submitted)."""
+    episodes = [(eid, s) for _, eid, s in pairs]
+    items = queue(episodes)
+    seal = digest_ref(files[SEAL]) if SEAL in files else ""
+    problems = [f"{side}: {p}" for p in check(records, items, seal)]
+    resolutions = resolve(items, records) if not problems else []
+    totals: dict[str, tuple[int, int, int]] = {}
+    for task_id, eid, score in pairs:
+        if not score.graded:
+            continue
+        c, _, u, n = adjusted(score, eid, resolutions)
+        tc, tu, tn = totals.get(task_id, (0, 0, 0))
+        totals[task_id] = (tc + c, tu + u, tn + n)
+    return problems, totals
+
+
 def compare(
-    protocol: DecisionProtocol, files_a: Mapping[str, bytes], files_b: Mapping[str, bytes]
+    protocol: DecisionProtocol,
+    files_a: Mapping[str, bytes],
+    files_b: Mapping[str, bytes],
+    *,
+    adjudications_a: Sequence[Adjudication] = (),
+    adjudications_b: Sequence[Adjudication] = (),
 ) -> Comparison:
-    """The protocol's decision for two bundles, or ``GateError`` listing every mismatch."""
+    """The protocol's decision for two bundles, or ``GateError`` listing every mismatch.
+
+    Adjudication records must name the bundle's seal and its unresolved findings.
+    A decided finding counts under its adjudicated verdict; any finding still
+    unresolved keeps a decisive result provisional (specs/decision §5).
+    """
     problems_a, clusters_a, pairs_a = _check("A", protocol, files_a)
     problems_b, clusters_b, pairs_b = _check("B", protocol, files_b)
     problems = problems_a + problems_b
+    adj_a, totals_a = _adjudicated("A", files_a, pairs_a, adjudications_a)
+    adj_b, totals_b = _adjudicated("B", files_b, pairs_b, adjudications_b)
+    problems += adj_a + adj_b
     if not problems and clusters_a != clusters_b:
         problems.append("A and B map the cohort to different task IDs")
     if problems:
@@ -175,17 +214,17 @@ def compare(
     for task_id, cluster in clusters_a.items():
         cluster_tasks.setdefault(cluster, []).append(task_id)
     for cluster, tasks in sorted(cluster_tasks.items()):
-        a = compute_metrics([s for t, s in pairs_a if t in tasks])
-        b = compute_metrics([s for t, s in pairs_b if t in tasks])
+        a = [sum(totals_a.get(t, (0, 0, 0))[i] for t in tasks) for i in range(3)]
+        b = [sum(totals_b.get(t, (0, 0, 0))[i] for t in tasks) for i in range(3)]
         rows.append(
             ClusterRow(
                 cluster_id=cluster,
-                a_confirmed=a["strict_confirmed_yield"].numerator,
-                a_submitted=a["strict_confirmed_yield"].denominator,
-                b_confirmed=b["strict_confirmed_yield"].numerator,
-                b_submitted=b["strict_confirmed_yield"].denominator,
-                a_unresolved=a["unresolved_fraction"].numerator,
-                b_unresolved=b["unresolved_fraction"].numerator,
+                a_confirmed=a[0],
+                a_submitted=a[2],
+                b_confirmed=b[0],
+                b_submitted=b[2],
+                a_unresolved=a[1],
+                b_unresolved=b[1],
                 difference=None,
             )
         )

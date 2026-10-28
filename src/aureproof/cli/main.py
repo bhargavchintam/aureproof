@@ -13,13 +13,15 @@ from __future__ import annotations
 import json
 import secrets
 import sys
+from collections import Counter
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Any
 
 import typer
 
 from aureproof import __version__
 from aureproof.bundle import validate as validate_bundle
+from aureproof.bundle.canonical import canonical_json
 from aureproof.bundle.run import rescore
 from aureproof.bundle.validate import SignatureCheck
 from aureproof.cli.report import collect, render_html, render_markdown
@@ -393,6 +395,153 @@ def run(
     raise typer.Exit(0 if report.valid and status == "reproduced" else 1)
 
 
+adjudicate_app = typer.Typer(
+    help="Adjudication of unresolved findings (append-only records).", no_args_is_help=True
+)
+app.add_typer(adjudicate_app, name="adjudicate")
+AdjOpt = Annotated[
+    Path | None, typer.Option("--adjudications", help="Adjudication records (JSONL).")
+]
+
+
+def _records(path: Path | None) -> list[Any]:
+    from aureproof.contracts.adjudication import Adjudication
+    from aureproof.contracts.strict_json import loads_strict
+
+    if path is None or not path.exists():
+        return []
+    lines = path.read_bytes().splitlines()
+    return [Adjudication.model_validate(loads_strict(line, i_json=True)) for line in lines if line]
+
+
+def _queued(files: dict[str, bytes]) -> tuple[list[Any], list[tuple[str, Any]], str]:
+    from aureproof.bundle.canonical import digest_ref
+    from aureproof.bundle.models import SEAL
+    from aureproof.scoring.adjudication import queue
+
+    redo = rescore(files)
+    if redo.status != "reproduced":
+        typer.echo(f"error: the bundle does not re-score: {redo.status}", err=True)
+        raise typer.Exit(2)
+    episodes = [(ep.episode_id, s) for ep, s in redo.scored]
+    return queue(episodes), episodes, digest_ref(files[SEAL])
+
+
+@adjudicate_app.command("queue")
+def adjudicate_queue(bundle: BundleArg, adjudications: AdjOpt = None) -> None:
+    """Every unresolved finding, with its adjudication status."""
+    from aureproof.scoring.adjudication import resolve
+
+    items, _, _ = _queued(_read(bundle))
+    for r in resolve(items, _records(adjudications)):
+        who = ",".join(r.adjudicators) or "-"
+        typer.echo(
+            f"{r.item.episode_id} #{r.item.finding_index} {r.item.verdict} "
+            f"{r.status} {r.decision.value if r.decision else '-'} [{who}]"
+        )
+    typer.echo(f"{len(items)} unresolved finding(s)")
+
+
+@adjudicate_app.command("record")
+def adjudicate_record(
+    bundle: BundleArg,
+    episode: Annotated[str, typer.Option("--episode", help="Episode ID.")],
+    finding: Annotated[int, typer.Option("--finding", help="Finding index in the submission.")],
+    decision: Annotated[str, typer.Option("--decision", help="confirmed, refuted, label_change.")],
+    adjudicator: Annotated[str, typer.Option("--adjudicator", help="Who decided.")],
+    rationale: Annotated[str, typer.Option("--rationale", help="Why.")],
+    revision: Annotated[str, typer.Option("--revision", help="Dataset revision decided under.")],
+    out: Annotated[Path, typer.Option("--out", help="Records file to append to (JSONL).")],
+    role: Annotated[str, typer.Option("--role", help="primary, second, resolution.")] = "primary",
+    revision_after: Annotated[
+        str | None, typer.Option("--revision-after", help="New revision (label_change only).")
+    ] = None,
+    evidence: Annotated[
+        list[str] | None, typer.Option("--evidence", help="Evidence reference.")
+    ] = None,
+) -> None:
+    """Append one adjudication record; existing records are never edited."""
+    from datetime import UTC, datetime
+
+    from pydantic import ValidationError
+
+    from aureproof.contracts.adjudication import Adjudication
+
+    files = _read(bundle)
+    items, _, seal = _queued(files)
+    item = next((i for i in items if (i.episode_id, i.finding_index) == (episode, finding)), None)
+    if item is None:
+        typer.echo(f"error: {episode} #{finding} is not an unresolved finding", err=True)
+        raise typer.Exit(2)
+    try:
+        record = Adjudication.model_validate(
+            {
+                "bundle_seal": seal,
+                "finding": {"episode_id": episode, "finding_index": finding},
+                "original_verdict": item.verdict,
+                "adjudicator": adjudicator,
+                "role": role,
+                "decision": decision,
+                "rationale": rationale,
+                "evidence_refs": evidence or [],
+                "timestamp": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "dataset_revision_before": revision,
+                "dataset_revision_after": revision_after or revision,
+            }
+        )
+    except ValidationError as exc:
+        typer.echo(f"error: {exc.errors()[0]['msg']}", err=True)
+        raise typer.Exit(2) from None
+    with out.open("ab") as fh:
+        fh.write(canonical_json(record.model_dump(mode="json")) + b"\n")
+    typer.echo(f"recorded {record.identity} in {out}")
+
+
+@adjudicate_app.command("report")
+def adjudicate_report(
+    bundle: BundleArg, adjudications: AdjOpt = None, as_json: JsonOpt = False
+) -> None:
+    """Coverage, agreement (Cohen's kappa) and post-adjudication metrics. Exit 1 if incomplete."""
+    from aureproof.scoring.adjudication import agreement, check, post_adjudication, resolve
+
+    items, episodes, seal = _queued(_read(bundle))
+    records = _records(adjudications)
+    problems = check(records, items, seal)
+    if problems:
+        for p in problems:
+            typer.echo(f"error: {p}", err=True)
+        raise typer.Exit(2)
+    resolutions = resolve(items, records)
+    agree = agreement(items, records)
+    statuses = dict(Counter(r.status for r in resolutions))
+    relabel = sorted(
+        {
+            rec.dataset_revision_after
+            for rec in records
+            if rec.decision.value == "label_change" and rec.role.value != "second"
+        }
+    )
+    metrics = post_adjudication(episodes, resolutions)
+    data = {
+        "queued": agree.queued,
+        "statuses": statuses,
+        "double_adjudicated": agree.double_adjudicated,
+        "coverage_ok": agree.coverage_ok,
+        "agreed": agree.agreed,
+        "kappa": agree.kappa,
+        "kappa_undefined_reason": agree.undefined_reason,
+        "rescore_under_revisions": relabel,
+        "post_adjudication": {k: f"{n}/{d}" for k, (n, d) in metrics.items()},
+    }
+    if as_json:
+        typer.echo(json.dumps(data, indent=2))
+    else:
+        for key, value in data.items():
+            typer.echo(f"{key:<26} {value}")
+    complete = statuses.get("decided", 0) == len(items) and agree.coverage_ok
+    raise typer.Exit(0 if complete or not items else 1)
+
+
 EXIT = {"pass": 0, "fail": 1, "inconclusive": 3}  # 2: the evidence cannot be compared
 
 
@@ -406,6 +555,12 @@ def compare(
     ] = False,
     report_out: Annotated[
         Path | None, typer.Option("--report", help="Write the Markdown report here.")
+    ] = None,
+    adjudications_a: Annotated[
+        Path | None, typer.Option("--adjudications-a", help="Adjudication records for A.")
+    ] = None,
+    adjudications_b: Annotated[
+        Path | None, typer.Option("--adjudications-b", help="Adjudication records for B.")
     ] = None,
     as_json: JsonOpt = False,
 ) -> None:
@@ -429,7 +584,13 @@ def compare(
         sides[name] = files
     if not problems:
         try:
-            result = run_compare(proto, sides["A"], sides["B"])
+            result = run_compare(
+                proto,
+                sides["A"],
+                sides["B"],
+                adjudications_a=_records(adjudications_a),
+                adjudications_b=_records(adjudications_b),
+            )
         except GateError as exc:
             problems = exc.problems
     if problems:
