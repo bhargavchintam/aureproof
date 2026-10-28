@@ -44,6 +44,17 @@ uv run aureproof validate examples/bundles/tutorial-v0.1 \
   --trusted-seal-digest "sha256:$(shasum -a 256 examples/bundles/tutorial-v0.1/seal.intoto.json | cut -d' ' -f1)"
 ```
 
+### Verify the signature (optional; needs the `sign` extra)
+
+```bash
+uv sync --frozen --extra sign
+uv run aureproof validate examples/bundles/tutorial-v0.1 --require-signature
+```
+
+The seal was signed by this repository's `sign.yml` workflow on `main`. Verification runs
+offline against that identity and the trust root shipped in the pinned `sigstore`
+package. V5 then reports `pass`; altered bytes or a different signer fail it.
+
 ## 2. Re-score offline
 
 ```bash
