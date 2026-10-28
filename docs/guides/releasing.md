@@ -27,6 +27,8 @@ never publish.
    a release that changes any record version adds its migration and N−1 vectors.
    The **EEE consumer** workflow must be green too, with the round trip and its losses as
    documented in [`eee-export.md`](eee-export.md).
+   Licensing: the fixture card [`fixtures/DATASET_CARD.md`](../../fixtures/DATASET_CARD.md) and
+   its Croissant metadata must be current, and the **Croissant** workflow green.
 2. Set `version` in `pyproject.toml` (e.g. `0.1.0a1`), update `CHANGELOG.md`, and merge.
 3. Create and publish a GitHub Release with the tag `v<version>` (e.g. `v0.1.0a1`).
 4. The workflow:

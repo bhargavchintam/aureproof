@@ -1,0 +1,548 @@
+{
+  "@context": {
+    "@language": "en",
+    "@vocab": "https://schema.org/",
+    "citeAs": "cr:citeAs",
+    "column": "cr:column",
+    "conformsTo": "dct:conformsTo",
+    "cr": "http://mlcommons.org/croissant/",
+    "rai": "http://mlcommons.org/croissant/RAI/",
+    "data": {
+      "@id": "cr:data",
+      "@type": "@json"
+    },
+    "dataType": {
+      "@id": "cr:dataType",
+      "@type": "@vocab"
+    },
+    "dct": "http://purl.org/dc/terms/",
+    "examples": {
+      "@id": "cr:examples",
+      "@type": "@json"
+    },
+    "extract": "cr:extract",
+    "field": "cr:field",
+    "fileObject": "cr:fileObject",
+    "fileProperty": "cr:fileProperty",
+    "fileSet": "cr:fileSet",
+    "format": "cr:format",
+    "includes": "cr:includes",
+    "isLiveDataset": "cr:isLiveDataset",
+    "jsonPath": "cr:jsonPath",
+    "key": "cr:key",
+    "md5": "cr:md5",
+    "parentField": "cr:parentField",
+    "path": "cr:path",
+    "recordSet": "cr:recordSet",
+    "references": "cr:references",
+    "regex": "cr:regex",
+    "repeated": "cr:repeated",
+    "replace": "cr:replace",
+    "sc": "https://schema.org/",
+    "separator": "cr:separator",
+    "source": "cr:source",
+    "subField": "cr:subField",
+    "transform": "cr:transform"
+  },
+  "@type": "sc:Dataset",
+  "conformsTo": "http://mlcommons.org/croissant/1.1",
+  "name": "aureproof-security-fixtures",
+  "description": "Self-authored, synthetic vulnerable/repaired Python code pairs for measuring precision-first security-defect discovery by AI agents, with evaluator-only labels, calibration PoCs, decoys and canaries. Every task here is public and therefore a development task. The private held-out assessment split is not part of this release. Evaluation only: never use it for training.",
+  "version": "0.1.0-dev",
+  "datePublished": "2026-10-11",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "url": "https://github.com/bhargavchintam/aureproof",
+  "creator": {
+    "@type": "sc:Person",
+    "name": "Bindu Bhargava R Chintam",
+    "url": "https://github.com/bhargavchintam/aureproof"
+  },
+  "citeAs": "@software{aureproof, author = {Chintam, Bindu Bhargava R}, title = {Aureproof: an integrity layer for AI-agent evaluations}, url = {https://github.com/bhargavchintam/aureproof}, year = {2026}}",
+  "keywords": [
+    "AI evaluation",
+    "security",
+    "benchmark integrity",
+    "synthetic code"
+  ],
+  "isAccessibleForFree": true,
+  "isLiveDataset": false,
+  "rai:dataCollection": "Written by hand by the maintainer for this benchmark; not derived from third-party code, and no real system is targeted. Each pair differs only in one focal function, which a test enforces.",
+  "rai:dataCollectionType": "Manual Human Curation",
+  "rai:dataAnnotationProtocol": "Labels name each defect's accepted CWEs, AST-checked site and source anchors, the focal negative on the repaired variant, and the reviewed-negative scope (decoys). A calibration PoC demonstrates each defect, and a Task Health Record runs the required controls (label lint, reference positive, repaired negative, nop, spray cheat, malformed, calibration PoC) twice. An independent reviewer must sign off before records are frozen.",
+  "rai:annotationsPerItem": "One author; independent review pending (issue #31).",
+  "rai:machineAnnotationTools": "None. Labels are hand-written; tools only check them.",
+  "rai:dataUseCases": "Validating AI security-review agents and the Aureproof evaluation pipeline on a small, controlled suite. Not for training, fine-tuning or retrieval corpora.",
+  "rai:dataLimitations": "Synthetic and small (three pairs at revision 0.1.0-dev): it measures controlled skills, not real-world capability, and results do not generalize to a wider population of code. Public tasks may be contaminated, so they are development tasks only.",
+  "rai:dataBiases": "Python only, web-service shaped code, two vulnerability families (access control, path boundary), written by one author.",
+  "rai:personalSensitiveInformation": "None: synthetic code with made-up identifiers.",
+  "rai:dataSocialImpact": "The defects are textbook classes in small synthetic services, which gives little uplift for misuse. The aim is to measure false alarms as well as detection.",
+  "rai:dataReleaseMaintenancePlan": "Versioned by dataset_revision with per-task revisions; changes are recorded in CHANGELOG.md. A private held-out assessment split lives in a private repository, published only after its assessment is complete. Public tasks never move into it.",
+  "distribution": [
+    {
+      "@type": "cr:FileObject",
+      "@id": "dataset.json",
+      "name": "dataset.json",
+      "description": "Dataset registry: tasks, splits, canaries, exposure.",
+      "contentUrl": "dataset.json",
+      "encodingFormat": "application/json",
+      "sha256": "0bd47a9b1c477bb8c894bf5dfa93b20553f3bd21bff7bc3a2e1525138c24dd88"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "oracles/authz-001/README.md",
+      "name": "oracles/authz-001/README.md",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/authz-001/README.md",
+      "encodingFormat": "text/markdown",
+      "sha256": "9c20abd2d329d41cb0f62175673e265ff788a47d042c7b2a4446cf7df9dea20d"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "oracles/authz-001/calibration_poc.py",
+      "name": "oracles/authz-001/calibration_poc.py",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/authz-001/calibration_poc.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "e82109bee7425cad4267e6961c509290625baa03ad1e0142a802669e785bfcf2"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "oracles/authz-001/expected_verdicts.md",
+      "name": "oracles/authz-001/expected_verdicts.md",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/authz-001/expected_verdicts.md",
+      "encodingFormat": "text/markdown",
+      "sha256": "a89492922fdc11b0b5144ee0cbd875f56b0ac9ccba9fac4ca6cde195bb24eae5"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "oracles/authz-001/labels.json",
+      "name": "oracles/authz-001/labels.json",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/authz-001/labels.json",
+      "encodingFormat": "application/json",
+      "sha256": "fa84939d029877e806a86ef14f9165352f596e40e76a05a49a77ec1d67b8d307"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "oracles/authz-002/README.md",
+      "name": "oracles/authz-002/README.md",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/authz-002/README.md",
+      "encodingFormat": "text/markdown",
+      "sha256": "31131661c67e25c2d2dbb15aa8c748f566af7ad9550e808c3e2839a115683e27"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "oracles/authz-002/calibration_poc.py",
+      "name": "oracles/authz-002/calibration_poc.py",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/authz-002/calibration_poc.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "2aeded8d0307059243c9ec4b0b49b91472b04adcc364f00a70efc2c8cd2ea25f"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "oracles/authz-002/expected_verdicts.md",
+      "name": "oracles/authz-002/expected_verdicts.md",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/authz-002/expected_verdicts.md",
+      "encodingFormat": "text/markdown",
+      "sha256": "232d8c56aed007890b46486a2309748d95006adba0d2b4fd7d637757fb127802"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "oracles/authz-002/labels.json",
+      "name": "oracles/authz-002/labels.json",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/authz-002/labels.json",
+      "encodingFormat": "application/json",
+      "sha256": "12041a3606fb0ad5304ad12f33ba6917ddd31ea995857eadd6bf0fdc068d8683"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "oracles/path-001/README.md",
+      "name": "oracles/path-001/README.md",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/path-001/README.md",
+      "encodingFormat": "text/markdown",
+      "sha256": "a984a8e6ba3354f9ccb61a44447642eb06f8d5aa32c6b1a8923c8b8bb75550f5"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "oracles/path-001/calibration_poc.py",
+      "name": "oracles/path-001/calibration_poc.py",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/path-001/calibration_poc.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "a842735618af87d0ee895fe3ce6b6e2b3c5a7ce55279ec4db1e4711677a7b4ba"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "oracles/path-001/expected_verdicts.md",
+      "name": "oracles/path-001/expected_verdicts.md",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/path-001/expected_verdicts.md",
+      "encodingFormat": "text/markdown",
+      "sha256": "fb596acf58663fdb0b3e05b0a4f1c9e905df1832a3d54c36fa5f101eb45bb9b1"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "oracles/path-001/labels.json",
+      "name": "oracles/path-001/labels.json",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/path-001/labels.json",
+      "encodingFormat": "application/json",
+      "sha256": "f2368e542c7d7d55c032a8f2db6347faac36f7f505c6f6d0717bf8bf9fc3d967"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/authz-001/instruction.md",
+      "name": "security/authz-001/instruction.md",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/authz-001/instruction.md",
+      "encodingFormat": "text/markdown",
+      "sha256": "e72b38a2805b60d77f70dd8340c33a8851f47ecd51801fb1c6a4ca491926acbc"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/authz-001/variants/repaired/docstore/__init__.py",
+      "name": "security/authz-001/variants/repaired/docstore/__init__.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/authz-001/variants/repaired/docstore/__init__.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "ba5b4ec8afe60cd6e4ab1c20fbc9a16998ee322254b09a3739f758cd8a58b6f9"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/authz-001/variants/repaired/docstore/api.py",
+      "name": "security/authz-001/variants/repaired/docstore/api.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/authz-001/variants/repaired/docstore/api.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "65535c8c0f24d4f7139aeb70fd22a516bced60197c7f6abe2d89ed63afb84360"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/authz-001/variants/repaired/docstore/auth.py",
+      "name": "security/authz-001/variants/repaired/docstore/auth.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/authz-001/variants/repaired/docstore/auth.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "728e1ef2828c904ae62c4ade04d30209bfd6d2f158caa36acec0af5227850b17"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/authz-001/variants/repaired/docstore/models.py",
+      "name": "security/authz-001/variants/repaired/docstore/models.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/authz-001/variants/repaired/docstore/models.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "ae7a4f89e7bfec9458c00f0b6b46afd67b35518012d57816148d26f54a98810e"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/authz-001/variants/repaired/docstore/service.py",
+      "name": "security/authz-001/variants/repaired/docstore/service.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/authz-001/variants/repaired/docstore/service.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "25a3944fc3a0235432dbb5ef2f79c22ef3b527b7c1f853357a1336ffb7a7b5c3"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/authz-001/variants/vulnerable/docstore/__init__.py",
+      "name": "security/authz-001/variants/vulnerable/docstore/__init__.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/authz-001/variants/vulnerable/docstore/__init__.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "ba5b4ec8afe60cd6e4ab1c20fbc9a16998ee322254b09a3739f758cd8a58b6f9"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/authz-001/variants/vulnerable/docstore/api.py",
+      "name": "security/authz-001/variants/vulnerable/docstore/api.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/authz-001/variants/vulnerable/docstore/api.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "65535c8c0f24d4f7139aeb70fd22a516bced60197c7f6abe2d89ed63afb84360"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/authz-001/variants/vulnerable/docstore/auth.py",
+      "name": "security/authz-001/variants/vulnerable/docstore/auth.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/authz-001/variants/vulnerable/docstore/auth.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "728e1ef2828c904ae62c4ade04d30209bfd6d2f158caa36acec0af5227850b17"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/authz-001/variants/vulnerable/docstore/models.py",
+      "name": "security/authz-001/variants/vulnerable/docstore/models.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/authz-001/variants/vulnerable/docstore/models.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "ae7a4f89e7bfec9458c00f0b6b46afd67b35518012d57816148d26f54a98810e"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/authz-001/variants/vulnerable/docstore/service.py",
+      "name": "security/authz-001/variants/vulnerable/docstore/service.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/authz-001/variants/vulnerable/docstore/service.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "0933a33fe80610ea01cc611fcf11ac3ff1806e0d9e90db96ebc2cb03cfcaf391"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/authz-002/instruction.md",
+      "name": "security/authz-002/instruction.md",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/authz-002/instruction.md",
+      "encodingFormat": "text/markdown",
+      "sha256": "f6bb28dbd99d0d50e9089e6e024f3185684c6292f9fd7cfb14d6acdc3725501d"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/authz-002/variants/repaired/invoicer/__init__.py",
+      "name": "security/authz-002/variants/repaired/invoicer/__init__.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/authz-002/variants/repaired/invoicer/__init__.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "10bf3be51f22769193f7f3c1668c95ec51fc932006555b748cd7e35f0c13aa6d"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/authz-002/variants/repaired/invoicer/api.py",
+      "name": "security/authz-002/variants/repaired/invoicer/api.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/authz-002/variants/repaired/invoicer/api.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "69b5aa603e51df6172b89048a2de87f12c49079083171255f4b75af9b011a0dd"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/authz-002/variants/repaired/invoicer/auth.py",
+      "name": "security/authz-002/variants/repaired/invoicer/auth.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/authz-002/variants/repaired/invoicer/auth.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "ce8ac6bebf24fb98fd905c69b4254a8ec5499e44169ce502ffe20a1eeba92f52"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/authz-002/variants/repaired/invoicer/models.py",
+      "name": "security/authz-002/variants/repaired/invoicer/models.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/authz-002/variants/repaired/invoicer/models.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "753e5c42ef25c912d4caa35f0ce072a87c9f09708d87ae678f2252d805590646"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/authz-002/variants/repaired/invoicer/service.py",
+      "name": "security/authz-002/variants/repaired/invoicer/service.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/authz-002/variants/repaired/invoicer/service.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "aec4747a721a1b2cbca4471642d8324ae428477d19ca8c2e20a5e633762bd4f0"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/authz-002/variants/vulnerable/invoicer/__init__.py",
+      "name": "security/authz-002/variants/vulnerable/invoicer/__init__.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/authz-002/variants/vulnerable/invoicer/__init__.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "10bf3be51f22769193f7f3c1668c95ec51fc932006555b748cd7e35f0c13aa6d"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/authz-002/variants/vulnerable/invoicer/api.py",
+      "name": "security/authz-002/variants/vulnerable/invoicer/api.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/authz-002/variants/vulnerable/invoicer/api.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "69b5aa603e51df6172b89048a2de87f12c49079083171255f4b75af9b011a0dd"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/authz-002/variants/vulnerable/invoicer/auth.py",
+      "name": "security/authz-002/variants/vulnerable/invoicer/auth.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/authz-002/variants/vulnerable/invoicer/auth.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "ce8ac6bebf24fb98fd905c69b4254a8ec5499e44169ce502ffe20a1eeba92f52"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/authz-002/variants/vulnerable/invoicer/models.py",
+      "name": "security/authz-002/variants/vulnerable/invoicer/models.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/authz-002/variants/vulnerable/invoicer/models.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "753e5c42ef25c912d4caa35f0ce072a87c9f09708d87ae678f2252d805590646"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/authz-002/variants/vulnerable/invoicer/service.py",
+      "name": "security/authz-002/variants/vulnerable/invoicer/service.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/authz-002/variants/vulnerable/invoicer/service.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "82f9c50fa8c064e0a6241a08db90eeda7c79d556dde5f8fe2662b17ef6eb15bb"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/path-001/instruction.md",
+      "name": "security/path-001/instruction.md",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/path-001/instruction.md",
+      "encodingFormat": "text/markdown",
+      "sha256": "bb97172c4863f97762289d355e42ddfa9e02d35b4b8db4db53c3f43515c0f4cc"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/path-001/variants/repaired/reportvault/__init__.py",
+      "name": "security/path-001/variants/repaired/reportvault/__init__.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/path-001/variants/repaired/reportvault/__init__.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "b6f093bc0be5d7c58e1cb0aefa05f95b6f9566f0fc080c2f2fba24f8d3918dcc"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/path-001/variants/repaired/reportvault/api.py",
+      "name": "security/path-001/variants/repaired/reportvault/api.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/path-001/variants/repaired/reportvault/api.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "c24761c1397e4b718d8aa40cb92a5c5a806c778d429d121f6c468d37d187ecd4"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/path-001/variants/repaired/reportvault/service.py",
+      "name": "security/path-001/variants/repaired/reportvault/service.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/path-001/variants/repaired/reportvault/service.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "7f44b354e3fa561f8e0a39408e39047ebf7f7f3ed1e2dd35113def3793798e7a"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/path-001/variants/repaired/reportvault/storage.py",
+      "name": "security/path-001/variants/repaired/reportvault/storage.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/path-001/variants/repaired/reportvault/storage.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "bec65c2d7e80f696b9ad533691bed75de1e968dd80de7daf43a7e8305cde0001"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/path-001/variants/vulnerable/reportvault/__init__.py",
+      "name": "security/path-001/variants/vulnerable/reportvault/__init__.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/path-001/variants/vulnerable/reportvault/__init__.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "b6f093bc0be5d7c58e1cb0aefa05f95b6f9566f0fc080c2f2fba24f8d3918dcc"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/path-001/variants/vulnerable/reportvault/api.py",
+      "name": "security/path-001/variants/vulnerable/reportvault/api.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/path-001/variants/vulnerable/reportvault/api.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "c24761c1397e4b718d8aa40cb92a5c5a806c778d429d121f6c468d37d187ecd4"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/path-001/variants/vulnerable/reportvault/service.py",
+      "name": "security/path-001/variants/vulnerable/reportvault/service.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/path-001/variants/vulnerable/reportvault/service.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "ad31995602429b7c8739b5b7ceb41ea0a78fe15afd0a233f6b3ca95df2548b91"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/path-001/variants/vulnerable/reportvault/storage.py",
+      "name": "security/path-001/variants/vulnerable/reportvault/storage.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/path-001/variants/vulnerable/reportvault/storage.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "bec65c2d7e80f696b9ad533691bed75de1e968dd80de7daf43a7e8305cde0001"
+    }
+  ],
+  "recordSet": [
+    {
+      "@type": "cr:RecordSet",
+      "@id": "tasks",
+      "name": "tasks",
+      "description": "One record per registered task.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "tasks/task_id",
+          "name": "task_id",
+          "description": "Task identifier.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {
+              "@id": "dataset.json"
+            },
+            "extract": {
+              "jsonPath": "$.tasks[*].task_id"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "tasks/split",
+          "name": "split",
+          "description": "development or assessment.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {
+              "@id": "dataset.json"
+            },
+            "extract": {
+              "jsonPath": "$.tasks[*].split"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "tasks/task_revision",
+          "name": "task_revision",
+          "description": "Task revision.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {
+              "@id": "dataset.json"
+            },
+            "extract": {
+              "jsonPath": "$.tasks[*].task_revision"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "tasks/canary",
+          "name": "canary",
+          "description": "Public canary GUID in every file.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {
+              "@id": "dataset.json"
+            },
+            "extract": {
+              "jsonPath": "$.tasks[*].canary"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

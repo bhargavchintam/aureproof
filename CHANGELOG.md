@@ -241,6 +241,15 @@ public API and the specs may change between minor versions).
   carries no seal. The "EEE consumer" workflow validates `examples/eee` with
   EEE's own validator.
 
+- Fixture metadata (issue #60): `fixtures/croissant.json` is Croissant 1.1 with
+  the RAI extension. Every fixture file is pinned by SHA-256, the task list is a
+  record set from `dataset.json`, and RAI fields cover collection, annotation, use
+  cases, limits, biases, sensitive information and the release plan.
+  `fixtures/DATASET_CARD.md` states the evaluation-only use, the canaries, the
+  layout, splits and exposure, CC-BY-4.0 provenance and the provider-output terms.
+  `scripts/make_croissant.py --check` and the "Croissant" workflow (mlcroissant
+  1.1.1) keep it current and valid.
+
 ### Changed
 - `CODE_OF_CONDUCT.md` is now licensed CC-BY-SA-4.0 in `REUSE.toml`, matching
   the Contributor Covenant 3.0 terms its attribution states (issue #33); it was
