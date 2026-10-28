@@ -47,6 +47,15 @@ public API and the specs may change between minor versions).
   export and import with a property-based round-trip test, generated JSON Schema
   2020-12 files in `specs/contracts/v0.1/` with a drift check, and conformance
   vectors checked against both the models and the schemas.
+- Inspect runner adapter (issue #39): a `Runner` port with per-sample classification
+  (`runners.port`), the Inspect adapter (`runners.inspect_runner`: one sample per
+  attempt, `retry_on_error=0`, `fail_on_error=False`, no agent retries, raw-byte capture
+  with SHA-256), and an orchestrator (`runners.orchestrate`) that journals the dispatch
+  before calling the runner, records provider request and retry IDs and the log digest,
+  re-dispatches only infrastructure failures as new attempts, stores captured bytes in the
+  content-addressed store, and finalizes from scoring. The system identity records pins,
+  protocol, declared tools and effective settings; tool drift is a configuration
+  failure. Lane-tested in Docker with mockllm (capture, refusal, identity).
 - Calibration runner and `aureproof task validate` (issue #38). All seven THR controls
   run through the real scoring core and the evaluator's calibration PoC, every control is
   re-run, and the status is derived. `authz-001` is **healthy**: spraying reaches recall

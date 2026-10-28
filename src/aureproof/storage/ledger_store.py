@@ -115,6 +115,9 @@ class AttemptLedgerStore:
         runner_run_id: str | None = None,
         error_class: str | None = None,
         submission: str | None = None,
+        capture: str | None = None,
+        log_digest: str | None = None,
+        provider: dict[str, Any] | None = None,
     ) -> None:
         episode_id = attempt_id.rsplit("/", 1)[0]
         payload: dict[str, Any] = {
@@ -124,6 +127,9 @@ class AttemptLedgerStore:
             "runner_run_id": runner_run_id,
             "error_class": error_class,
             "submission": submission,
+            "capture": capture,
+            "log_digest": log_digest,
+            "provider": provider,
         }
         current = self._attempt_state(attempt_id)
         if current is not None and current.outcome is not None:

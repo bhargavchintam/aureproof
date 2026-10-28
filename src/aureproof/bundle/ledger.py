@@ -21,7 +21,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass, field
 from typing import Literal
 
-from pydantic import ValidationError
+from pydantic import Field, ValidationError
 
 from aureproof.contracts._base import Contract, NonEmptyStr, NonNegativeInt
 from aureproof.contracts.events import Event
@@ -59,6 +59,14 @@ class AttemptDispatched(Contract):
     at: UtcTimestamp
 
 
+class ProviderCalls(Contract):
+    """Model traffic observed by the controller for one attempt (plan v2 §3.6)."""
+
+    requests: NonNegativeInt
+    retries: NonNegativeInt  # provider-side retries: infrastructure attempts, visible
+    request_ids: list[NonEmptyStr] = Field(default_factory=list)
+
+
 class AttemptOutcome(Contract):
     attempt_id: NonEmptyStr
     outcome: Outcome
@@ -66,6 +74,9 @@ class AttemptOutcome(Contract):
     runner_run_id: NonEmptyStr | None = None
     error_class: NonEmptyStr | None = None
     submission: DigestRef | None = None
+    capture: Literal["captured", "absent"] | None = None
+    log_digest: DigestRef | None = None  # the runner's raw log, retained by digest
+    provider: ProviderCalls | None = None
 
 
 class EpisodeFinalized(Contract):
