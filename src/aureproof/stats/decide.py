@@ -79,7 +79,7 @@ def decide(protocol: DecisionProtocol, rows: Sequence[ClusterRow]) -> Decision:
             upper=None if result.upper is None else float(result.upper),
         ),
     }
-    margin = Fraction(protocol.margin)
+    margin = Fraction(str(protocol.margin))  # the decimal as written; Fraction(0.05) > 1/20
     if result.lower is None or result.upper is None:
         reason = f"{result.k} clusters cannot reach a decisive outcome (need >= {needed})"
         return build("inconclusive", "inconclusive", reason, **stats)

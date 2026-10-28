@@ -15,7 +15,7 @@ from typing import Annotated, Literal, Self
 from pydantic import Field, JsonValue, model_validator
 
 from aureproof.contracts._base import Contract, NonEmptyStr, Variant
-from aureproof.contracts.specs import DigestRef, UtcTimestamp
+from aureproof.contracts.specs import DigestRef, UtcTimestamp, content_identity
 
 THR_VERSION = "0.1"
 
@@ -148,3 +148,8 @@ class TaskHealthRecord(Contract):
         ):
             raise ValueError("a frozen record names an independent reviewer (ADR-0005)")
         return self
+
+
+def thr_digest(record: TaskHealthRecord) -> str:
+    """What a Decision Protocol's ``cohort[].thr_digest`` names: the THR's canonical JSON."""
+    return content_identity(record)

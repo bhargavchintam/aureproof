@@ -125,3 +125,44 @@ def test_protocol_identity_changes_with_any_term() -> None:
     for change in ({"margin": 0.1}, {"repetitions": 5}, {"name": "other"}):
         ids.add(DecisionProtocol.model_validate({**base, **change}).identity)
     assert len(ids) == 4
+
+
+def test_the_margin_is_the_decimal_the_protocol_wrote() -> None:
+    """A CI lower bound of exactly -margin is not a pass (L > -margin is strict).
+
+    Read as a binary float, 0.05 is a little more than 1/20, and every cluster at
+    -1/20 used to pass.
+    """
+    cohort = [
+        {
+            "task_identity": "sha256:" + format(i, "064x"),
+            "thr_digest": "sha256:" + "a" * 64,
+            "cluster_id": f"c{i}",
+        }
+        for i in range(8)
+    ]
+    protocol = DecisionProtocol.model_validate(
+        {
+            "protocol_version": "0.1",
+            "name": "margin-boundary",
+            "cohort": cohort,
+            "configurations": {"A": "sha256:" + "1" * 64, "B": "sha256:" + "2" * 64},
+            "repetitions": 1,
+            "margin": 0.05,
+        }
+    )
+    rows = [
+        ClusterRow(
+            cluster_id=f"c{i}",
+            a_confirmed=20,
+            a_submitted=20,
+            b_confirmed=19,
+            b_submitted=20,
+            difference=None,
+        )
+        for i in range(8)
+    ]
+    decision = decide(protocol, rows)
+    assert decision.mean_difference == "-1/20"
+    assert decision.outcome == "inconclusive", decision.reason
+    assert "-1/20" in decision.reason and "72057594037927936" not in decision.reason

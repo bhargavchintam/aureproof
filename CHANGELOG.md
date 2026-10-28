@@ -201,6 +201,17 @@ public API and the specs may change between minor versions).
   journal and extra members; `EpisodeRun` carries the signals it was scored with.
   The procedure is in `docs/guides/live-slice.md`.
 
+- `aureproof compare` and the comparison-gate Action (issues #50, #53). Two run
+  bundles are checked against the frozen protocol and fail closed (exit 2) on any
+  mismatch: sealed protocol, system identity, THR digests, episode counts, planned
+  episodes, offline re-score, and signatures with `--require-signature`. Then the
+  per-cluster table goes to the exact three-way gate. The Markdown report shows
+  the cluster table, the exact p and CI, Wilson intervals, and quality and
+  operational metrics separately. Exit codes: pass 0, fail 1, inconclusive 3. The
+  repository's `action.yml` wraps it; inconclusive fails unless set to `neutral`,
+  and is never reported as pass. `examples/gate` holds hand-worked pass, fail and
+  inconclusive examples, which the `Gate examples` workflow runs through the Action.
+
 ### Changed
 - `CODE_OF_CONDUCT.md` is now licensed CC-BY-SA-4.0 in `REUSE.toml`, matching
   the Contributor Covenant 3.0 terms its attribution states (issue #33); it was
@@ -230,6 +241,10 @@ public API and the specs may change between minor versions).
 - Dependencies: grouped GitHub Actions updates (#21) and pydantic 2.14.0 (#23).
 
 ### Fixed
+- The decision gate read the protocol's margin as a binary float, so `0.05`
+  became slightly more than 1/20, and a CI lower bound of exactly -1/20 passed
+  instead of being inconclusive (specs/decision §5: the inequalities are strict).
+  The margin is now the decimal as written, compared as an exact rational.
 - An agent error could be classified as an infrastructure failure and
   re-dispatched when its traceback's frames matched an infrastructure pattern:
   a path under `/tmp/claude-501`, a frame at `line 512`, or an `inspect_ai`

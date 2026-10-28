@@ -1,0 +1,198 @@
+# SPDX-FileCopyrightText: 2026 Bindu Bhargava R Chintam
+# SPDX-License-Identifier: Apache-2.0
+"""Paired comparison of two live run bundles under a Decision Protocol (issues #50, #53).
+
+Pure: files in, a decision out. Each bundle must belong to the protocol, or the
+comparison fails closed with every problem listed: the sealed protocol is the
+same document, the sealed system is configuration A (or B), every cohort task
+has the THR the protocol names by digest, every task and variant has exactly the
+protocol's repetitions and nothing else, every planned episode names this
+protocol and system, and the bundle re-scores byte for byte. Only then are the
+re-scored episodes grouped by cluster, one ``ClusterRow`` each, and passed to
+the exact three-way gate (``stats.decide``). Quality (strict confirmed yield)
+and operational completion are reported separately.
+"""
+
+from __future__ import annotations
+
+from collections import Counter
+from collections.abc import Mapping
+from dataclasses import dataclass, field
+from typing import Literal
+
+from pydantic import ValidationError
+
+from aureproof.bundle.run import (
+    EPISODES,
+    JOURNAL_EPISODE_PLANNED,
+    PROTOCOL,
+    SYSTEM,
+    rescore,
+    thr_path,
+)
+from aureproof.contracts import SystemSpec
+from aureproof.contracts.decision import ClusterRow, Decision, DecisionProtocol
+from aureproof.contracts.strict_json import JsonInputError, loads_strict
+from aureproof.contracts.thr import TaskHealthRecord, thr_digest
+from aureproof.scoring import compute_metrics
+from aureproof.scoring.episode import EpisodeScore
+from aureproof.stats.decide import decide
+
+Side = Literal["A", "B"]
+VARIANTS = ("vulnerable", "repaired")
+
+
+class GateError(ValueError):
+    """The evidence does not belong to the protocol; no decision is made."""
+
+    def __init__(self, problems: list[str]) -> None:
+        super().__init__("; ".join(problems))
+        self.problems = problems
+
+
+@dataclass(frozen=True)
+class SideSummary:
+    side: Side
+    system_identity: str
+    episodes: int
+    dispositions: dict[str, int]
+    metrics: dict[str, str]  # "numerator/denominator", exact
+
+
+@dataclass(frozen=True)
+class Comparison:
+    protocol: DecisionProtocol
+    decision: Decision
+    a: SideSummary
+    b: SideSummary
+    cluster_tasks: dict[str, list[str]] = field(default_factory=dict)
+
+
+def _load(files: Mapping[str, bytes], path: str) -> object:
+    return loads_strict(files[path], i_json=True)
+
+
+def _check(
+    side: Side, protocol: DecisionProtocol, files: Mapping[str, bytes]
+) -> tuple[list[str], dict[str, str], list[tuple[str, EpisodeScore]]]:
+    """Problems, the task-to-cluster map, and (task_id, score) pairs for one bundle."""
+    problems: list[str] = []
+    expected_system = getattr(protocol.configurations, side)
+    try:
+        sealed = DecisionProtocol.model_validate(_load(files, PROTOCOL))
+        if sealed.identity != protocol.identity:
+            problems.append(f"{side}: sealed protocol {sealed.identity} is not this protocol")
+    except (KeyError, JsonInputError, ValidationError) as exc:
+        problems.append(f"{side}: no readable {PROTOCOL}: {type(exc).__name__}")
+    try:
+        system = SystemSpec.model_validate(_load(files, SYSTEM))
+        if system.identity != expected_system:
+            problems.append(f"{side}: system {system.identity} is not configuration {side}")
+    except (KeyError, JsonInputError, ValidationError) as exc:
+        problems.append(f"{side}: no readable {SYSTEM}: {type(exc).__name__}")
+
+    clusters: dict[str, str] = {}
+    for cohort_task in protocol.cohort:
+        found = None
+        for path in files:
+            if path.startswith("tasks/") and path.endswith("/thr.json"):
+                try:
+                    record = TaskHealthRecord.model_validate(_load(files, path))
+                except (JsonInputError, ValidationError):
+                    continue
+                if record.task.task_identity == cohort_task.task_identity:
+                    found = record
+        if found is None:
+            problems.append(f"{side}: no THR for cohort task {cohort_task.task_identity}")
+        elif thr_digest(found) != cohort_task.thr_digest:
+            problems.append(f"{side}: {found.task.task_id}: THR digest differs from the protocol")
+        elif thr_path(found.task.task_id) not in files:
+            problems.append(
+                f"{side}: {found.task.task_id}: THR is not at {thr_path(found.task.task_id)}"
+            )
+        else:
+            clusters[found.task.task_id] = cohort_task.cluster_id
+
+    try:
+        episodes = _load(files, EPISODES)
+        assert isinstance(episodes, list)
+        counts = Counter((str(e["task_id"]), str(e["variant"])) for e in episodes)
+    except (KeyError, JsonInputError, AssertionError, TypeError) as exc:
+        problems.append(f"{side}: no readable {EPISODES}: {type(exc).__name__}")
+        counts = Counter()
+    for task_id in clusters:
+        for variant in VARIANTS:
+            n = counts.pop((task_id, variant), 0)
+            if n != protocol.repetitions:
+                problems.append(
+                    f"{side}: {task_id}/{variant} has {n} episodes, protocol says "
+                    f"{protocol.repetitions}"
+                )
+    for (task_id, variant), n in sorted(counts.items()):
+        problems.append(f"{side}: {n} episode(s) of {task_id}/{variant} outside the cohort")
+
+    for line in files.get("journal.jsonl", b"").splitlines():
+        event = loads_strict(line, i_json=True)["event"]
+        if event.get("kind") != JOURNAL_EPISODE_PLANNED:
+            continue
+        planned = event["payload"]["episode"]
+        if planned.get("protocol") != protocol.identity or planned.get("system") != expected_system:
+            problems.append(f"{side}: episode {event['episode_id']} was planned for another run")
+
+    redo = rescore(files)
+    if redo.status != "reproduced":
+        problems.append(f"{side}: offline re-score {redo.status}: {'; '.join(redo.problems)}")
+    pairs = [(ep.task_id, score) for ep, score in redo.scored]
+    return problems, clusters, pairs
+
+
+def _summary(side: Side, identity: str, pairs: list[tuple[str, EpisodeScore]]) -> SideSummary:
+    scores = [s for _, s in pairs]
+    metrics = compute_metrics(scores)
+    return SideSummary(
+        side=side,
+        system_identity=identity,
+        episodes=len(scores),
+        dispositions=dict(sorted(Counter(s.disposition.value for s in scores).items())),
+        metrics={k: f"{m.numerator}/{m.denominator}" for k, m in sorted(metrics.items())},
+    )
+
+
+def compare(
+    protocol: DecisionProtocol, files_a: Mapping[str, bytes], files_b: Mapping[str, bytes]
+) -> Comparison:
+    """The protocol's decision for two bundles, or ``GateError`` listing every mismatch."""
+    problems_a, clusters_a, pairs_a = _check("A", protocol, files_a)
+    problems_b, clusters_b, pairs_b = _check("B", protocol, files_b)
+    problems = problems_a + problems_b
+    if not problems and clusters_a != clusters_b:
+        problems.append("A and B map the cohort to different task IDs")
+    if problems:
+        raise GateError(problems)
+
+    rows = []
+    cluster_tasks: dict[str, list[str]] = {}
+    for task_id, cluster in clusters_a.items():
+        cluster_tasks.setdefault(cluster, []).append(task_id)
+    for cluster, tasks in sorted(cluster_tasks.items()):
+        a = compute_metrics([s for t, s in pairs_a if t in tasks])
+        b = compute_metrics([s for t, s in pairs_b if t in tasks])
+        rows.append(
+            ClusterRow(
+                cluster_id=cluster,
+                a_confirmed=a["strict_confirmed_yield"].numerator,
+                a_submitted=a["strict_confirmed_yield"].denominator,
+                b_confirmed=b["strict_confirmed_yield"].numerator,
+                b_submitted=b["strict_confirmed_yield"].denominator,
+                a_unresolved=a["unresolved_fraction"].numerator,
+                b_unresolved=b["unresolved_fraction"].numerator,
+                difference=None,
+            )
+        )
+    return Comparison(
+        protocol=protocol,
+        decision=decide(protocol, rows),
+        a=_summary("A", protocol.configurations.A, pairs_a),
+        b=_summary("B", protocol.configurations.B, pairs_b),
+        cluster_tasks={c: sorted(t) for c, t in sorted(cluster_tasks.items())},
+    )

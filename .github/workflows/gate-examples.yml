@@ -1,0 +1,52 @@
+# SPDX-FileCopyrightText: 2026 Bindu Bhargava R Chintam
+# SPDX-License-Identifier: Apache-2.0
+#
+# Runs the repository's comparison-gate Action (action.yml) on the saved
+# examples in examples/gate (issue #53): each outcome, the neutral treatment of
+# inconclusive, and a pair that cannot be compared. Offline; no secrets. The
+# examples are unsigned, so require-signature is off here, and only here.
+name: Gate examples
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    name: gate ${{ matrix.case }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { case: pass, example: pass, a: a, b: b, inconclusive: fail, outcome: pass, step: success }
+          - { case: fail, example: fail, a: a, b: b, inconclusive: fail, outcome: fail, step: failure }
+          - { case: inconclusive, example: inconclusive, a: a, b: b, inconclusive: fail, outcome: inconclusive, step: failure }
+          - { case: inconclusive-neutral, example: inconclusive, a: a, b: b, inconclusive: neutral, outcome: inconclusive, step: success }
+          - { case: swapped, example: pass, a: b, b: a, inconclusive: fail, outcome: error, step: failure }
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - id: gate
+        continue-on-error: true
+        uses: ./
+        with:
+          protocol: examples/gate/${{ matrix.example }}/protocol.json
+          a: examples/gate/${{ matrix.example }}/${{ matrix.a }}
+          b: examples/gate/${{ matrix.example }}/${{ matrix.b }}
+          require-signature: "false"
+          inconclusive: ${{ matrix.inconclusive }}
+      - name: Outcome and exit match the example
+        env:
+          GOT: ${{ steps.gate.outputs.outcome }}
+          STEP: ${{ steps.gate.outcome }}
+          WANT: ${{ matrix.outcome }}
+          WANT_STEP: ${{ matrix.step }}
+        run: |
+          echo "outcome=$GOT step=$STEP (want $WANT, $WANT_STEP)"
+          test "$GOT" = "$WANT" && test "$STEP" = "$WANT_STEP"

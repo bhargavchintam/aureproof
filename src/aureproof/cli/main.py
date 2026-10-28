@@ -393,6 +393,60 @@ def run(
     raise typer.Exit(0 if report.valid and status == "reproduced" else 1)
 
 
+EXIT = {"pass": 0, "fail": 1, "inconclusive": 3}  # 2: the evidence cannot be compared
+
+
+@app.command()
+def compare(
+    protocol: Annotated[Path, typer.Option("--protocol", help="The frozen Decision Protocol.")],
+    a: Annotated[Path, typer.Option("--a", help="Run bundle of configuration A.")],
+    b: Annotated[Path, typer.Option("--b", help="Run bundle of configuration B.")],
+    require_signature: Annotated[
+        bool, typer.Option("--require-signature", help="Fail closed unless both are signed.")
+    ] = False,
+    report_out: Annotated[
+        Path | None, typer.Option("--report", help="Write the Markdown report here.")
+    ] = None,
+    as_json: JsonOpt = False,
+) -> None:
+    """Pass, fail or inconclusive for B against A. Exit 0, 1 or 3; 2 if not comparable."""
+    from aureproof.bundle.compare import GateError
+    from aureproof.bundle.compare import compare as run_compare
+    from aureproof.cli.report import render_comparison
+    from aureproof.contracts.decision import DecisionProtocol
+
+    proto = DecisionProtocol.model_validate_json(protocol.read_bytes())
+    problems = []
+    sides = {}
+    for name, path in (("A", a), ("B", b)):
+        files = _read(path)
+        signature = _signature(files, None, None) if require_signature else None
+        checked = validate_bundle(files, signature=signature)
+        if not checked.valid:
+            problems += [f"{name}: {p}" for p in checked.problems()]
+        if require_signature and not checked.signed:
+            problems.append(f"{name}: not signed by the project's signing workflow")
+        sides[name] = files
+    if not problems:
+        try:
+            result = run_compare(proto, sides["A"], sides["B"])
+        except GateError as exc:
+            problems = exc.problems
+    if problems:
+        for p in problems:
+            typer.echo(f"error: {p}", err=True)
+        typer.echo("not comparable: no decision (exit 2)", err=True)
+        raise typer.Exit(2)
+    text = render_comparison(result)
+    if report_out is not None:
+        report_out.write_text(text, encoding="utf-8")
+    if as_json:
+        typer.echo(result.decision.model_dump_json(indent=2))
+    else:
+        typer.echo(text)
+    raise typer.Exit(EXIT[result.decision.outcome])
+
+
 @task_app.command("probe")
 def task_probe(
     task_id: Annotated[str, typer.Argument(help="Task ID, e.g. authz-001.")],
