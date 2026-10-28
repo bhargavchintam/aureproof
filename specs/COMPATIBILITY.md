@@ -62,3 +62,25 @@ one released version, 0.1. They have no N−1 to validate or migrate from, so th
 policy for them is rule 1 (fail closed) until a 0.2 exists. A 0.2 must come with its
 migration and with N−1 vectors.
 
+
+## Pinned combinations
+
+The versions this release is tested with. A change to any of them is a new system
+identity or a new spec dependency, and goes through a reviewed PR.
+`tests/test_release_metadata.py` checks this table against the pins.
+
+| Component | Pinned | Where | Role |
+| --- | --- | --- | --- |
+| Python | `>=3.12` | `pyproject.toml` | runtime |
+| uv | `0.12.19` | every workflow | lock, build, SBOM (CycloneDX 1.5) |
+| inspect-ai | `0.3.283` | `pyproject.toml` (`inspect` extra) | runner |
+| inspect-swe | `0.2.72` | `pyproject.toml` (`inspect` extra) | Claude Code scaffold |
+| Claude Code | `2.1.287` | `runners/inspect_runner.py` | external subject |
+| sigstore | `4.5.1` | `pyproject.toml` (`sign` extra) | signing, offline verification trust root |
+| bandit[sarif] | `1.9.4` | `pyproject.toml` (`baseline` extra) | static baseline |
+| Every Eval Ever | `0.3.0` | `exporters/eee.py` (schema pinned by digest) | interchange export |
+| Croissant | `1.1` (mlcroissant `1.1.1` validator) | `fixtures/croissant.json`, `croissant.yml` | dataset metadata |
+
+**Limits.** Live runs were qualified with mockllm on Docker Desktop and GitHub's Linux
+runners only. The dedicated host (#32) and a live provider (#7) are pending. Other
+inspect-ai or inspect-swe versions are untested, and the runner's identity changes with them.

@@ -1,0 +1,26 @@
+{
+  "title": "Aureproof: an integrity layer for AI-agent evaluations",
+  "upload_type": "software",
+  "description": "Aureproof adds integrity to AI-agent evaluations: per-task health records, signed and offline re-scorable evidence bundles, and pre-registered pass/fail/inconclusive regression decisions, on top of existing runners. Its v0.1 benchmark measures precision-first security-defect discovery on self-authored synthetic fixtures.",
+  "creators": [
+    {
+      "name": "Chintam, Bindu Bhargava R"
+    }
+  ],
+  "license": "Apache-2.0",
+  "keywords": [
+    "AI evaluation",
+    "benchmark integrity",
+    "security",
+    "evidence bundles",
+    "reproducibility"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/bhargavchintam/aureproof",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
+  ],
+  "access_right": "open"
+}

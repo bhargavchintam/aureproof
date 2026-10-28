@@ -256,6 +256,14 @@ public API and the specs may change between minor versions).
   assessment run, a human baseline, and the BetterBench request, which is not yet
   submitted. A test keeps every cited path real.
 
+- Release readiness (issue #56): two new guides, `authoring-tasks.md` and
+  `reading-results.md`, which with `gate-action.md` are the three planned; a
+  CycloneDX 1.5 SBOM from the lockfile, checked in CI and attached to every
+  release as its own artifact (`scripts/check_sbom.py`); `.zenodo.json` for the
+  DOI; a pinned-combinations table in `specs/COMPATIBILITY.md`; and
+  `tests/test_release_metadata.py`, which keeps versions, license and pins in
+  agreement.
+
 ### Changed
 - `CODE_OF_CONDUCT.md` is now licensed CC-BY-SA-4.0 in `REUSE.toml`, matching
   the Contributor Covenant 3.0 terms its attribution states (issue #33); it was
