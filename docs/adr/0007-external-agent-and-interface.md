@@ -73,3 +73,12 @@ and only after an infrastructure failure (ADR-0003).
   configuration doubles the runs for any claim that uses it.
 - Revisit: if the external subject changes (e.g. Codex CLI), write a new ADR. The
   protocol, tool surface and defaults differ per agent.
+
+## Update 2026-10-28: bridge qualification (#42)
+
+`preflight()` now rejects any configuration the bridge cannot qualify, when the
+runner is built and before any dispatch. `web-search` is one of them: the runner
+never enables the bridge's `web_search`, and hosted search needs a live run to
+qualify (#7). Until then only `closed-world` runs. The Claude Code protocol
+translation is recorded in `SystemSpec.settings["transformations"]`. Coverage, and
+what stays uncovered, is declared in `docs/bridge-coverage.md`.
