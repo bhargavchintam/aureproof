@@ -33,6 +33,14 @@ execution, configured with `environment_mode = "separate"`, `max_retries = 0`,
 - Harder: Inspect releases often (0.3.278 at acceptance); pin exact versions and keep `tests/integration/test_inspect_spike.py` as the upgrade contract test.
 - Revisit: if the live Claude Code episode (issue #7) cannot produce a submission through the bridge, or a pinned upgrade breaks the contract test.
 
+## Production adapter (2026-10-28, issue #39)
+
+`aureproof.runners.inspect_runner` behind the `Runner` port (`aureproof.runners.port`).
+- One Inspect sample per attempt, with `retry_on_error=0` and `fail_on_error=False`.
+- Captured `findings.json` bytes and their SHA-256 go into the logged store and the content-addressed store.
+- Outcomes are classified per sample, and only infrastructure failures are re-dispatched, as new attempts (`aureproof.runners.orchestrate`).
+- **Known gap:** the bridge doesn't wait for its in-sandbox proxy to be ready. A connection failure before any model call is classified `infra:proxy_not_ready` and re-dispatched visibly. Candidate upstream fix: M5.
+
 ## Spike evidence (2026-10-11)
 
 Full notes: [`docs/research/spike-inspect-day2.md`](../research/spike-inspect-day2.md).
