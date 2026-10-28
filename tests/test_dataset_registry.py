@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = DatasetRegistry.model_validate_json((ROOT / "fixtures/dataset.json").read_text("utf-8"))
 SECURITY = ROOT / "fixtures" / "security"
 ORACLES = ROOT / "fixtures" / "oracles"
-TASKS = {t.task_id: t for t in REGISTRY.development}
+TASKS = {t.task_id: t for t in REGISTRY.tasks}
 
 
 def _files(base: Path) -> list[Path]:
@@ -28,6 +28,9 @@ def _files(base: Path) -> list[Path]:
 def test_every_fixture_task_is_registered_as_development() -> None:
     on_disk = {p.name for d in (SECURITY, ORACLES) for p in d.iterdir() if p.is_dir()}
     assert on_disk == set(TASKS), "every public task is in the registry, and only those"
+    assert all(t.split == "development" for t in REGISTRY.tasks), (
+        "the public tree is development only"
+    )
 
 
 @pytest.mark.parametrize("task_id", sorted(TASKS))
@@ -56,14 +59,14 @@ def test_oracle_canary_is_in_every_oracle_file_and_never_in_the_agent_view(task_
 
 
 def test_no_oracle_canary_appears_in_any_agent_visible_file() -> None:
-    oracles = {t.oracle_canary for t in REGISTRY.development}
+    oracles = {t.oracle_canary for t in REGISTRY.tasks}
     for path in _files(SECURITY):
         text = path.read_text("utf-8")
         assert not any(o in text for o in oracles), path
 
 
 def test_public_tasks_record_exposure_and_overlap() -> None:
-    for task in REGISTRY.development:
+    for task in REGISTRY.tasks:
         assert any(e.kind == "public" for e in task.exposure)
         assert task.overlap.strip()
 

@@ -9,7 +9,7 @@ results publication.
 
 ## Setup (account actions; maintainer only)
 
-1. Create a **private** repository `bhargavchintam/aureproof-assessment`.
+1. A **private** repository `bhargavchintam/aureproof-assessment` (created 2026-10-28).
    - Access: the maintainer and the independent reviewer (#31) only.
    - No forks, no GitHub Pages, no public Actions logs that could print task content.
 2. Mirror the public layout. The build contexts stay separated exactly as in the public
@@ -17,7 +17,8 @@ results publication.
    - `fixtures/security/<task>/`: agent-visible material only;
    - `fixtures/oracles/<task>/`: labels and calibration PoCs, never mounted for an agent;
    - `fixtures/dataset.json`: the same registry schema (`aureproof.contracts.dataset`),
-     with each task's public and oracle canaries.
+     with every task registered as `split: assessment`, `private` exposure only, and its
+     public and oracle canaries. The schema rejects an assessment task with public exposure.
 3. Copy `tests/test_dataset_registry.py` into it, so the same canary checks run there.
 
 ## Before the assessment
