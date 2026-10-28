@@ -27,8 +27,9 @@ class Exposure(Contract):
     kind: Literal["public", "private"]
 
 
-class DevelopmentTask(Contract):
+class RegisteredTask(Contract):
     task_id: NonEmptyStr
+    split: Literal["development", "assessment"]
     task_revision: NonEmptyStr
     canary: Guid  # in every file of the task, agent-visible ones included
     oracle_canary: Guid  # in every evaluator-only file and in no agent-visible file
@@ -39,6 +40,8 @@ class DevelopmentTask(Contract):
     def _distinct(self) -> Self:
         if self.canary == self.oracle_canary:
             raise ValueError("the oracle canary must differ from the public canary")
+        if self.split == "assessment" and any(e.kind == "public" for e in self.exposure):
+            raise ValueError("an exposed task cannot be an assessment task")
         return self
 
 
@@ -50,14 +53,15 @@ class AssessmentMember(Contract):
 class DatasetRegistry(Contract):
     dataset_id: NonEmptyStr
     dataset_revision: NonEmptyStr
-    development: list[DevelopmentTask]
+    tasks: list[RegisteredTask]
     assessment_repository: NonEmptyStr  # where the private split lives (name only)
+    # Public registry only: assessment membership by digest, registered before assessment.
     assessment: list[AssessmentMember] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def _unique(self) -> Self:
-        ids = [t.task_id for t in self.development]
-        guids = [g for t in self.development for g in (t.canary, t.oracle_canary)]
+        ids = [t.task_id for t in self.tasks]
+        guids = [g for t in self.tasks for g in (t.canary, t.oracle_canary)]
         members = [m.task_identity for m in self.assessment]
         if len(ids) != len(set(ids)) or len(guids) != len(set(guids)):
             raise ValueError("task IDs and canaries must be unique")

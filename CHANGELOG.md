@@ -51,6 +51,7 @@ public API and the specs may change between minor versions).
   exposure, overlap; assessment membership by digest only) validated by
   `aureproof.contracts.dataset`. A second, evaluator-only `oracle_canary` per task
   appears in every oracle file and in no agent-visible file, as a label-leak marker.
+  Tasks carry an explicit `split`; an exposed task cannot be an assessment task.
   The registry-driven checks run in CI without reading private labels. Adds
   `docs/contamination.md` and `docs/guides/private-assessment.md`.
 - Aureproof-owned attempts (issue #19). `bundle.ledger` folds lifecycle events
