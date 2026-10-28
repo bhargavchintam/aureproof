@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+import copy
 import sqlite3
 from itertools import count
 from pathlib import Path
@@ -15,6 +16,7 @@ from hypothesis import strategies as st
 from aureproof.bundle import Member, build_bundle, canonical_json, validate
 from aureproof.bundle.ledger import LedgerError
 from aureproof.contracts import Disposition, EpisodeSpec
+from aureproof.contracts.events import ObservationSource
 from aureproof.storage import StorageError
 from aureproof.storage.ledger_store import AttemptLedgerStore, rebuild_index
 
@@ -245,3 +247,48 @@ def test_closing_a_run_gives_every_episode_exactly_one_disposition(tmp_path: Pat
     assert store.close_run("again") == []  # idempotent
     kinds = [e.kind for e in store.journal.events]
     assert kinds.count("episode_finalized") == 3
+
+
+def _tool(store: AttemptLedgerStore, attempt_id: str, source: ObservationSource) -> None:
+    store.record_tool(
+        attempt_id,
+        tool="bash",
+        input_sha256="a" * 64,
+        output_sha256="b" * 64 if source == ObservationSource.CONTROLLER_OBSERVED else None,
+        error=None,
+        source=source,
+    )
+
+
+def test_tool_events_sit_between_dispatch_and_outcome_with_their_trust_tier(
+    tmp_path: Path,
+) -> None:
+    """Issue #43: tool calls are journaled per attempt, tagged by who observed them."""
+    store = _store(tmp_path)
+    eid = store.plan_episode(_spec())
+    a = store.plan_attempt(eid)
+    with pytest.raises(LedgerError):  # not dispatched yet
+        _tool(store, a.attempt_id, ObservationSource.CONTROLLER_OBSERVED)
+    store.dispatch(a.attempt_id, REQ)
+    _tool(store, a.attempt_id, ObservationSource.CONTROLLER_OBSERVED)
+    _tool(store, a.attempt_id, ObservationSource.AGENT_REPORTED)
+    with pytest.raises(LedgerError):  # imported data is never a tool observation
+        _tool(store, a.attempt_id, ObservationSource.IMPORTED)
+    store.record_outcome(a.attempt_id, "response")
+    with pytest.raises(LedgerError):  # the attempt is closed
+        _tool(store, a.attempt_id, ObservationSource.CONTROLLER_OBSERVED)
+    sources = [e.observation_source for e in store.journal.events if e.kind == "tool_observed"]
+    assert sources == ["controller_observed", "agent_reported"]
+    assert AttemptLedgerStore(tmp_path / "run").ledger.episodes[eid].attempts[0].tool_events == 2
+
+
+def test_only_tool_events_may_be_agent_reported(tmp_path: Path) -> None:
+    store = _store(tmp_path)
+    eid = store.plan_episode(_spec())
+    a = store.plan_attempt(eid)
+    event = store.journal.events[-1].model_copy(
+        update={"seq": len(store.journal.events), "observation_source": "agent_reported"}
+    )
+    with pytest.raises(LedgerError, match="attempt_planned cannot be agent_reported"):
+        copy.deepcopy(store.ledger).apply(event)
+    assert a.attempt_id.endswith("/a0")

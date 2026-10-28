@@ -14,7 +14,10 @@ depends on it. One call runs **one** attempt as a one-sample Inspect eval:
   bytes and stores them (base64) with their SHA-256 in the logged sample store,
   so a saved log can be re-scored without a sandbox;
 - facts come from the sample (error, limit, store, model events), never from
-  the log header.
+  the log header;
+- tool calls are journaled by digest (issue #43): ToolEvents the harness
+  executed for the reference subject are ``controller_observed``; Claude Code
+  runs its own tools, so its tool calls are ``agent_reported``.
 
 Proxy readiness: Inspect's ``sandbox_agent_bridge`` yields before its in-sandbox
 proxy accepts connections (inspect-ai 0.3.283, ``agent/_bridge/sandbox/bridge.py``).
@@ -27,14 +30,25 @@ from __future__ import annotations
 import base64
 import hashlib
 import importlib.metadata as md
+import json
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Literal
 
+from pydantic_core import to_json
+
 from aureproof import __version__
 from aureproof.contracts import Budget, SystemSpec
 from aureproof.runners.collect import ARTIFACT, COLLECT_LIMIT, COLLECTOR, interpret
-from aureproof.runners.port import AttemptRequest, AttemptResult, SampleFacts, classify
+from aureproof.runners.port import (
+    AttemptRequest,
+    AttemptResult,
+    SampleFacts,
+    ToolCall,
+    ToolSource,
+    classify,
+)
+from aureproof.runners.reference import REFERENCE_PROMPT, reference_prompt_digest
 
 CAPTURE_KEY = "aureproof_capture"
 FINDINGS_FILE = "findings.json"
@@ -67,6 +81,7 @@ CLAUDE_CODE_SETTINGS: dict[str, Any] = {
     "retry_uncaught_errors": 0,
     "attempts": 1,
 }
+REFERENCE_SETTINGS: dict[str, Any] = {"retry_refusals": 0, "attempts": 1, "bash_timeout_s": 60}
 RUNNER_SETTINGS: dict[str, Any] = {"inspect_retry_on_error": 0, "inspect_fail_on_error": False}
 
 
@@ -100,7 +115,7 @@ def system_spec(cfg: InspectRunnerConfig) -> SystemSpec:
             "version": cfg.claude_code_version,
             "scaffold": f"inspect_swe.claude_code@{md.version('inspect-swe')}",
         }
-        mode = "native-capability"
+        mode, prompts = "native-capability", {}
         settings = {**CLAUDE_CODE_SETTINGS, **RUNNER_SETTINGS}
         if cfg.hosted_tools == "web-search":
             settings["disallowed_tools"] = ["WebFetch"]
@@ -111,7 +126,8 @@ def system_spec(cfg: InspectRunnerConfig) -> SystemSpec:
             "version": inspect_version,
             "scaffold": "inspect_ai.agent.react",
         }
-        mode, settings = "controlled-interface", dict(RUNNER_SETTINGS)
+        mode, settings = "controlled-interface", {**REFERENCE_SETTINGS, **RUNNER_SETTINGS}
+        prompts = {"system": reference_prompt_digest()}
     provider = cfg.model_name.split("/", 1)[0]
     return SystemSpec.model_validate(
         {
@@ -131,7 +147,7 @@ def system_spec(cfg: InspectRunnerConfig) -> SystemSpec:
                     },
                 }
             },
-            "prompts": {},
+            "prompts": prompts,
             "tools": declared_tools(cfg),
             "memory": "none",
             "settings": settings,
@@ -181,7 +197,14 @@ def _subject(cfg: InspectRunnerConfig) -> Any:
     from inspect_ai.tool import bash
 
     if cfg.subject == "reference":
-        return as_solver(react(tools=[bash(timeout=60)]))
+        return as_solver(
+            react(
+                prompt=REFERENCE_PROMPT,
+                tools=[bash(timeout=REFERENCE_SETTINGS["bash_timeout_s"])],
+                attempts=REFERENCE_SETTINGS["attempts"],
+                retry_refusals=REFERENCE_SETTINGS["retry_refusals"],
+            )
+        )
     from inspect_swe import claude_code
 
     configured = system_spec(cfg).settings["disallowed_tools"]
@@ -198,7 +221,43 @@ def _subject(cfg: InspectRunnerConfig) -> Any:
     )
 
 
-def facts_from_sample(sample: Any, log_path: Path, run_id: str | None) -> SampleFacts:
+def _sha(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def _args_sha(arguments: Any) -> str:
+    return _sha(json.dumps(arguments, sort_keys=True, separators=(",", ":"), default=str).encode())
+
+
+def tool_calls(sample: Any, subject: str) -> tuple[list[ToolCall], ToolSource]:
+    """Tool calls by digest, with the trust tier of whoever observed them."""
+    if subject == "reference":
+        observed = []
+        for e in sample.events:
+            if getattr(e, "event", None) != "tool":
+                continue
+            result = e.result if isinstance(e.result, str) else to_json(e.result).decode()
+            observed.append(
+                ToolCall(
+                    tool=e.function,
+                    input_sha256=_args_sha(e.arguments),
+                    output_sha256=_sha(result.encode()),
+                    error=e.error.type if e.error is not None else None,
+                )
+            )
+        return observed, "controller_observed"
+    reported = [
+        ToolCall(tool=call.function, input_sha256=_args_sha(call.arguments), output_sha256=None)
+        for e in sample.events
+        if getattr(e, "event", None) == "model" and e.output is not None and e.output.choices
+        for call in (e.output.choices[0].message.tool_calls or [])
+    ]
+    return reported, "agent_reported"
+
+
+def facts_from_sample(
+    sample: Any, log_path: Path, run_id: str | None, subject: str = "reference"
+) -> SampleFacts:
     """Per-sample facts from an Inspect log sample (never the log header)."""
     model_events = [e for e in sample.events if getattr(e, "event", None) == "model"]
     tools = {t.name for e in model_events for t in (e.tools or [])}
@@ -214,6 +273,7 @@ def facts_from_sample(sample: Any, log_path: Path, run_id: str | None) -> Sample
             submission = base64.b64decode(capture["b64"])
             if hashlib.sha256(submission).hexdigest() != capture["sha256"]:
                 status, submission = "missing", None  # corrupt capture: not evidence
+    calls, source = tool_calls(sample, subject)
     error = None
     if sample.error is not None:
         error = f"{sample.error.message}\n{sample.error.traceback[-2000:]}"
@@ -232,6 +292,8 @@ def facts_from_sample(sample: Any, log_path: Path, run_id: str | None) -> Sample
         log_path=log_path,
         log_digest="sha256:" + hashlib.sha256(log_path.read_bytes()).hexdigest(),
         runner_run_id=run_id,
+        tool_calls=calls,
+        tool_source=source,
     )
 
 
@@ -278,5 +340,6 @@ class InspectRunner:
             return classify(facts, declared_tools=declared_tools(cfg))
         path = Path(str(log.location))
         saved = read_eval_log(str(path))
-        facts = facts_from_sample((saved.samples or log.samples)[0], path, log.eval.run_id)
+        sample_log = (saved.samples or log.samples)[0]
+        facts = facts_from_sample(sample_log, path, log.eval.run_id, cfg.subject)
         return classify(facts, declared_tools=declared_tools(cfg))

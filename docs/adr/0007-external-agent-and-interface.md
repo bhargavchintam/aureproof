@@ -34,7 +34,17 @@ The model for each configuration is fixed by the signed Decision Protocol, not h
 - Claude Code runs in **native-capability** mode: its own built-in tools. The
   offered tool list is recorded per episode in the `SystemSpec`.
 - The reference subject runs in **controlled-interface** mode: `bash()` in the
-  sandbox only.
+  sandbox only. It is Inspect's `react()` with a pinned system prompt
+  (`aureproof.runners.reference`; its digest is `SystemSpec.prompts["system"]`, so
+  any edit is a new system), `attempts=1` and `retry_refusals=0`. The prompt
+  carries no labels, scoring rules or feedback.
+
+**Tool calls** are journaled per attempt as `tool_observed` events, by digest
+(inputs and outputs stay in the runner log). The reference subject's calls are
+executed by the harness, so they are `controller_observed`. Claude Code runs its
+own tools, so its calls, read from its model responses, are `agent_reported`,
+with no observed output. Only `tool_observed` may carry the lower trust tier;
+every lifecycle event stays controller-observed.
 
 **Hosted tools.** Two declared configurations, each its own system identity;
 results are never pooled across them.

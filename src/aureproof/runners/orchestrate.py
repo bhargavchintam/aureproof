@@ -16,6 +16,7 @@ from dataclasses import dataclass
 
 from aureproof.bundle.canonical import digest_ref
 from aureproof.contracts import Disposition, LabelSet
+from aureproof.contracts.events import ObservationSource
 from aureproof.runners.port import AttemptRequest, AttemptResult, Runner, redispatchable
 from aureproof.scoring import EpisodeScore, score_episode
 from aureproof.storage.cas import BlobStore
@@ -80,6 +81,15 @@ def run_episode(
             if len(attempts) <= max_redispatch:
                 continue
             break
+        for call in result.tool_calls:
+            store.record_tool(
+                attempt.attempt_id,
+                tool=call.tool,
+                input_sha256=call.input_sha256,
+                output_sha256=call.output_sha256,
+                error=call.error,
+                source=ObservationSource(result.tool_source),
+            )
         submission_ref = blobs.put(result.submission) if result.submission is not None else None
         store.record_outcome(
             attempt.attempt_id,

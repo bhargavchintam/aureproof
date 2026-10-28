@@ -84,6 +84,7 @@ class Journal:
         payload: dict[str, Any] | None = None,
         attempt_id: str | None = None,
         blob_refs: list[str] | None = None,
+        observation_source: ObservationSource = ObservationSource.CONTROLLER_OBSERVED,
     ) -> Event:
         event = Event(
             seq=len(self._events),
@@ -91,7 +92,7 @@ class Journal:
             attempt_id=attempt_id,
             actor="aureproof",
             kind=kind,
-            observation_source=ObservationSource.CONTROLLER_OBSERVED,
+            observation_source=observation_source,
             payload=payload,
             blob_refs=blob_refs or [],
         )
