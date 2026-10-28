@@ -24,12 +24,11 @@ from typing import Protocol
 from aureproof import __version__
 from aureproof.bundle.build import Member
 from aureproof.bundle.canonical import canonical_json
-from aureproof.bundle.run import EpisodeInput, labels_path, seal_run
+from aureproof.bundle.run import PROTOCOL, SYSTEM, EpisodeInput, labels_path, seal_run, thr_path
 from aureproof.contracts import EpisodeSpec, LabelSet, SystemSpec, TaskSpec
 from aureproof.contracts._base import Variant
 from aureproof.contracts.decision import DecisionProtocol
-from aureproof.contracts.specs import content_identity
-from aureproof.contracts.thr import HealthStatus, TaskHealthRecord
+from aureproof.contracts.thr import HealthStatus, TaskHealthRecord, thr_digest
 from aureproof.oracles.calibration import Paths, registry, task_spec
 from aureproof.oracles.python_spans import line_counts
 from aureproof.runners.orchestrate import run_episode
@@ -38,8 +37,6 @@ from aureproof.storage import BlobStore
 from aureproof.storage.ledger_store import AttemptLedgerStore
 
 VARIANTS: tuple[Variant, ...] = ("vulnerable", "repaired")
-PROTOCOL = "protocol.json"
-SYSTEM = "system.json"
 
 
 class SliceError(ValueError):
@@ -48,11 +45,6 @@ class SliceError(ValueError):
 
 class SystemRunner(Runner, Protocol):
     def system_spec(self) -> SystemSpec: ...
-
-
-def thr_digest(record: TaskHealthRecord) -> str:
-    """What a protocol's ``cohort[].thr_digest`` names: the THR's canonical JSON."""
-    return content_identity(record)
 
 
 @dataclass(frozen=True)
@@ -150,7 +142,7 @@ def run_slice(
             Member(SYSTEM, canonical_json(system.model_dump(mode="json", by_alias=True)), "system"),
             *(
                 Member(
-                    f"tasks/{p.task.task_id}/thr.json",
+                    thr_path(p.task.task_id),
                     canonical_json(p.thr.model_dump(mode="json")),
                     "task_health",
                 )

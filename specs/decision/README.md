@@ -66,6 +66,8 @@ With interval [L, U] and margin δ:
 1. **pass** if L > −δ;
 2. **fail** if U < −δ;
 3. **inconclusive** otherwise. That includes an unbounded interval, and a bound exactly at −δ (the inequalities are strict).
+
+δ is the decimal written in the protocol, compared as an exact rational: `0.05` is 1/20, not the nearest binary float.
 4. **Incomplete adjudication:** if any unresolved finding remains, adjudicating it could move either yield. A decisive result is then recorded as `provisional_outcome`, and the `outcome` is **inconclusive**. An incomplete adjudication can never silently pass.
 
 ## 6. Open questions for the second reviewer

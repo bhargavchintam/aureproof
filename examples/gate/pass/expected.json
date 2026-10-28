@@ -1,0 +1,1 @@
+{"mean_difference":"1/2","outcome":"pass","p_value_two_sided":"1/128","why":"all 8 differences are +1/2; only the all-plus and all-minus sign flips reach |mean| >= 1/2, so p = 2/256"}

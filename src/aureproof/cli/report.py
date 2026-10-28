@@ -199,3 +199,55 @@ def render_markdown(data: ReportData) -> str:
         ],
     ]
     return "\n".join(lines) + "\n"
+
+
+def render_comparison(comparison: Any) -> str:
+    """Markdown for ``aureproof compare`` (issue #50). No agent-authored text appears."""
+    d, p = comparison.decision, comparison.protocol
+    lines = [
+        f"# Comparison: {p.name}",
+        "",
+        f"**Outcome: {d.outcome}** ({d.reason})",
+        "",
+        f"- Protocol `{d.protocol}`; repetitions {p.repetitions}; margin {p.margin}; "
+        f"alpha {p.test.alpha} per side; estimand {p.estimand.metric}, B - A, "
+        f"{p.estimand.summary}.",
+        f"- A `{comparison.a.system_identity}`; B `{comparison.b.system_identity}`.",
+        f"- {d.clusters} clusters with a defined difference; at least "
+        f"{d.min_clusters_for_decision} are needed for a decisive outcome.",
+        f"- Mean difference {d.mean_difference}; exact two-sided p {d.p_value_two_sided}; "
+        f"CI [{d.ci.lower}, {d.ci.upper}].",
+        f"- Wilson intervals: A [{d.wilson_a.lower}, {d.wilson_a.upper}], "
+        f"B [{d.wilson_b.lower}, {d.wilson_b.upper}].",
+    ]
+    if d.provisional_outcome != d.outcome:
+        lines.append(f"- Provisional outcome {d.provisional_outcome}, not final: {d.reason}.")
+    lines += [
+        "",
+        "## Clusters",
+        "",
+        "| Cluster | Tasks | A confirmed/submitted | B confirmed/submitted | "
+        "Unresolved A/B | B - A |",
+        "| --- | --- | --- | --- | --- | --- |",
+    ]
+    for row in d.cluster_table:
+        tasks = ", ".join(comparison.cluster_tasks.get(row.cluster_id, []))
+        diff = row.difference if row.difference is not None else "excluded (undefined)"
+        lines.append(
+            f"| {row.cluster_id} | {tasks} | {row.a_confirmed}/{row.a_submitted} | "
+            f"{row.b_confirmed}/{row.b_submitted} | {row.a_unresolved}/{row.b_unresolved} | "
+            f"{diff} |"
+        )
+    lines += ["", "## Quality and operations, per configuration", ""]
+    lines += ["| Metric | A | B |", "| --- | --- | --- |"]
+    for name in comparison.a.metrics:
+        lines.append(f"| {name} | {comparison.a.metrics[name]} | {comparison.b.metrics[name]} |")
+    for side in (comparison.a, comparison.b):
+        counts = ", ".join(f"{k} {v}" for k, v in side.dispositions.items())
+        lines.append(f"\n{side.side}: {side.episodes} episodes ({counts}).")
+    lines += [
+        "",
+        "Uncertainty is over these clusters of this fixed suite only; it is not a claim "
+        "about a wider population of tasks.",
+    ]
+    return "\n".join(lines) + "\n"

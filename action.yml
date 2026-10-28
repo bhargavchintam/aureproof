@@ -1,0 +1,70 @@
+# SPDX-FileCopyrightText: 2026 Bindu Bhargava R Chintam
+# SPDX-License-Identifier: Apache-2.0
+#
+# Aureproof comparison gate (issue #53). Compares two saved run bundles under a
+# frozen Decision Protocol, offline: no provider calls and no secrets, so it is
+# safe on forks. Inconclusive is never treated as pass; see docs/guides/gate-action.md.
+name: Aureproof comparison gate
+description: Pass, fail or inconclusive for configuration B against A, from saved signed evidence.
+inputs:
+  protocol:
+    description: Path to the frozen Decision Protocol JSON.
+    required: true
+  a:
+    description: Run bundle directory of configuration A.
+    required: true
+  b:
+    description: Run bundle directory of configuration B.
+    required: true
+  require-signature:
+    description: Fail closed unless both bundles verify against the project's signing workflow.
+    default: "true"
+  inconclusive:
+    description: "`fail` (default) or `neutral`. Neutral exits 0 but sets outcome=inconclusive and warns; it never reports pass."
+    default: fail
+outputs:
+  outcome:
+    description: "`pass`, `fail`, `inconclusive`, or `error` when the evidence cannot be compared."
+    value: ${{ steps.gate.outputs.outcome }}
+runs:
+  using: composite
+  steps:
+    - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      with:
+        version: "0.12.19"
+    - id: gate
+      shell: bash
+      env:
+        PROTOCOL: ${{ inputs.protocol }}
+        BUNDLE_A: ${{ inputs.a }}
+        BUNDLE_B: ${{ inputs.b }}
+        REQUIRE_SIGNATURE: ${{ inputs.require-signature }}
+        INCONCLUSIVE: ${{ inputs.inconclusive }}
+        ACTION_PATH: ${{ github.action_path }}
+      run: |
+        set +e
+        args=(compare --protocol "$PROTOCOL" --a "$BUNDLE_A" --b "$BUNDLE_B" --report "$RUNNER_TEMP/aureproof-report.md")
+        if [ "$REQUIRE_SIGNATURE" = "true" ]; then args+=(--require-signature); fi
+        uv run --project "$ACTION_PATH" --frozen --extra sign aureproof "${args[@]}"
+        code=$?
+        set -e
+        case "$code" in
+          0) outcome=pass ;;
+          1) outcome=fail ;;
+          3) outcome=inconclusive ;;
+          *) outcome=error ;;
+        esac
+        echo "outcome=$outcome" >> "$GITHUB_OUTPUT"
+        if [ -f "$RUNNER_TEMP/aureproof-report.md" ]; then cat "$RUNNER_TEMP/aureproof-report.md" >> "$GITHUB_STEP_SUMMARY"; fi
+        case "$outcome" in
+          pass) exit 0 ;;
+          inconclusive)
+            if [ "$INCONCLUSIVE" = "neutral" ]; then
+              echo "::warning title=Aureproof gate::inconclusive (not a pass)"
+              exit 0
+            fi
+            echo "::error title=Aureproof gate::inconclusive is not a pass"
+            exit 1 ;;
+          fail) echo "::error title=Aureproof gate::fail"; exit 1 ;;
+          *) echo "::error title=Aureproof gate::the evidence cannot be compared"; exit 1 ;;
+        esac

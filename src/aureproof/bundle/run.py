@@ -41,6 +41,9 @@ from aureproof.scoring import (
 EPISODES = "episodes.json"
 VERDICTS = "verdicts.json"
 METRICS = "metrics.json"
+PROTOCOL = "protocol.json"  # live run bundles (specs/bundle §3a)
+JOURNAL_EPISODE_PLANNED = "episode_planned"
+SYSTEM = "system.json"
 
 
 class EpisodeInput(Contract):
@@ -58,6 +61,10 @@ _EPISODES = TypeAdapter(list[EpisodeInput])
 
 def labels_path(task_id: str) -> str:
     return f"tasks/{task_id}/labels.json"
+
+
+def thr_path(task_id: str) -> str:
+    return f"tasks/{task_id}/thr.json"
 
 
 def _score_all(
@@ -176,6 +183,7 @@ class Rescore:
     problems: list[str] = field(default_factory=list)
     verdicts: Any = None  # recomputed verdicts document
     metrics: Any = None  # recomputed metrics document
+    scored: list[tuple[EpisodeInput, EpisodeScore]] = field(default_factory=list)
 
 
 def rescore(files: Mapping[str, bytes]) -> Rescore:
@@ -211,4 +219,5 @@ def rescore(files: Mapping[str, bytes]) -> Rescore:
         problems,
         loads_strict(verdicts, i_json=True),
         loads_strict(metrics, i_json=True),
+        scored,
     )
