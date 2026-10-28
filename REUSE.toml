@@ -45,3 +45,9 @@ path = ["CODE_OF_CONDUCT.md"]
 precedence = "override"
 SPDX-FileCopyrightText = "2014 Coraline Ada Ehmke and the Contributor Covenant contributors"
 SPDX-License-Identifier = "CC-BY-SA-4.0"
+
+[[annotations]]
+path = ["src/aureproof/exporters/schemas/eee-0.3.0-eval.schema.json"]
+precedence = "override"
+SPDX-FileCopyrightText = "2026 EvalEval"
+SPDX-License-Identifier = "MIT"

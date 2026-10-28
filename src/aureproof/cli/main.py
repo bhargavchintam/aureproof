@@ -582,6 +582,40 @@ def migrate(
         typer.echo(f"  loss: {loss}")
 
 
+@app.command("export-eee")
+def export_eee(
+    bundle: BundleArg,
+    out: Annotated[Path, typer.Option("--out", help="EEE 0.3.0 aggregate record to write.")],
+    organization: Annotated[str, typer.Option("--organization", help="Who publishes the record.")],
+    timestamp: Annotated[
+        str, typer.Option("--timestamp", help="retrieved_timestamp, Unix epoch seconds.")
+    ],
+) -> None:
+    """Export one sealed run bundle as an Every Eval Ever 0.3.0 record; prints the losses."""
+    from aureproof.exporters.eee import to_eee
+
+    if out.exists():
+        typer.echo(f"error: {out} exists", err=True)
+        raise typer.Exit(2)
+    if not timestamp.isdigit():
+        typer.echo("error: --timestamp is Unix epoch seconds", err=True)
+        raise typer.Exit(2)
+    files = _read(bundle)
+    if not validate_bundle(files).valid:
+        typer.echo("error: the bundle does not validate; nothing exported", err=True)
+        raise typer.Exit(2)
+    try:
+        result = to_eee(files, retrieved_timestamp=timestamp, organization=organization)
+    except KeyError as exc:
+        typer.echo(f"error: not a run bundle with a system spec: missing {exc}", err=True)
+        raise typer.Exit(2) from None
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(result.record, indent=2) + "\n", encoding="utf-8")
+    typer.echo(f"wrote {out} (EEE {result.record['schema_version']}); not carried:")
+    for loss in result.losses:
+        typer.echo(f"  - {loss}")
+
+
 EXIT = {"pass": 0, "fail": 1, "inconclusive": 3}  # 2: the evidence cannot be compared
 
 
