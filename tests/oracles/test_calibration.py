@@ -25,8 +25,9 @@ def _copy(tmp_path: Path) -> Path:
     return root
 
 
-def test_authz_001_is_healthy_with_every_control_and_a_reproducing_rerun() -> None:
-    record = calibrate(ROOT, "authz-001")
+@pytest.mark.parametrize("task_id", ["authz-001", "path-001", "authz-002"])
+def test_each_pair_is_healthy_with_every_control_and_a_reproducing_rerun(task_id: str) -> None:
+    record = calibrate(ROOT, task_id)
     assert record.status is HealthStatus.HEALTHY
     assert {c.kind for c in record.controls} == REQUIRED_CONTROLS
     for control in record.controls:
@@ -35,8 +36,9 @@ def test_authz_001_is_healthy_with_every_control_and_a_reproducing_rerun() -> No
     assert record.determinism.reproduced is True
     assert record.determinism.rerun_ids == ["calibration-2"]
     assert record.frozen_at is None and record.reviewed_by == []  # awaits the reviewer (#31)
-    assert record.task.task_identity == task_spec(ROOT, "authz-001").identity
+    assert record.task.task_identity == task_spec(ROOT, task_id).identity
     assert record.provenance.authorship == "self-authored"
+    assert qualification_problems(ROOT, task_id) == []
 
 
 def test_calibration_poc_fires_on_vulnerable_only_and_ignores_irrelevant_inputs() -> None:
