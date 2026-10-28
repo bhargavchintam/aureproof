@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: 2026 Bindu Bhargava R Chintam
 # SPDX-License-Identifier: Apache-2.0
-"""Write the contracts' JSON Schemas to specs/contracts/v0.1/.
+"""Write the JSON Schemas for contracts (specs/contracts/v0.1) and bundle records
+(specs/bundle/v0.1).
 
     uv run python scripts/export_schemas.py          # write
     uv run python scripts/export_schemas.py --check  # exit 1 if stale
@@ -16,7 +17,9 @@ import json
 import sys
 from pathlib import Path
 
-from aureproof.contracts.schema import SCHEMA_DIR, export_schemas
+from aureproof.bundle import schema as bundle_schema
+from aureproof.contracts import decision_schema, thr_schema
+from aureproof.contracts import schema as contract_schema
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -26,12 +29,15 @@ def main() -> int:
     parser.add_argument("--check", action="store_true", help="report drift, write nothing")
     args = parser.parse_args()
 
-    out_dir = ROOT / SCHEMA_DIR
-    wanted = {
-        out_dir / f"{name}.schema.json": json.dumps(schema, indent=2, sort_keys=True) + "\n"
-        for name, schema in export_schemas().items()
-    }
-    existing = set(out_dir.glob("*.schema.json")) if out_dir.exists() else set()
+    wanted: dict[Path, str] = {}
+    existing: set[Path] = set()
+    for module in (contract_schema, bundle_schema, thr_schema, decision_schema):
+        out_dir = ROOT / module.SCHEMA_DIR
+        existing |= set(out_dir.glob("*.schema.json")) if out_dir.exists() else set()
+        for name, schema in module.export_schemas().items():
+            wanted[out_dir / f"{name}.schema.json"] = (
+                json.dumps(schema, indent=2, sort_keys=True) + "\n"
+            )
     stale = sorted(
         str(p.relative_to(ROOT))
         for p, text in wanted.items()
@@ -43,12 +49,12 @@ def main() -> int:
             print(f"stale: {path}")
         return 1 if stale else 0
 
-    out_dir.mkdir(parents=True, exist_ok=True)
     for path in existing - set(wanted):
         path.unlink()
     for path, text in wanted.items():
+        path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text, encoding="utf-8")
-    print(f"wrote {len(wanted)} schemas to {SCHEMA_DIR}")
+    print(f"wrote {len(wanted)} schemas")
     return 0
 
 

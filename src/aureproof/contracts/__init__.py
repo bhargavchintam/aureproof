@@ -15,6 +15,20 @@ from aureproof.contracts.events import (
 )
 from aureproof.contracts.findings import MAX_LOCATIONS, Finding, Location, Role
 from aureproof.contracts.labels import Anchor, Defect, FocalNegative, LabelSet, ScopeEntry
+from aureproof.contracts.specs import (
+    AgentView,
+    AttemptRecord,
+    Budget,
+    EpisodeSpec,
+    FileDigest,
+    ModelBinding,
+    ProviderIdentity,
+    Runner,
+    Subject,
+    SystemSpec,
+    TaskSpec,
+    content_identity,
+)
 from aureproof.contracts.verdicts import (
     Disposition,
     EpisodeSignals,
@@ -28,11 +42,16 @@ from aureproof.contracts.verdicts import (
 
 __all__ = [
     "MAX_LOCATIONS",
+    "AgentView",
     "Anchor",
+    "AttemptRecord",
+    "Budget",
     "Defect",
     "Disposition",
     "EpisodeSignals",
+    "EpisodeSpec",
     "Event",
+    "FileDigest",
     "Finding",
     "FindingsSubmission",
     "FocalNegative",
@@ -40,13 +59,20 @@ __all__ = [
     "Location",
     "MatchInfo",
     "MetricRecord",
+    "ModelBinding",
     "ObservationSource",
     "PocRefSubmission",
+    "ProviderIdentity",
     "Role",
     "Rule",
+    "Runner",
     "RunnerOutcome",
     "ScopeEntry",
+    "Subject",
     "Submission",
+    "SystemSpec",
+    "TaskSpec",
     "VerdictKind",
     "VerdictRecord",
+    "content_identity",
 ]

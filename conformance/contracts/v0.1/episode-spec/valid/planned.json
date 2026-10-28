@@ -1,0 +1,11 @@
+{
+  "description": "Episode ID derived from its bindings.",
+  "instance": {
+    "task": "sha256:4c14849b3ac67bb348502c4c4c24ea9e370e82a0219a51fcc14fce8a983bb101",
+    "variant": "vulnerable",
+    "system": "sha256:71d19ecb19ca5d6729d6de42329c7dbc2df3f5689100271fc9dcc93167bb766c",
+    "protocol": "sha256:abababababababababababababababababababababababababababababababab",
+    "repetition": 0,
+    "episode_id": "ep-34fb7ab82e42d2cc76c3e7359c0750eb"
+  }
+}

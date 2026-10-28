@@ -47,6 +47,73 @@ public API and the specs may change between minor versions).
   export and import with a property-based round-trip test, generated JSON Schema
   2020-12 files in `specs/contracts/v0.1/` with a drift check, and conformance
   vectors checked against both the models and the schemas.
+- Canaries and splits (issue #45): `fixtures/dataset.json` (registry: splits, revisions,
+  exposure, overlap; assessment membership by digest only) validated by
+  `aureproof.contracts.dataset`. A second, evaluator-only `oracle_canary` per task
+  appears in every oracle file and in no agent-visible file, as a label-leak marker.
+  Tasks carry an explicit `split`; an exposed task cannot be an assessment task.
+  The registry-driven checks run in CI without reading private labels. Adds
+  `docs/contamination.md` and `docs/guides/private-assessment.md`.
+- Aureproof-owned attempts (issue #19). `bundle.ledger` folds lifecycle events
+  (planned, dispatched with the request identity, outcome, finalized) and rejects illegal
+  transitions. `storage.journal` is a durable, fsynced, hash-chained journal (same format
+  as a bundle's): a torn final line is recovered explicitly, and corruption elsewhere
+  fails. `storage.ledger_store` assigns IDs before dispatch and is idempotent on duplicate
+  outcomes and finalization. Restart recovery records in-doubt attempts as `unknown`,
+  `close_run` gives every episode exactly one disposition, and a SQLite index can be
+  rebuilt from the journal.
+- Alpha readiness (issue #37): `release.yml`, which publishes to PyPI via Trusted
+  Publishing with PEP 740 attestations from a protected `pypi` environment, only on a
+  published GitHub Release. The release checks the tag against the version and re-runs
+  the Phase-1 gate from a fresh wheel install; a new CI job runs that check on every
+  PR. Adds `specs/COMPATIBILITY.md` (readers fail closed on unknown versions; enforced
+  by tests) and `docs/guides/releasing.md`.
+- CLI (issue #16): `aureproof validate`, `score --offline` and `report`
+  (HTML or Markdown), working from saved records only, with exit codes 0/1/2. Adds run
+  bundles (`aureproof.bundle.run`: seal scored episodes; byte-exact offline re-score),
+  a `storage` adapter (regular files only, symlinks rejected, canonical paths, size
+  limit, atomic writes, content-addressed store), escaped reports with a no-script CSP,
+  and an offline tutorial (`docs/guides/tutorial.md`, `examples/bundles/tutorial-v0.1`).
+  **Phase-1 gate:** the offline re-score reproduces golden cohort C-01's independently
+  calculated counts.
+- Decision Protocol v0.1 and the exact gate (issue #14): `specs/decision/README.md`,
+  protocol and decision schemas, and `aureproof.stats`: an exact paired sign-flip test
+  in rational arithmetic, a test-inversion interval from subset-mean order statistics,
+  Wilson intervals, and pass/fail/inconclusive with strict inequalities. Fewer than 6
+  clusters is reported as unable to decide at alpha = 0.025, and incomplete
+  adjudication can't pass. 10 hand-derived vectors, plus a brute-force check of the
+  interval against the test definition.
+- Task Health Record v0.1 (issue #12): `specs/thr/README.md`, `thr.schema.json`,
+  and `aureproof.contracts.thr`. `status` is derived from 7 required controls
+  (including `label_lint`, `nop` and `spray_cheat`) and a determinism re-run, and
+  can't be asserted by hand. A frozen record needs an independent reviewer. Also adds
+  label lint L1–L4 with code-span drift detection (`aureproof.oracles.python_spans`),
+  and health-based exclusion where only pre-registered records apply and excluded
+  tasks never count against an agent. 11 conformance vectors cover healthy,
+  unhealthy and unknown records.
+- Scoring identity (issue #36). Each matcher version has one registered
+  parameter profile, and overrides are rejected. Scored episodes and sealed bundles
+  carry `scoring_identity`, a digest of all versions and parameters, which the golden
+  vectors pin. `MetricRecord` values must be finite and match numerator/denominator
+  within 1e-12. New metric-record conformance vectors.
+- Provider-terms review (`docs/provider-terms.md`, issue #18), dated 2026-10-27,
+  with primary-source links for Anthropic (in use) and OpenAI (later). Adds
+  responsible-use rules: API keys only, the Cyber Verification Program instead of
+  workarounds, human review and AI labeling before publishing transcripts.
+  `SystemSpec` now rejects configurations that retry refusals, and requires Claude
+  Code systems to set ADR-0007's no-retry and closed-world settings explicitly.
+- STRIDE threat model with a control-to-test matrix (`docs/threat-model.md`,
+  issue #17). Each of the 15 v0.1 controls is tested in CI, tested in the optional
+  lane, partial, or pending with its delivering issue; v0.2 PoC controls are listed
+  separately. `tests/test_threat_model.py` fails on a cited test that does not
+  exist, or on lane-only evidence claimed as CI. New regression test for
+  oversized submissions.
+- Task, system, episode and attempt contracts (issue #10): `TaskSpec`, `SystemSpec`,
+  `EpisodeSpec` and `AttemptRecord`, with content-derived identities (RFC 8785
+  digests). Provider identity fields are explicit, episode and attempt IDs are
+  bound before dispatch, and the agent view and labels are kept apart. Includes
+  JSON Schemas and 26 conformance vectors, among them a real `authz-001`
+  `TaskSpec`.
 - The v0.1 oracle (`aureproof.scoring`, issue #15): a pure, deterministic label
   matcher (rules M1–M9), strict submission parsing, the episode disposition
   decision list, and cohort metrics with explicit support. All 44 golden vectors
@@ -63,6 +130,20 @@ public API and the specs may change between minor versions).
   truncated, reordered and missing evidence.
 
 ### Changed
+- Hardened untrusted JSON (issue #35). A shared strict, bounded loader
+  (`aureproof.contracts.strict_json`) handles submissions, manifests, seals and
+  journal lines: no duplicate keys or NaN, depth at most 32 checked before parsing,
+  I-JSON values. Hostile input now fails a check instead of raising. The journal
+  check (V3) hashes the event exactly as recorded. Events reject values with no
+  RFC 8785 form. The builder rejects invalid metadata and `mandatory=false` on a
+  required role, and validates its own output. The bundle manifest, seal and
+  journal-entry JSON Schemas are published with a drift check. New scoring
+  parameter `max_depth` (32) and golden vector G-42.
+- v0.1 scope frozen (issue #5): ADR-0006 makes strict confirmed yield the
+  primary metric; ADR-0007 fixes Claude Code over Anthropic Messages as the
+  external subject, native versus controlled interface modes, the `closed-world`
+  (default) and `web-search` hosted-tool configurations, and a per-episode budget
+  of 400k tokens, 15 minutes and one attempt.
 - The Inspect spike grades through `aureproof.scoring` with the current labels
   (issue #34); it no longer carries its own matcher. Its pure grading, key-file and
   leak-scan tests run in ordinary CI, and an optional `Inspect lane` workflow runs

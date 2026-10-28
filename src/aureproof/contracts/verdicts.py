@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+import math
 from enum import StrEnum
 from typing import Literal, Self
 
@@ -84,6 +85,10 @@ class VerdictRecord(Contract):
         return self
 
 
+# Relative tolerance between value and numerator/denominator (scoring.md §6).
+METRIC_TOLERANCE = 1e-12
+
+
 class MetricRecord(Contract):
     """Every percentage keeps its support; ``value`` is null iff the denominator is 0."""
 
@@ -104,6 +109,12 @@ class MetricRecord(Contract):
             raise ValueError("value must be null exactly when the denominator is 0")
         if (self.value is None) != (self.undefined_reason is not None):
             raise ValueError("undefined_reason is required exactly when value is null")
+        if self.value is not None:
+            expected = self.numerator / self.denominator
+            if not math.isfinite(self.value):
+                raise ValueError("a defined metric value must be finite")
+            if abs(self.value - expected) > METRIC_TOLERANCE * max(1.0, abs(expected)):
+                raise ValueError("value does not equal numerator / denominator")
         return self
 
     @classmethod

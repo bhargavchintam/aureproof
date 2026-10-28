@@ -7,6 +7,7 @@ SPDX-License-Identifier: Apache-2.0
 - Spec: `bundle/v0.1`. Status: **draft, pending a second review** (issue #13, AP-036; ADR-0005).
 - Normative source: [`docs/aureproof-plan-v2.md`](../../docs/aureproof-plan-v2.md) §3.5 and §4.2. This document refines them; where they differ, this document wins.
 - Reference implementation: `aureproof.bundle` (pure; no file or network I/O). Conformance vectors: [`conformance/bundle/v0.1/`](../../conformance/bundle/v0.1/).
+- JSON Schemas, generated from the models with a drift check: [`v0.1/manifest.schema.json`](v0.1/manifest.schema.json), [`v0.1/seal-statement.schema.json`](v0.1/seal-statement.schema.json), [`v0.1/journal-entry.schema.json`](v0.1/journal-entry.schema.json).
 - Signing with Sigstore is M2. A v0.1 bundle is **sealed** (integrity and completeness) but may be **unsigned** (no identity).
 
 The key words MUST, MUST NOT, SHOULD and MAY are used as in RFC 2119.
@@ -33,6 +34,12 @@ Validators report V5 (signature) as `skipped`, never as a pass. A validator SHOU
 - **Canonical JSON** is RFC 8785 (JCS). Every JSON document defined here is stored as exactly its JCS bytes, so a document has a single valid byte sequence. Validation rejects non-canonical bytes.
 - **Digests** are SHA-256, written as lowercase hex. A *digest reference* is `sha256:<64 hex>`.
 - **The digest of a JSON value** is the SHA-256 of its JCS bytes.
+- **Parsing is strict and bounded** (issue #35):
+  - UTF-8 only; no duplicate object keys; no `NaN` or `Infinity`;
+  - nesting at most 32 levels deep, checked by a linear scan before parsing;
+  - values must be I-JSON (RFC 7493): finite numbers, no lone surrogates.
+  - Numbers are IEEE doubles, as in RFC 8785: an integer token beyond ±(2⁵³−1) denotes the nearest double. Text that isn't that double's canonical form fails the byte comparison.
+  - A document that breaks any of these rules fails its check. It never raises an exception in the validator.
 
 ## 3. Layout
 
@@ -54,6 +61,19 @@ A bundle is a set of files keyed by path. Paths are workspace-style:
 
 Every file other than `manifest.json` and `seal.*` MUST be listed in the manifest. An unlisted file makes the bundle invalid, because nothing seals it.
 
+### 3a. Run bundles
+
+A run bundle (`aureproof.bundle.run`) records scored episodes so they can be re-scored offline:
+
+| Path | Role | Content |
+| --- | --- | --- |
+| `episodes.json` | `episodes` | One record per scheduled episode: `{episode_id, task_id, variant, labels, agent_view, signals, submission}`. `submission` is the blob reference of the captured `findings.json`, or `null` |
+| `tasks/<task_id>/labels.json` | `labels` | The evaluator labels used. A `redacted` public bundle may omit them, and is then not re-scorable |
+| `verdicts.json` | `verdicts` | Per episode: disposition, verdict records, credited defects, annotations, scoring identity |
+| `metrics.json` | `metrics` | `{cohort, metrics: {name: MetricRecord}}` |
+
+`aureproof score --offline` recomputes `verdicts.json` and `metrics.json` from the episodes, labels and blobs, and requires byte equality.
+
 ## 4. Manifest
 
 ```json
@@ -61,9 +81,10 @@ Every file other than `manifest.json` and `seal.*` MUST be listed in the manifes
 ```
 
 - `members` is sorted by `path` (byte order), with no duplicates.
-- `role` is one of `journal`, `verdicts`, `metrics`, `adjudications`, `protocol`, `system`, `task_health`, `submission`, `decision`, `blob` or `other`.
+- `role` is one of `journal`, `verdicts`, `metrics`, `adjudications`, `protocol`, `system`, `task_health`, `submission`, `decision`, `episodes`, `labels`, `blob` or `other`.
 - **Mandatory roles in v0.1:** `journal`, `verdicts` and `metrics`. Each MUST appear exactly once, with `mandatory: true`. A producer MAY mark further members mandatory; their absence then makes the bundle invalid.
 - **A producer MUST refuse to seal** when mandatory evidence is missing (plan §3.4). Incomplete evidence is reported, never sealed as if complete.
+- A producer MUST also refuse a mandatory role marked `mandatory: false`, an unknown role, an empty media type, or invalid seal metadata. Before returning, the reference builder validates its own output, so it never hands back a bundle that fails V1–V6.
 
 ## 5. Journal
 
@@ -77,6 +98,8 @@ Every file other than `manifest.json` and `seal.*` MUST be listed in the manifes
 - `prev` is the `hash` of the previous entry. The first entry's `prev` is the **genesis** reference: `sha256:` followed by 64 zeros.
 - `hash` = digest of the JCS form of `{"seq", "prev", "event"}`.
 - `event` is an `Event` (`specs/contracts/v0.1/event.schema.json`), and `event.seq` MUST equal `seq`.
+- **`hash` covers the event exactly as recorded.** The validator hashes the raw event object from the line and checks its shape against `Event` separately. A producer may omit defaulted fields or write explicit nulls (vector `valid/raw-event-defaults`).
+- Event payloads MUST be canonicalizable. NaN, infinities, unsafe integers and lone surrogates are rejected when the event is created, never silently converted.
 - Every `blob_refs` entry in an event MUST resolve to a `blobs/sha256/<hex>` member.
 - The **journal head** is the last entry's `hash`, or genesis for an empty journal.
 
@@ -96,13 +119,14 @@ The chain makes a removed, reordered or edited entry detectable. **Tail truncati
     "event_count": 3,
     "journal_head": "sha256:<hex>",
     "completeness": "complete",
-    "versions": {"matcher": "0.1.0", "disposition": "0.1.0", "metrics": "0.1.0", "contracts": "0.1", "scoring_spec": "0.1"},
+    "versions": {"matcher": "0.1.0", "disposition": "0.1.0", "metrics": "0.1.0", "contracts": "0.1", "scoring_spec": "0.1", "scoring_profile": "sha256:<scoring identity>"},
     "generator": {"name": "aureproof", "version": "<package version>"}
   }
 }
 ```
 
 **Predicate v0.1.**
+- `versions.scoring_profile` is the scoring identity: the digest of the matcher, disposition and metrics versions and every matcher parameter (`aureproof.scoring.scoring_identity`). An offline re-score MUST use the same identity (issue #36).
 - `completeness` is `complete` or `redacted`. A redacted public bundle is a distinct product from the private complete one (plan §4.2).
 - No timestamps are sealed in v0.1. The pure core has no clock, and trustworthy time comes with signing (M2).
 
@@ -136,7 +160,7 @@ The validator never stops at the first problem. It reports every failed check, s
 - a forged seal subject;
 - a blob whose path is not its digest.
 
-Each vector names the checks that must fail. `scripts/make_bundle_vectors.py` regenerates them deterministically, and a test fails if the committed vectors drift.
+It also covers adversarial inputs: NaN in the manifest, an unsafe integer and a lone surrogate in the seal, and a journal line nested 10,000 deep. Each vector names the checks that must fail. `scripts/make_bundle_vectors.py` regenerates them deterministically, and a test fails if the committed vectors drift.
 
 ## 9. Open questions for the second reviewer
 

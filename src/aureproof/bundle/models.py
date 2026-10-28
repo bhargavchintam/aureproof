@@ -4,12 +4,11 @@
 
 from __future__ import annotations
 
-from typing import Annotated, Literal
+from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
 from aureproof.contracts._base import Contract, NonEmptyStr, NonNegativeInt, Sha256Hex
-from aureproof.contracts.events import Event
 
 BUNDLE_VERSION = "0.1"
 STATEMENT_TYPE = "https://in-toto.io/Statement/v1"
@@ -31,6 +30,8 @@ Role = Literal[
     "task_health",
     "submission",
     "decision",
+    "episodes",
+    "labels",
     "blob",
     "other",
 ]
@@ -53,9 +54,12 @@ class Manifest(Contract):
 
 
 class JournalEntry(Contract):
+    """One journal line. ``event`` stays raw: V3 hashes exactly what was recorded and
+    validates its shape against ``Event`` separately (issue #35)."""
+
     seq: NonNegativeInt
     prev: DigestRef
-    event: Event
+    event: dict[str, Any]
     hash: DigestRef
 
 

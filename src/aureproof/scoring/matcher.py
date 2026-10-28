@@ -17,7 +17,7 @@ from pydantic import ValidationError
 from aureproof.contracts.findings import Finding, Location, Role
 from aureproof.contracts.labels import Anchor, Defect, LabelSet, ScopeEntry
 from aureproof.contracts.verdicts import MatchInfo, Rule, VerdictKind, VerdictRecord
-from aureproof.scoring.params import MATCHER_VERSION, V0_1, MatcherParams
+from aureproof.scoring.params import V0_1, MatcherParams, matcher_version_of
 
 Strength = tuple[int, int, int]  # (symbol_match, raw_overlap, -distance)
 
@@ -121,6 +121,7 @@ def match(
     params: MatcherParams = V0_1,
 ) -> MatchResult:
     """One verdict per finding, in submission order (§4.3)."""
+    version = matcher_version_of(params)  # raises on unregistered overrides
     defects: list[Defect] = [d for d in labels.defects if variant in d.variants]
     focal = labels.focal_negative
     credited: list[str] = []
@@ -141,7 +142,7 @@ def match(
                 match=None
                 if pair is None
                 else MatchInfo(kind=pair.kind, anchor_index=pair.anchor_index),
-                matcher_version=MATCHER_VERSION,
+                matcher_version=version,
             )
         )
 

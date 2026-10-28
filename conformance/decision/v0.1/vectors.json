@@ -1,0 +1,1602 @@
+{
+  "spec": "decision/v0.1",
+  "alpha": 0.025,
+  "cases": [
+    {
+      "id": "D-01",
+      "title": "Every cluster better by 1/2: pass",
+      "derivation": "d_c = 1 - 1/2 = 1/2 for k=6. Two-sided p: only the all-plus and all-minus assignments reach |sum| = 3, so 2/64 = 1/32. r = floor(0.025*64) = 1, so L = smallest subset mean = 1/2 and U = 1/2. L > -0.05: pass.",
+      "protocol": {
+        "protocol_version": "0.1",
+        "name": "vector",
+        "cohort": [
+          {
+            "task_identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c1"
+          },
+          {
+            "task_identity": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c2"
+          },
+          {
+            "task_identity": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c3"
+          },
+          {
+            "task_identity": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c4"
+          },
+          {
+            "task_identity": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c5"
+          },
+          {
+            "task_identity": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c6"
+          },
+          {
+            "task_identity": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c7"
+          }
+        ],
+        "configurations": {
+          "A": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "B": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "repetitions": 3,
+        "margin": 0.05
+      },
+      "rows": [
+        {
+          "cluster_id": "c1",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c2",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c3",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c4",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c5",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c6",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        }
+      ],
+      "expected": {
+        "outcome": "pass",
+        "provisional_outcome": "pass",
+        "mean_difference": "1/2",
+        "p_value_two_sided": "1/32",
+        "lower": "1/2",
+        "upper": "1/2",
+        "clusters": 6
+      }
+    },
+    {
+      "id": "D-02",
+      "title": "Every cluster worse by 1/2: fail",
+      "derivation": "d_c = -1/2. p = 1/32. L = U = -1/2 < -0.05: fail.",
+      "protocol": {
+        "protocol_version": "0.1",
+        "name": "vector",
+        "cohort": [
+          {
+            "task_identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c1"
+          },
+          {
+            "task_identity": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c2"
+          },
+          {
+            "task_identity": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c3"
+          },
+          {
+            "task_identity": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c4"
+          },
+          {
+            "task_identity": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c5"
+          },
+          {
+            "task_identity": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c6"
+          },
+          {
+            "task_identity": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c7"
+          }
+        ],
+        "configurations": {
+          "A": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "B": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "repetitions": 3,
+        "margin": 0.05
+      },
+      "rows": [
+        {
+          "cluster_id": "c1",
+          "a_confirmed": 1,
+          "a_submitted": 1,
+          "b_confirmed": 1,
+          "b_submitted": 2,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c2",
+          "a_confirmed": 1,
+          "a_submitted": 1,
+          "b_confirmed": 1,
+          "b_submitted": 2,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c3",
+          "a_confirmed": 1,
+          "a_submitted": 1,
+          "b_confirmed": 1,
+          "b_submitted": 2,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c4",
+          "a_confirmed": 1,
+          "a_submitted": 1,
+          "b_confirmed": 1,
+          "b_submitted": 2,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c5",
+          "a_confirmed": 1,
+          "a_submitted": 1,
+          "b_confirmed": 1,
+          "b_submitted": 2,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c6",
+          "a_confirmed": 1,
+          "a_submitted": 1,
+          "b_confirmed": 1,
+          "b_submitted": 2,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        }
+      ],
+      "expected": {
+        "outcome": "fail",
+        "provisional_outcome": "fail",
+        "mean_difference": "-1/2",
+        "p_value_two_sided": "1/32",
+        "lower": "-1/2",
+        "upper": "-1/2",
+        "clusters": 6
+      }
+    },
+    {
+      "id": "D-03",
+      "title": "Zero difference: non-inferior, pass",
+      "derivation": "All d_c = 0, so every assignment gives |sum| = 0 >= 0 and p = 64/64 = 1. L = U = 0 > -0.05: pass. Non-inferiority means 'not worse by more than the margin'.",
+      "protocol": {
+        "protocol_version": "0.1",
+        "name": "vector",
+        "cohort": [
+          {
+            "task_identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c1"
+          },
+          {
+            "task_identity": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c2"
+          },
+          {
+            "task_identity": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c3"
+          },
+          {
+            "task_identity": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c4"
+          },
+          {
+            "task_identity": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c5"
+          },
+          {
+            "task_identity": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c6"
+          },
+          {
+            "task_identity": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c7"
+          }
+        ],
+        "configurations": {
+          "A": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "B": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "repetitions": 3,
+        "margin": 0.05
+      },
+      "rows": [
+        {
+          "cluster_id": "c1",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 2,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c2",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 2,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c3",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 2,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c4",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 2,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c5",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 2,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c6",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 2,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        }
+      ],
+      "expected": {
+        "outcome": "pass",
+        "provisional_outcome": "pass",
+        "mean_difference": "0/1",
+        "p_value_two_sided": "1/1",
+        "lower": "0/1",
+        "upper": "0/1",
+        "clusters": 6
+      }
+    },
+    {
+      "id": "D-04",
+      "title": "Bound exactly at -margin: inconclusive (strict inequalities)",
+      "derivation": "margin = 1/2 and d_c = -1/2. L = -1/2 is not > -1/2, and U = -1/2 is not < -1/2: inconclusive.",
+      "protocol": {
+        "protocol_version": "0.1",
+        "name": "vector",
+        "cohort": [
+          {
+            "task_identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c1"
+          },
+          {
+            "task_identity": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c2"
+          },
+          {
+            "task_identity": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c3"
+          },
+          {
+            "task_identity": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c4"
+          },
+          {
+            "task_identity": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c5"
+          },
+          {
+            "task_identity": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c6"
+          },
+          {
+            "task_identity": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c7"
+          }
+        ],
+        "configurations": {
+          "A": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "B": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "repetitions": 3,
+        "margin": 0.5
+      },
+      "rows": [
+        {
+          "cluster_id": "c1",
+          "a_confirmed": 1,
+          "a_submitted": 1,
+          "b_confirmed": 1,
+          "b_submitted": 2,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c2",
+          "a_confirmed": 1,
+          "a_submitted": 1,
+          "b_confirmed": 1,
+          "b_submitted": 2,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c3",
+          "a_confirmed": 1,
+          "a_submitted": 1,
+          "b_confirmed": 1,
+          "b_submitted": 2,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c4",
+          "a_confirmed": 1,
+          "a_submitted": 1,
+          "b_confirmed": 1,
+          "b_submitted": 2,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c5",
+          "a_confirmed": 1,
+          "a_submitted": 1,
+          "b_confirmed": 1,
+          "b_submitted": 2,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c6",
+          "a_confirmed": 1,
+          "a_submitted": 1,
+          "b_confirmed": 1,
+          "b_submitted": 2,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        }
+      ],
+      "expected": {
+        "outcome": "inconclusive",
+        "provisional_outcome": "inconclusive",
+        "mean_difference": "-1/2",
+        "p_value_two_sided": "1/32",
+        "lower": "-1/2",
+        "upper": "-1/2",
+        "clusters": 6
+      }
+    },
+    {
+      "id": "D-05",
+      "title": "Five clusters cannot be decisive",
+      "derivation": "k=5: r = floor(0.025*32) = 0, so there is no finite bound and the outcome is inconclusive. Two-sided p = 2/32 = 1/16, which can't fall below 0.05 with 5 clusters.",
+      "protocol": {
+        "protocol_version": "0.1",
+        "name": "vector",
+        "cohort": [
+          {
+            "task_identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c1"
+          },
+          {
+            "task_identity": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c2"
+          },
+          {
+            "task_identity": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c3"
+          },
+          {
+            "task_identity": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c4"
+          },
+          {
+            "task_identity": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c5"
+          },
+          {
+            "task_identity": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c6"
+          },
+          {
+            "task_identity": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c7"
+          }
+        ],
+        "configurations": {
+          "A": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "B": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "repetitions": 3,
+        "margin": 0.05
+      },
+      "rows": [
+        {
+          "cluster_id": "c1",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c2",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c3",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c4",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c5",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        }
+      ],
+      "expected": {
+        "outcome": "inconclusive",
+        "provisional_outcome": "inconclusive",
+        "mean_difference": "1/2",
+        "p_value_two_sided": "1/16",
+        "lower": null,
+        "upper": null,
+        "clusters": 5
+      }
+    },
+    {
+      "id": "D-06",
+      "title": "Distinct differences, k=7: order statistics",
+      "derivation": "d = 1/10..7/10. r = floor(0.025*128) = 3. Sorted subset means start 1/10 ({1}), 3/20 ({1,2}), then 1/5 ({2} and {1,3}), so L = 1/5. From the top: 7/10, 13/20, 3/5, so U = 3/5. Flipping the smallest term already drops the sum below 28/10, so p = 2/128 = 1/64. L > -0.05: pass.",
+      "protocol": {
+        "protocol_version": "0.1",
+        "name": "vector",
+        "cohort": [
+          {
+            "task_identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c1"
+          },
+          {
+            "task_identity": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c2"
+          },
+          {
+            "task_identity": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c3"
+          },
+          {
+            "task_identity": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c4"
+          },
+          {
+            "task_identity": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c5"
+          },
+          {
+            "task_identity": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c6"
+          },
+          {
+            "task_identity": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c7"
+          }
+        ],
+        "configurations": {
+          "A": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "B": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "repetitions": 3,
+        "margin": 0.05
+      },
+      "rows": [
+        {
+          "cluster_id": "c1",
+          "a_confirmed": 9,
+          "a_submitted": 10,
+          "b_confirmed": 10,
+          "b_submitted": 10,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c2",
+          "a_confirmed": 8,
+          "a_submitted": 10,
+          "b_confirmed": 10,
+          "b_submitted": 10,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c3",
+          "a_confirmed": 7,
+          "a_submitted": 10,
+          "b_confirmed": 10,
+          "b_submitted": 10,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c4",
+          "a_confirmed": 6,
+          "a_submitted": 10,
+          "b_confirmed": 10,
+          "b_submitted": 10,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c5",
+          "a_confirmed": 5,
+          "a_submitted": 10,
+          "b_confirmed": 10,
+          "b_submitted": 10,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c6",
+          "a_confirmed": 4,
+          "a_submitted": 10,
+          "b_confirmed": 10,
+          "b_submitted": 10,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c7",
+          "a_confirmed": 3,
+          "a_submitted": 10,
+          "b_confirmed": 10,
+          "b_submitted": 10,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        }
+      ],
+      "expected": {
+        "outcome": "pass",
+        "provisional_outcome": "pass",
+        "mean_difference": "2/5",
+        "p_value_two_sided": "1/64",
+        "lower": "1/5",
+        "upper": "3/5",
+        "clusters": 7
+      }
+    },
+    {
+      "id": "D-07",
+      "title": "Mixed signs: inconclusive",
+      "derivation": "d = [1, 1, 1, -1, -1, 0]. L = smallest subset mean = -1, U = 1; the interval spans -0.05. The five non-zero terms are \u00b11, so every assignment's sum is odd, |sum| >= 1 = observed, and p = 1.",
+      "protocol": {
+        "protocol_version": "0.1",
+        "name": "vector",
+        "cohort": [
+          {
+            "task_identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c1"
+          },
+          {
+            "task_identity": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c2"
+          },
+          {
+            "task_identity": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c3"
+          },
+          {
+            "task_identity": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c4"
+          },
+          {
+            "task_identity": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c5"
+          },
+          {
+            "task_identity": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c6"
+          },
+          {
+            "task_identity": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c7"
+          }
+        ],
+        "configurations": {
+          "A": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "B": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "repetitions": 3,
+        "margin": 0.05
+      },
+      "rows": [
+        {
+          "cluster_id": "c1",
+          "a_confirmed": 0,
+          "a_submitted": 1,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c2",
+          "a_confirmed": 0,
+          "a_submitted": 1,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c3",
+          "a_confirmed": 0,
+          "a_submitted": 1,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c4",
+          "a_confirmed": 1,
+          "a_submitted": 1,
+          "b_confirmed": 0,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c5",
+          "a_confirmed": 1,
+          "a_submitted": 1,
+          "b_confirmed": 0,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c6",
+          "a_confirmed": 1,
+          "a_submitted": 1,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        }
+      ],
+      "expected": {
+        "outcome": "inconclusive",
+        "provisional_outcome": "inconclusive",
+        "mean_difference": "1/6",
+        "p_value_two_sided": "1/1",
+        "lower": "-1/1",
+        "upper": "1/1",
+        "clusters": 6
+      }
+    },
+    {
+      "id": "D-08",
+      "title": "Unadjudicated findings: a provisional pass cannot pass",
+      "derivation": "Same as D-01 plus 1 unresolved finding. Adjudication could change either yield, so the outcome is inconclusive and the provisional outcome is recorded as pass.",
+      "protocol": {
+        "protocol_version": "0.1",
+        "name": "vector",
+        "cohort": [
+          {
+            "task_identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c1"
+          },
+          {
+            "task_identity": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c2"
+          },
+          {
+            "task_identity": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c3"
+          },
+          {
+            "task_identity": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c4"
+          },
+          {
+            "task_identity": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c5"
+          },
+          {
+            "task_identity": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c6"
+          },
+          {
+            "task_identity": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c7"
+          }
+        ],
+        "configurations": {
+          "A": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "B": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "repetitions": 3,
+        "margin": 0.05
+      },
+      "rows": [
+        {
+          "cluster_id": "c1",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 1,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c2",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c3",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c4",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c5",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c6",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        }
+      ],
+      "expected": {
+        "outcome": "inconclusive",
+        "provisional_outcome": "pass",
+        "mean_difference": "1/2",
+        "p_value_two_sided": "1/32",
+        "lower": "1/2",
+        "upper": "1/2",
+        "clusters": 6
+      }
+    },
+    {
+      "id": "D-09",
+      "title": "Undefined yield counts as 0 under the default policy",
+      "derivation": "Cluster 6 has B submitted 0, so b = 0 and d_6 = -1/2. The other five d = 1/2. L = -1/2 spans the margin: inconclusive. mean = (5/2 - 1/2)/6 = 1/3. Two-sided p: every assignment is six \u00b11/2 terms; |sum| >= 2 when at least five share a sign: C(6,0)+C(6,1)+C(6,5)+C(6,6) = 14, so 14/64 = 7/32.",
+      "protocol": {
+        "protocol_version": "0.1",
+        "name": "vector",
+        "cohort": [
+          {
+            "task_identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c1"
+          },
+          {
+            "task_identity": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c2"
+          },
+          {
+            "task_identity": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c3"
+          },
+          {
+            "task_identity": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c4"
+          },
+          {
+            "task_identity": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c5"
+          },
+          {
+            "task_identity": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c6"
+          },
+          {
+            "task_identity": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c7"
+          }
+        ],
+        "configurations": {
+          "A": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "B": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "repetitions": 3,
+        "margin": 0.05
+      },
+      "rows": [
+        {
+          "cluster_id": "c1",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c2",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c3",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c4",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c5",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c6",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 0,
+          "b_submitted": 0,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        }
+      ],
+      "expected": {
+        "outcome": "inconclusive",
+        "provisional_outcome": "inconclusive",
+        "mean_difference": "1/3",
+        "p_value_two_sided": "7/32",
+        "lower": "-1/2",
+        "upper": "1/2",
+        "clusters": 6
+      }
+    },
+    {
+      "id": "D-10",
+      "title": "Undefined yield excluded under exclude_cluster: too few clusters",
+      "derivation": "Cluster 6 is excluded, leaving k=5 (no finite bound): inconclusive. p = 2/32 = 1/16.",
+      "protocol": {
+        "protocol_version": "0.1",
+        "name": "vector",
+        "cohort": [
+          {
+            "task_identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c1"
+          },
+          {
+            "task_identity": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c2"
+          },
+          {
+            "task_identity": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c3"
+          },
+          {
+            "task_identity": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c4"
+          },
+          {
+            "task_identity": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c5"
+          },
+          {
+            "task_identity": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c6"
+          },
+          {
+            "task_identity": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c7"
+          }
+        ],
+        "configurations": {
+          "A": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "B": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "repetitions": 3,
+        "margin": 0.05,
+        "estimand": {
+          "undefined_yield": "exclude_cluster"
+        }
+      },
+      "rows": [
+        {
+          "cluster_id": "c1",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c2",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c3",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c4",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c5",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 1,
+          "b_submitted": 1,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        },
+        {
+          "cluster_id": "c6",
+          "a_confirmed": 1,
+          "a_submitted": 2,
+          "b_confirmed": 0,
+          "b_submitted": 0,
+          "a_unresolved": 0,
+          "b_unresolved": 0,
+          "difference": null
+        }
+      ],
+      "expected": {
+        "outcome": "inconclusive",
+        "provisional_outcome": "inconclusive",
+        "mean_difference": "1/2",
+        "p_value_two_sided": "1/16",
+        "lower": null,
+        "upper": null,
+        "clusters": 5
+      }
+    }
+  ],
+  "invalid_protocols": {
+    "same-system": {
+      "description": "A and B must differ.",
+      "instance": {
+        "protocol_version": "0.1",
+        "name": "vector",
+        "cohort": [
+          {
+            "task_identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c1"
+          },
+          {
+            "task_identity": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c2"
+          },
+          {
+            "task_identity": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c3"
+          },
+          {
+            "task_identity": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c4"
+          },
+          {
+            "task_identity": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c5"
+          },
+          {
+            "task_identity": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c6"
+          },
+          {
+            "task_identity": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c7"
+          }
+        ],
+        "configurations": {
+          "A": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "B": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "repetitions": 3,
+        "margin": 0.05
+      }
+    },
+    "duplicate-task": {
+      "description": "Cohort tasks are unique.",
+      "instance": {
+        "protocol_version": "0.1",
+        "name": "vector",
+        "cohort": [
+          {
+            "task_identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c1"
+          },
+          {
+            "task_identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c1"
+          }
+        ],
+        "configurations": {
+          "A": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "B": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "repetitions": 3,
+        "margin": 0.05
+      }
+    },
+    "negative-margin": {
+      "description": "The margin is non-negative.",
+      "instance": {
+        "protocol_version": "0.1",
+        "name": "vector",
+        "cohort": [
+          {
+            "task_identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c1"
+          },
+          {
+            "task_identity": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c2"
+          },
+          {
+            "task_identity": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c3"
+          },
+          {
+            "task_identity": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c4"
+          },
+          {
+            "task_identity": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c5"
+          },
+          {
+            "task_identity": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c6"
+          },
+          {
+            "task_identity": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c7"
+          }
+        ],
+        "configurations": {
+          "A": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "B": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "repetitions": 3,
+        "margin": -0.1
+      }
+    },
+    "peeking": {
+      "description": "No peeking: fixed repetitions only.",
+      "instance": {
+        "protocol_version": "0.1",
+        "name": "vector",
+        "cohort": [
+          {
+            "task_identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c1"
+          },
+          {
+            "task_identity": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c2"
+          },
+          {
+            "task_identity": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c3"
+          },
+          {
+            "task_identity": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c4"
+          },
+          {
+            "task_identity": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c5"
+          },
+          {
+            "task_identity": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c6"
+          },
+          {
+            "task_identity": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c7"
+          }
+        ],
+        "configurations": {
+          "A": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "B": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "repetitions": 3,
+        "margin": 0.05,
+        "stopping": {
+          "peeking": true
+        }
+      }
+    },
+    "optional-adjudication": {
+      "description": "Complete adjudication is required in v0.1.",
+      "instance": {
+        "protocol_version": "0.1",
+        "name": "vector",
+        "cohort": [
+          {
+            "task_identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c1"
+          },
+          {
+            "task_identity": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c2"
+          },
+          {
+            "task_identity": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c3"
+          },
+          {
+            "task_identity": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c4"
+          },
+          {
+            "task_identity": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c5"
+          },
+          {
+            "task_identity": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c6"
+          },
+          {
+            "task_identity": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c7"
+          }
+        ],
+        "configurations": {
+          "A": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "B": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "repetitions": 3,
+        "margin": 0.05,
+        "require_complete_adjudication": false
+      }
+    },
+    "other-metric": {
+      "description": "The primary metric is fixed by ADR-0006.",
+      "instance": {
+        "protocol_version": "0.1",
+        "name": "vector",
+        "cohort": [
+          {
+            "task_identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c1"
+          },
+          {
+            "task_identity": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c2"
+          },
+          {
+            "task_identity": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c3"
+          },
+          {
+            "task_identity": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c4"
+          },
+          {
+            "task_identity": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c5"
+          },
+          {
+            "task_identity": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c6"
+          },
+          {
+            "task_identity": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c7"
+          }
+        ],
+        "configurations": {
+          "A": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "B": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "repetitions": 3,
+        "margin": 0.05,
+        "estimand": {
+          "metric": "known_defect_recall"
+        }
+      }
+    },
+    "alpha-too-large": {
+      "description": "alpha is per side and below 0.5.",
+      "instance": {
+        "protocol_version": "0.1",
+        "name": "vector",
+        "cohort": [
+          {
+            "task_identity": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c1"
+          },
+          {
+            "task_identity": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c2"
+          },
+          {
+            "task_identity": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c3"
+          },
+          {
+            "task_identity": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c4"
+          },
+          {
+            "task_identity": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c5"
+          },
+          {
+            "task_identity": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c6"
+          },
+          {
+            "task_identity": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+            "thr_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "cluster_id": "c7"
+          }
+        ],
+        "configurations": {
+          "A": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "B": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "repetitions": 3,
+        "margin": 0.05,
+        "test": {
+          "alpha": 0.6
+        }
+      }
+    }
+  },
+  "wilson": [
+    {
+      "successes": 1,
+      "trials": 10,
+      "alpha": 0.025,
+      "lower": 0.017875,
+      "upper": 0.404149,
+      "source": "Wilson (1927) score interval, z = 1.959964 (two-sided 95%)"
+    },
+    {
+      "successes": 0,
+      "trials": 10,
+      "alpha": 0.025,
+      "lower": 0.0,
+      "upper": 0.27753,
+      "source": "Wilson score, 0 of 10"
+    },
+    {
+      "successes": 0,
+      "trials": 0,
+      "alpha": 0.025,
+      "lower": null,
+      "upper": null,
+      "source": "no trials: undefined"
+    }
+  ]
+}

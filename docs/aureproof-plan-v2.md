@@ -188,6 +188,8 @@ This is a trust-boundary diagram, not a deployment requirement. On day one every
 **Fallback:** a plain-Docker runner (~300 LOC) for synthetic Python fixtures, with its own minimal proxy.
 
 ### 3.4 Lifecycle and durable authority
+Implemented by `aureproof.bundle.ledger` (pure lifecycle rules) and `aureproof.storage.ledger_store` (durable journal, restart recovery, rebuildable SQLite index), issue #19.
+
 `planned → dispatched → submitted → verified → scored → sealed`
 
 Terminal states are `failed` and `incomplete`, with cleanup bookkeeping. `dispatched` is the runner's single attempt; Aureproof records it and does not mirror the runner's internal state machine.
@@ -343,7 +345,7 @@ bundle/
 ### 4.3 Decision Protocol v0.1
 | Field | Content |
 |---|---|
-| Estimand | Metric (primary: e.g. strict confirmed yield or known-defect recall, chosen in M0), population = the frozen healthy cohort, contrast = B − A, summary = mean of cluster-level differences |
+| Estimand | Metric (primary: **strict confirmed yield**, ADR-0006), population = the frozen healthy cohort, contrast = B − A, summary = mean of cluster-level differences |
 | Cohort and clusters | Task IDs + THR digests; cluster map (vulnerable/repaired variants, templates and repositories grouped) |
 | Configurations | SystemSpec digests for A and B; repetitions *n*; budgets |
 | Failure handling | How `infra_failure`, `safety_refusal`, `budget_exhausted` and `evidence_incomplete` enter (default: reported separately, scored as non-success for operational completion, excluded from quality metrics) |
@@ -491,6 +493,8 @@ bundle/
 ## 7. Threat model, security, and policy
 
 ### 7.1 STRIDE summary (v0.1). Every control has a test.
+Maintained, with test IDs and status, in [`threat-model.md`](threat-model.md) (AP-002).
+
 | Threat | Example | Control | Test |
 |---|---|---|---|
 | Spoofing | Agent output claims to be a verifier event | Agent data is tagged `agent_reported`; only the controller writes trusted events | Inject a fake verifier event → it stays `agent_reported` |
@@ -525,7 +529,7 @@ Use one Linux evaluation host. Docker alone is not claimed to be a hardened boun
 - **Evaluation only, not for training.** Anthropic's commercial terms and OpenAI's Services Agreement §3.3 prohibit using outputs to build competing models [R29, R30]. The dataset card states "evaluation only; not for training", and transcripts carry canaries.
 - **No provider names as endorsement or logos.** OpenAI's agreement restricts using its name or logo, so models are only named factually.
 - **Never retry to bypass safeguards** (OpenAI §3.3). Record `safety_refusal`.
-- **Read OpenAI's Sharing & Publication Policy** before the first public results. Its content is *unverified*. Check any additional provider's terms (e.g. NIM) before use.
+- **Read OpenAI's Sharing & Publication Policy** before the first public results. *Verified 2026-10-27*: see [`provider-terms.md`](provider-terms.md), which also covers Anthropic's Usage Policy (new version effective Nov 12, 2026), the Commercial Terms and the Cyber Verification Program. Check any additional provider's terms (e.g. NIM) before use.
 
 ### 7.5 Disclosure
 - `SECURITY.md` + **GitHub private vulnerability reporting** [R38].

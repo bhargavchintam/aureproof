@@ -1,0 +1,23 @@
+{
+  "dataset_id": "aureproof-security-fixtures",
+  "dataset_revision": "0.1.0-dev",
+  "tasks": [
+    {
+      "task_id": "authz-001",
+      "split": "development",
+      "task_revision": "0.1.0",
+      "canary": "7effd90b-bc48-4bf8-ab0b-72dfff0d0f97",
+      "oracle_canary": "aa8d4c1d-242e-47a3-9099-ec978a3b0d2f",
+      "exposure": [
+        {
+          "since": "2026-10-11",
+          "where": "public GitHub repository bhargavchintam/aureproof",
+          "kind": "public"
+        }
+      ],
+      "overlap": "Self-authored and synthetic. Missing authorization (CWE-862) is a common textbook class, so the pattern is not novel; only this code and these labels are. Public since 2026-10-11, so it is a development task and never an assessment task."
+    }
+  ],
+  "assessment_repository": "bhargavchintam/aureproof-assessment (private)",
+  "assessment": []
+}

@@ -1,0 +1,1 @@
+[{"cwe": 89, "locations": [{"file": "app/orders.py", "symbol": "find_orders", "start_line": 40, "end_line": 46}], "description": "Finding description."}, {"cwe": 89, "locations": [{"file": "app/orders.py", "symbol": "order_total"}], "description": "Finding description."}]

@@ -4,7 +4,6 @@
 
 from __future__ import annotations
 
-import json
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 from typing import Any, Literal
@@ -12,7 +11,13 @@ from typing import Any, Literal
 from pydantic import ValidationError
 
 from aureproof.bundle.build import entry_hash, valid_path
-from aureproof.bundle.canonical import GENESIS, canonical_json, digest_ref, sha256_hex
+from aureproof.bundle.canonical import (
+    GENESIS,
+    NotCanonicalizable,
+    canonical_json,
+    digest_ref,
+    sha256_hex,
+)
 from aureproof.bundle.models import (
     BLOB_PREFIX,
     JOURNAL,
@@ -24,6 +29,8 @@ from aureproof.bundle.models import (
     Manifest,
     Statement,
 )
+from aureproof.contracts.events import Event
+from aureproof.contracts.strict_json import JsonInputError, loads_strict
 
 CheckId = Literal["V1", "V2", "V3", "V4", "V5", "V6"]
 NAMES: dict[str, str] = {
@@ -63,22 +70,19 @@ class Report:
         return [f"{c.id} {c.name}: {p}" for c in self.checks for p in c.problems]
 
 
-def _strict_json(data: bytes) -> Any:
-    def no_dupes(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
-        if len({k for k, _ in pairs}) != len(pairs):
-            raise ValueError("duplicate key")
-        return dict(pairs)
-
-    return json.loads(data.decode("utf-8"), object_pairs_hook=no_dupes)
-
-
 def _canonical_doc(data: bytes, what: str, check: Check) -> Any:
+    """Parse strictly (bounded, I-JSON) and require RFC 8785 bytes. Never raises."""
     try:
-        value = _strict_json(data)
-    except (UnicodeDecodeError, ValueError) as exc:
-        check.fail(f"{what} is not valid JSON: {exc}")
+        value = loads_strict(data, i_json=True)
+    except JsonInputError as exc:
+        check.fail(f"{what} is not acceptable JSON: {exc}")
         return None
-    if canonical_json(value) != data:
+    try:
+        canonical = canonical_json(value)
+    except NotCanonicalizable as exc:  # pragma: no cover - loads_strict(i_json) prevents it
+        check.fail(f"{what} has no RFC 8785 form: {exc}")
+        return None
+    if canonical != data:
         check.fail(f"{what} is not in RFC 8785 canonical form")
     return value
 
@@ -153,16 +157,24 @@ def validate(files: Mapping[str, bytes], *, trusted_seal_digest: str | None = No
                 v3.fail(f"journal line {index} is not a valid entry")
                 seq_ok = False
                 break
-            body = entry.event.model_dump(mode="json", exclude_none=True)
-            if entry.seq != index or entry.event.seq != index:
-                v3.fail(f"journal line {index} has seq {entry.seq} (event seq {entry.event.seq})")
+            try:
+                event: Event | None = Event.model_validate(entry.event)
+            except ValidationError:
+                v3.fail(f"journal line {index} carries an invalid event")
+                event = None
+            if entry.seq != index or (event is not None and event.seq != index):
+                v3.fail(f"journal line {index} has seq {entry.seq}, expected {index}")
             if entry.prev != prev:
                 v3.fail(f"journal line {index} does not link to the previous entry")
-            if entry.hash != entry_hash(entry.seq, entry.prev, body):
+            try:  # hash exactly the recorded event, not a re-serialized model
+                recomputed = entry_hash(entry.seq, entry.prev, entry.event)
+            except NotCanonicalizable:
+                recomputed = None
+            if entry.hash != recomputed:
                 v3.fail(f"journal line {index} hash does not recompute")
             prev = entry.hash
             count += 1
-            for ref in entry.event.blob_refs:
+            for ref in event.blob_refs if event is not None else ():
                 if BLOB_PREFIX + ref.removeprefix("sha256:") not in files:
                     v6.fail(f"journal line {index} references a missing blob {ref}")
         head = prev

@@ -4,11 +4,15 @@ SPDX-License-Identifier: Apache-2.0
 -->
 # Scope (v0.1)
 
-Condensed from [`aureproof-plan-v2.md`](aureproof-plan-v2.md) §1. This file is
-the proposed statement of what v0.1 is and is not. The primary metric and
-exact external-agent/provider protocol remain open in
-[#5](https://github.com/bhargavchintam/aureproof/issues/5). Mark this scope
-frozen only after those choices are recorded in accepted ADRs.
+Condensed from [`aureproof-plan-v2.md`](aureproof-plan-v2.md) §1. **Frozen on
+2026-10-27** (issue #5, AP-001). Changing it needs a new ADR and a reviewed
+amendment.
+
+- Primary metric: **strict confirmed yield** ([ADR-0006](adr/0006-primary-metric-strict-confirmed-yield.md)).
+- External subject: **Claude Code over Anthropic Messages**, native-capability mode,
+  in the `closed-world` configuration by default, with `web-search` as a declared
+  variant. Budget: 400k tokens, 15 min, one attempt
+  ([ADR-0007](adr/0007-external-agent-and-interface.md)).
 
 ## The promise
 

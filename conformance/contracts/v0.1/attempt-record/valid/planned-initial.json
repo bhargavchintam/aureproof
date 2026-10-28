@@ -1,0 +1,10 @@
+{
+  "description": "Attempt 0 is the initial attempt.",
+  "instance": {
+    "episode_id": "ep-34fb7ab82e42d2cc76c3e7359c0750eb",
+    "attempt_index": 0,
+    "attempt_id": "ep-34fb7ab82e42d2cc76c3e7359c0750eb/a0",
+    "reason": "initial",
+    "status": "planned"
+  }
+}

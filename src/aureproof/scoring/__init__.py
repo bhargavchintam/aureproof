@@ -13,8 +13,12 @@ from aureproof.scoring.params import (
     DISPOSITION_VERSION,
     MATCHER_VERSION,
     METRICS_VERSION,
+    PROFILES,
     V0_1,
     MatcherParams,
+    UnregisteredParams,
+    matcher_version_of,
+    scoring_identity,
 )
 from aureproof.scoring.submission import ParsedSubmission, SubmissionStatus, parse_submission
 
@@ -23,14 +27,18 @@ __all__ = [
     "GRADED",
     "MATCHER_VERSION",
     "METRICS_VERSION",
+    "PROFILES",
     "V0_1",
     "EpisodeScore",
     "MatchResult",
     "MatcherParams",
     "ParsedSubmission",
     "SubmissionStatus",
+    "UnregisteredParams",
     "compute_metrics",
     "match",
+    "matcher_version_of",
     "parse_submission",
     "score_episode",
+    "scoring_identity",
 ]

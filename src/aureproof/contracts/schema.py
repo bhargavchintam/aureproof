@@ -11,6 +11,7 @@ from pydantic import TypeAdapter
 from aureproof.contracts.events import Event, Submission
 from aureproof.contracts.findings import Finding
 from aureproof.contracts.labels import LabelSet
+from aureproof.contracts.specs import AttemptRecord, EpisodeSpec, SystemSpec, TaskSpec
 from aureproof.contracts.verdicts import EpisodeSignals, MetricRecord, VerdictRecord
 
 SCHEMA_DIR = "specs/contracts/v0.1"
@@ -25,6 +26,10 @@ _TARGETS: dict[str, Any] = {
     "metric-record": MetricRecord,
     "event": Event,
     "submission": Submission,
+    "task-spec": TaskSpec,
+    "system-spec": SystemSpec,
+    "episode-spec": EpisodeSpec,
+    "attempt-record": AttemptRecord,
 }
 
 

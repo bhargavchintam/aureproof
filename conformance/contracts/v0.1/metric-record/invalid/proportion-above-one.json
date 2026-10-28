@@ -1,0 +1,11 @@
+{
+  "description": "A proportion's numerator cannot exceed its denominator.",
+  "instance": {
+    "metric": "strict_confirmed_yield",
+    "kind": "proportion",
+    "metric_version": "0.1.0",
+    "numerator": 4,
+    "denominator": 3,
+    "value": 1.3333333333333333
+  }
+}

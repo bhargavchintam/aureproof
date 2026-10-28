@@ -1,0 +1,203 @@
+{
+  "$defs": {
+    "ClusterRow": {
+      "additionalProperties": false,
+      "properties": {
+        "a_confirmed": {
+          "minimum": 0,
+          "title": "A Confirmed",
+          "type": "integer"
+        },
+        "a_submitted": {
+          "minimum": 0,
+          "title": "A Submitted",
+          "type": "integer"
+        },
+        "a_unresolved": {
+          "default": 0,
+          "minimum": 0,
+          "title": "A Unresolved",
+          "type": "integer"
+        },
+        "b_confirmed": {
+          "minimum": 0,
+          "title": "B Confirmed",
+          "type": "integer"
+        },
+        "b_submitted": {
+          "minimum": 0,
+          "title": "B Submitted",
+          "type": "integer"
+        },
+        "b_unresolved": {
+          "default": 0,
+          "minimum": 0,
+          "title": "B Unresolved",
+          "type": "integer"
+        },
+        "cluster_id": {
+          "minLength": 1,
+          "title": "Cluster Id",
+          "type": "string"
+        },
+        "difference": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Difference"
+        }
+      },
+      "required": [
+        "cluster_id",
+        "a_confirmed",
+        "a_submitted",
+        "b_confirmed",
+        "b_submitted",
+        "difference"
+      ],
+      "title": "ClusterRow",
+      "type": "object"
+    },
+    "Interval": {
+      "additionalProperties": false,
+      "properties": {
+        "lower": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Lower"
+        },
+        "upper": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Upper"
+        }
+      },
+      "required": [
+        "lower",
+        "upper"
+      ],
+      "title": "Interval",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "ci": {
+      "$ref": "#/$defs/Interval"
+    },
+    "cluster_table": {
+      "items": {
+        "$ref": "#/$defs/ClusterRow"
+      },
+      "title": "Cluster Table",
+      "type": "array"
+    },
+    "clusters": {
+      "title": "Clusters",
+      "type": "integer"
+    },
+    "decision_version": {
+      "const": "0.1",
+      "default": "0.1",
+      "title": "Decision Version",
+      "type": "string"
+    },
+    "mean_difference": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Mean Difference"
+    },
+    "min_clusters_for_decision": {
+      "title": "Min Clusters For Decision",
+      "type": "integer"
+    },
+    "outcome": {
+      "enum": [
+        "pass",
+        "fail",
+        "inconclusive"
+      ],
+      "title": "Outcome",
+      "type": "string"
+    },
+    "p_value_two_sided": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "P Value Two Sided"
+    },
+    "protocol": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Protocol",
+      "type": "string"
+    },
+    "provisional_outcome": {
+      "enum": [
+        "pass",
+        "fail",
+        "inconclusive"
+      ],
+      "title": "Provisional Outcome",
+      "type": "string"
+    },
+    "reason": {
+      "minLength": 1,
+      "title": "Reason",
+      "type": "string"
+    },
+    "wilson_a": {
+      "$ref": "#/$defs/Interval"
+    },
+    "wilson_b": {
+      "$ref": "#/$defs/Interval"
+    }
+  },
+  "required": [
+    "protocol",
+    "outcome",
+    "provisional_outcome",
+    "reason",
+    "clusters",
+    "mean_difference",
+    "p_value_two_sided",
+    "ci",
+    "min_clusters_for_decision",
+    "wilson_a",
+    "wilson_b",
+    "cluster_table"
+  ],
+  "title": "Decision",
+  "type": "object"
+}
