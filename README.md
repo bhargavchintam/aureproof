@@ -116,6 +116,7 @@ Report vulnerabilities privately per [`SECURITY.md`](SECURITY.md).
 
 ## License
 
-Code is [Apache-2.0](LICENSE). Self-authored fixtures are CC-BY-4.0. The
+Code is [Apache-2.0](LICENSE). Self-authored fixtures are CC-BY-4.0. The Code of
+Conduct is adapted from the Contributor Covenant 3.0 (CC-BY-SA-4.0). The
 repository is [REUSE](https://reuse.software/)-compliant; per-file terms are in
 each file's SPDX header or in [`REUSE.toml`](REUSE.toml).

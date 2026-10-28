@@ -44,4 +44,4 @@ SPDX-License-Identifier = "CC-BY-4.0"
 path = ["CODE_OF_CONDUCT.md"]
 precedence = "override"
 SPDX-FileCopyrightText = "2014 Coraline Ada Ehmke and the Contributor Covenant contributors"
-SPDX-License-Identifier = "CC-BY-4.0"
+SPDX-License-Identifier = "CC-BY-SA-4.0"
