@@ -112,8 +112,16 @@ def seal_run(
     cohort: str,
     generator: Mapping[str, str],
     completeness: Literal["complete", "redacted"] = "complete",
+    prior_events: Sequence[Event] = (),
+    extra: Sequence[Member] = (),
 ) -> dict[str, bytes]:
-    """Score every episode and seal the run. Pure: files in, files out."""
+    """Score every episode and seal the run. Pure: files in, files out.
+
+    ``prior_events`` is the attempt journal of a live run (planning, dispatch,
+    tool and model observations, outcomes); the scoring events follow it in one
+    hash chain. ``extra`` adds evidence members such as the protocol, the system
+    spec and the Task Health Records.
+    """
     blobs = {digest_ref(b): b for b in submissions}
     scored = _score_all(episodes, labels, blobs)
     verdicts, metrics = _documents(scored, cohort)
@@ -124,18 +132,25 @@ def seal_run(
         Member(VERDICTS, verdicts, "verdicts"),
         Member(METRICS, metrics, "metrics"),
         *[Member(path, data, "labels") for path, data in sorted(labels.items())],
+        *extra,
     ]
     events = [
-        Event(
-            seq=i,
-            episode_id=ep.episode_id,
-            actor="aureproof",
-            kind="episode_scored",
-            observation_source=ObservationSource.CONTROLLER_OBSERVED,
-            payload={"disposition": s.disposition.value, "scoring_identity": s.scoring_identity},
-            blob_refs=[ep.submission] if ep.submission else [],
-        )
-        for i, (ep, s) in enumerate(scored)
+        *prior_events,
+        *(
+            Event(
+                seq=len(prior_events) + i,
+                episode_id=ep.episode_id,
+                actor="aureproof",
+                kind="episode_scored",
+                observation_source=ObservationSource.CONTROLLER_OBSERVED,
+                payload={
+                    "disposition": s.disposition.value,
+                    "scoring_identity": s.scoring_identity,
+                },
+                blob_refs=[ep.submission] if ep.submission else [],
+            )
+            for i, (ep, s) in enumerate(scored)
+        ),
     ]
     versions = {
         "matcher": MATCHER_VERSION,

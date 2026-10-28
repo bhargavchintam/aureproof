@@ -74,6 +74,16 @@ A run bundle (`aureproof.bundle.run`) records scored episodes so they can be re-
 
 `aureproof score --offline` recomputes `verdicts.json` and `metrics.json` from the episodes, labels and blobs, and requires byte equality.
 
+A **live run bundle** (`aureproof run`, `aureproof.runners.slice`) adds the evidence that links the chain:
+
+| Path | Role | Content |
+| --- | --- | --- |
+| `protocol.json` | `protocol` | The Decision Protocol in canonical JSON; its identity is every episode's `protocol` |
+| `system.json` | `system` | The runner's SystemSpec in canonical JSON; its identity is configuration A or B of the protocol |
+| `tasks/<task_id>/thr.json` | `task_health` | The healthy Task Health Record whose canonical-JSON digest the protocol names (`cohort[].thr_digest`) |
+
+Its journal starts with the attempt journal (`episode_planned`, `attempt_planned`, `attempt_dispatched`, `tool_observed`, `attempt_outcome` with provider calls and the runner log digest, `episode_finalized`), and the `episode_scored` events follow in the same hash chain. A run that does not match its protocol (system not A or B, unknown task, THR digest mismatch, THR not healthy) is refused before any dispatch.
+
 ## 4. Manifest
 
 ```json
