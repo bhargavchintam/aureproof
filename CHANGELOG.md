@@ -159,6 +159,11 @@ public API and the specs may change between minor versions).
   pure `validate` that reports every failed check (V1–V6), with an optional
   trusted seal digest. 14 generated conformance vectors cover tampered,
   truncated, reordered and missing evidence.
+- Reference subject (issue #43, ADR-0007): Inspect `react()` with a pinned
+  system prompt whose digest is part of the `SystemSpec`, `attempts=1` and
+  `retry_refusals=0`. Each tool call is journaled as a `tool_observed` event by
+  digest: `controller_observed` for the reference subject, `agent_reported` for
+  Claude Code.
 
 ### Changed
 - Hardened untrusted JSON (issue #35). A shared strict, bounded loader
