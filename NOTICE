@@ -7,3 +7,7 @@ A copy of the License is in the LICENSE file at the root of this repository.
 
 Self-authored evaluation fixtures under fixtures/ are licensed under
 CC-BY-4.0. See REUSE.toml and each file's SPDX identifier for per-file terms.
+
+CODE_OF_CONDUCT.md is adapted from the Contributor Covenant, version 3.0
+(https://www.contributor-covenant.org/version/3/0/), stewarded by the
+Organization for Ethical Source and licensed under CC-BY-SA-4.0.

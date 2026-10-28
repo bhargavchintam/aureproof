@@ -166,6 +166,9 @@ public API and the specs may change between minor versions).
   Claude Code.
 
 ### Changed
+- `CODE_OF_CONDUCT.md` is now licensed CC-BY-SA-4.0 in `REUSE.toml`, matching
+  the Contributor Covenant 3.0 terms its attribution states (issue #33); it was
+  wrongly assigned CC-BY-4.0. `NOTICE` and the README say so.
 - Hardened untrusted JSON (issue #35). A shared strict, bounded loader
   (`aureproof.contracts.strict_json`) handles submissions, manifests, seals and
   journal lines: no duplicate keys or NaN, depth at most 32 checked before parsing,
