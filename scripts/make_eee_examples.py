@@ -13,6 +13,7 @@ with the pinned ``every-eval-ever`` package, which is the independent consumer.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 import uuid
@@ -33,7 +34,9 @@ def build() -> dict[str, bytes]:
         bundle = read_bundle(ROOT / "examples" / "gate" / example / side)
         record = to_eee(bundle, retrieved_timestamp=TIMESTAMP, organization="Aureproof examples")
         model = record.record["model_info"]["id"]
-        name = uuid.uuid5(uuid.NAMESPACE_URL, record.record["evaluation_id"])
+        # EEE requires UUID4 file names; derive one from the id so examples are reproducible
+        digest = hashlib.sha256(record.record["evaluation_id"].encode()).digest()
+        name = uuid.UUID(bytes=digest[:16], version=4)
         path = f"data/aureproof-security/{model}/{name}.json"
         files[path] = (json.dumps(record.record, indent=2) + "\n").encode()
     return files
