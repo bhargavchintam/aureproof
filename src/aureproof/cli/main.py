@@ -334,5 +334,90 @@ def task_validate(
     raise typer.Exit(0 if record.status.value == "healthy" and not problems else 1)
 
 
+@task_app.command("probe")
+def task_probe(
+    task_id: Annotated[str, typer.Argument(help="Task ID, e.g. authz-001.")],
+    root: Annotated[Path, typer.Option("--root", help="Repository root.")] = Path(),
+    model: Annotated[
+        str | None,
+        typer.Option("--model", help="Also run the single-shot model baseline (needs a key)."),
+    ] = None,
+    out: Annotated[
+        Path | None, typer.Option("--out", help="Write the THR with its probe here.")
+    ] = None,
+    as_json: JsonOpt = False,
+) -> None:
+    """Difficulty probe: Bandit and single-shot baselines. Exit 1 if both solve the task."""
+    from aureproof.oracles.calibration import calibrate
+    from aureproof.oracles.probe import (
+        AnthropicClient,
+        SingleShotConfig,
+        bandit_baseline,
+        saturation,
+        single_shot_baseline,
+        with_probe,
+    )
+
+    if not (root / "fixtures" / "security" / task_id).is_dir():
+        typer.echo(f"error: no fixture for task {task_id!r} under {root}", err=True)
+        raise typer.Exit(2)
+    if out is not None and out.exists():
+        typer.echo(f"error: {out} exists", err=True)
+        raise typer.Exit(2)
+    try:
+        static = bandit_baseline(root, task_id)
+    except ModuleNotFoundError:
+        typer.echo("error: the Bandit probe needs the `baseline` extra", err=True)
+        raise typer.Exit(2) from None
+    single = None
+    if model is not None:
+        config = SingleShotConfig(model=model)
+        try:
+            single = single_shot_baseline(root, task_id, config, AnthropicClient(config))
+        except ModuleNotFoundError:
+            typer.echo("error: the single-shot probe needs the `inspect` extra", err=True)
+            raise typer.Exit(2) from None
+    verdict = saturation(static, single)
+    record = with_probe(calibrate(root, task_id), static, single)
+    if out is not None:
+        out.write_text(record.model_dump_json(indent=2) + "\n", encoding="utf-8")
+    runs = [r for r in (static, single) if r is not None]
+    if as_json:
+        typer.echo(
+            json.dumps(
+                {
+                    "task_id": task_id,
+                    "task_identity": record.task.task_identity,
+                    "saturation": verdict,
+                    "baselines": [
+                        {
+                            "probe": r.probe,
+                            "system_identity": r.system_identity,
+                            "solved": r.solved,
+                            "metrics": r.metrics,
+                            "episodes": [vars(e) for e in r.episodes],
+                            "mapping_losses": r.losses,
+                        }
+                        for r in runs
+                    ],
+                },
+                indent=2,
+            )
+        )
+    else:
+        for r in runs:
+            typer.echo(f"{r.probe:<18} solved={r.solved}  {r.system_identity}")
+            for name in ("known_defect_recall", "strict_confirmed_yield"):
+                typer.echo(f"  {name:<24} {r.metrics[name]}")
+            for e in r.episodes:
+                typer.echo(f"  {e.variant:<10} {e.disposition} {e.verdicts}")
+        if single is None:
+            typer.echo("single_shot_model  not run (pass --model; needs a provider key, #7)")
+        typer.echo(f"{task_id}: {verdict.upper()}")
+        if verdict == "saturated":
+            typer.echo("both baselines solve it: redesign before benchmark expansion (#44)")
+    raise typer.Exit(1 if verdict == "saturated" else 0)
+
+
 if __name__ == "__main__":  # pragma: no cover
     sys.exit(app())
