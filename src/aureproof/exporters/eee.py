@@ -46,7 +46,7 @@ INTEGRITY_NOTE = (
 LOSSES = (
     "per-finding verdicts and dispositions are not exported (EEE aggregate records)",
     "the attempt journal, model and tool observations are not exported",
-    "Task Health Records and decisions have no EEE field (proposed upstream, plan §11)",
+    "Task Health Records and decisions have no EEE field (proposed upstream, plan §9.4)",
     "adjudications are not exported; metrics are pre-adjudication",
     "the bundle seal and signature are not carried; only the seal digest is referenced",
 )
