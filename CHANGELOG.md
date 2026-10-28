@@ -250,6 +250,12 @@ public API and the specs may change between minor versions).
   `scripts/make_croissant.py --check` and the "Croissant" workflow (mlcroissant
   1.1.1) keep it current and valid.
 
+- `docs/ABC.md` (issue #61): a self-assessment against the Agentic Benchmark
+  Checklist, item by item, with status (met, partly met, not met, n/a) and links
+  to evidence. Open gaps are named: independent review, the private split, an
+  assessment run, a human baseline, and the BetterBench request, which is not yet
+  submitted. A test keeps every cited path real.
+
 ### Changed
 - `CODE_OF_CONDUCT.md` is now licensed CC-BY-SA-4.0 in `REUSE.toml`, matching
   the Contributor Covenant 3.0 terms its attribution states (issue #33); it was
