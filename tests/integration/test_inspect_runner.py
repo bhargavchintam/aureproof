@@ -71,6 +71,20 @@ def _refuses(
     return ModelOutput.for_tool_call("mockllm/model", "submit", {"answer": "declined"})
 
 
+def _bash_then_submit(cmd: str) -> Any:
+    def policy(
+        messages: list[ChatMessage],
+        tools: list[ToolInfo],
+        choice: ToolChoice,
+        config: GenerateConfig,
+    ) -> ModelOutput:
+        if not any(m.role == "tool" for m in messages):
+            return ModelOutput.for_tool_call("mockllm/model", "bash", {"command": cmd})
+        return ModelOutput.for_tool_call("mockllm/model", "submit", {"answer": "done"})
+
+    return policy
+
+
 def _run(
     tmp_path: Path, policy: Any, variant: str = "vulnerable"
 ) -> tuple[Any, AttemptLedgerStore]:
@@ -141,3 +155,21 @@ def test_system_identity_records_pins_settings_and_tools(tmp_path: Path) -> None
     assert spec.settings["retry_refusals"] == 0 and spec.settings["inspect_retry_on_error"] == 0
     assert spec.models["main"].protocol == "anthropic-messages"
     assert "WebSearch" not in spec.tools and spec.subject.version == "2.1.287"
+
+
+@pytest.mark.parametrize(
+    ("cmd", "detail"),
+    [
+        ("ln -s /dev/zero findings.json", "symlink"),
+        ("head -c 2000000 /dev/zero | tr '\\0' 'x' > findings.json", "oversized"),
+        ("mkfifo findings.json", "not_regular_file"),
+    ],
+    ids=["symlink-dev-zero", "oversized-2MB", "fifo"],
+)
+def test_hostile_artifacts_in_the_real_sandbox(tmp_path: Path, cmd: str, detail: str) -> None:
+    """Issue #40: the production collection path rejects them without unbounded reads."""
+    run, store = _run(tmp_path, _bash_then_submit(cmd))
+    assert run.score.disposition is Disposition.INVALID_OUTPUT
+    outcome = next(e for e in store.journal.events if e.kind == "attempt_outcome").payload or {}
+    assert (outcome["capture"], outcome["capture_detail"]) == ("rejected", detail)
+    assert len(run.attempts) == 1  # agent output problems are never re-dispatched

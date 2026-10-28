@@ -116,6 +116,7 @@ class AttemptLedgerStore:
         error_class: str | None = None,
         submission: str | None = None,
         capture: str | None = None,
+        capture_detail: str | None = None,
         log_digest: str | None = None,
         provider: dict[str, Any] | None = None,
     ) -> None:
@@ -128,6 +129,7 @@ class AttemptLedgerStore:
             "error_class": error_class,
             "submission": submission,
             "capture": capture,
+            "capture_detail": capture_detail,
             "log_digest": log_digest,
             "provider": provider,
         }

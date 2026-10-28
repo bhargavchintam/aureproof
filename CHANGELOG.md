@@ -47,6 +47,13 @@ public API and the specs may change between minor versions).
   export and import with a property-based round-trip test, generated JSON Schema
   2020-12 files in `specs/contracts/v0.1/` with a drift check, and conformance
   vectors checked against both the models and the schemas.
+- Bounded artifact collection (issue #40). `runners.collect.COLLECTOR` runs inside the
+  sandbox. It never follows symlinks, accepts only a regular file inside the workspace,
+  checks the size limit (`max_bytes`, versioned with the matcher) before reading, and reads
+  at most limit + 1 bytes. The host re-checks its report. Rejected captures are journaled
+  with a reason (`capture: rejected`, `capture_detail`) and score as `invalid_output`.
+  Tested against hostile workspaces in CI and in the real Docker sandbox (symlink to
+  `/dev/zero`, 2 MB file, FIFO).
 - Sigstore signing (issue #46). The tutorial bundle is signed by `sign.yml` (Actions
   run 40654544677), and CI verifies it offline on every push. Keyless signing by the `sign.yml` GitHub Actions workflow on
   `main` (the project's only signer identity), offline verification against the pinned

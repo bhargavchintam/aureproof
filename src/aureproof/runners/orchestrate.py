@@ -88,6 +88,7 @@ def run_episode(
             error_class=result.error_class,
             submission=submission_ref,
             capture=result.capture,
+            capture_detail=result.capture_detail,
             log_digest=result.log_digest,
             provider=dict(result.provider) or None,
         )

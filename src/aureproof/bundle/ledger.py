@@ -74,7 +74,8 @@ class AttemptOutcome(Contract):
     runner_run_id: NonEmptyStr | None = None
     error_class: NonEmptyStr | None = None
     submission: DigestRef | None = None
-    capture: Literal["captured", "absent"] | None = None
+    capture: Literal["captured", "absent", "rejected"] | None = None
+    capture_detail: NonEmptyStr | None = None  # e.g. symlink, oversized (issue #40)
     log_digest: DigestRef | None = None  # the runner's raw log, retained by digest
     provider: ProviderCalls | None = None
 
