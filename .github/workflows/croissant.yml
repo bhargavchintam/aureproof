@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: 2026 Bindu Bhargava R Chintam
+# SPDX-License-Identifier: Apache-2.0
+#
+# Validates the fixture pack's Croissant 1.1 + RAI metadata with the pinned
+# mlcroissant 1.1.1 validator, in its own environment (issue #60). No secrets.
+name: Croissant
+
+on:
+  push:
+    branches: [main]
+    paths: ["fixtures/**", "scripts/make_croissant.py", ".github/workflows/croissant.yml"]
+  pull_request:
+    paths: ["fixtures/**", "scripts/make_croissant.py", ".github/workflows/croissant.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: mlcroissant 1.1.1 validates fixtures/croissant.json
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: "0.12.19"
+      - name: Metadata matches the files
+        run: uv run python scripts/make_croissant.py --check
+      - name: Validate with mlcroissant 1.1.1
+        run: uvx --from mlcroissant==1.1.1 mlcroissant validate --jsonld fixtures/croissant.json
