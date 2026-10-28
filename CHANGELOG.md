@@ -182,6 +182,17 @@ public API and the specs may change between minor versions).
   exits 1 when both baselines solve a task. Bandit solves none of the three
   pairs (`docs/research/difficulty-probe.md`); the model baseline waits on a key.
 
+- Bridge capability qualification (issue #42, AP-015). `preflight()` rejects
+  unqualified capabilities when the runner is built: `web-search`, a
+  non-Anthropic provider for Claude Code, hosted tools for the reference subject,
+  and a model that differs from its recorded identity. The bridge's protocol
+  translation is recorded in the system identity. New Docker-lane tests on the
+  production Claude Code path show that a planted host key and the labels never
+  reach the sandbox or the log, egress fails, WebFetch is not offered and a call to
+  it is rejected, token and time budgets end the episode in one attempt, and model
+  calls are journaled as controller-observed. `docs/bridge-coverage.md` declares
+  what is enforced, observed and not covered.
+
 ### Changed
 - `CODE_OF_CONDUCT.md` is now licensed CC-BY-SA-4.0 in `REUSE.toml`, matching
   the Contributor Covenant 3.0 terms its attribution states (issue #33); it was

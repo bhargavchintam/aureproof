@@ -97,6 +97,46 @@ class InspectRunnerConfig:
     budget: Budget = field(default_factory=Budget)
 
 
+class UnsupportedCapability(ValueError):
+    """A requested capability the qualified bridge cannot provide (issue #42)."""
+
+
+# Claude Code speaks Anthropic Messages; mockllm is the no-cost test double.
+CLAUDE_CODE_PROVIDERS = ("anthropic", "mockllm")
+
+
+def preflight(cfg: InspectRunnerConfig) -> list[str]:
+    """The transformations a run applies; raises for any capability not qualified.
+
+    Runs when the runner is built, before any attempt is dispatched, so a
+    configuration fault is never mistaken for an infrastructure failure.
+    """
+    if isinstance(cfg.model, str) and cfg.model != cfg.model_name:
+        raise UnsupportedCapability(
+            f"model {cfg.model!r} differs from the recorded identity {cfg.model_name!r}"
+        )
+    provider = cfg.model_name.split("/", 1)[0]
+    if cfg.subject == "reference":
+        if cfg.hosted_tools != "closed-world":
+            raise UnsupportedCapability("the reference subject offers no hosted tools")
+        return []
+    if cfg.hosted_tools != "closed-world":
+        raise UnsupportedCapability(
+            "web-search is not implemented: the bridge's web_search is never enabled, and"
+            " hosted search needs live qualification (#7, #42)"
+        )
+    if provider not in CLAUDE_CODE_PROVIDERS:
+        raise UnsupportedCapability(
+            f"Claude Code needs an Anthropic Messages provider, not {provider!r}: an"
+            " unqualified protocol translation"
+        )
+    return [
+        "Claude Code's Anthropic Messages requests are served by Inspect's"
+        " sandbox_agent_bridge in the sandbox and forwarded to the Inspect model API",
+        f"WebSearch and WebFetch are disallowed in Claude Code ({cfg.hosted_tools})",
+    ]
+
+
 def _protocol(cfg: InspectRunnerConfig) -> str:
     return "anthropic-messages" if cfg.subject == "claude_code" else "inspect"
 
@@ -107,6 +147,7 @@ def declared_tools(cfg: InspectRunnerConfig) -> list[str]:
 
 def system_spec(cfg: InspectRunnerConfig) -> SystemSpec:
     """The system identity: subject, pins, protocol, tools and effective settings."""
+    transformations = preflight(cfg)  # an unqualified system gets no identity
     inspect_version = md.version("inspect-ai")
     if cfg.subject == "claude_code":
         subject = {
@@ -117,8 +158,6 @@ def system_spec(cfg: InspectRunnerConfig) -> SystemSpec:
         }
         mode, prompts = "native-capability", {}
         settings = {**CLAUDE_CODE_SETTINGS, **RUNNER_SETTINGS}
-        if cfg.hosted_tools == "web-search":
-            settings["disallowed_tools"] = ["WebFetch"]
     else:
         subject = {
             "kind": "reference",
@@ -128,6 +167,7 @@ def system_spec(cfg: InspectRunnerConfig) -> SystemSpec:
         }
         mode, settings = "controlled-interface", {**REFERENCE_SETTINGS, **RUNNER_SETTINGS}
         prompts = {"system": reference_prompt_digest()}
+    settings["transformations"] = transformations
     provider = cfg.model_name.split("/", 1)[0]
     return SystemSpec.model_validate(
         {
@@ -299,6 +339,7 @@ def facts_from_sample(
 
 class InspectRunner:
     def __init__(self, config: InspectRunnerConfig) -> None:
+        preflight(config)  # unsupported capabilities fail here, before any dispatch
         self.config = config
 
     def system_spec(self) -> SystemSpec:
