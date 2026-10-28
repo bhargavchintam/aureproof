@@ -233,6 +233,14 @@ public API and the specs may change between minor versions).
   first is labels `draft-0` to `v0.1`, checked against the real authz-001 history.
   `specs/COMPATIBILITY.md` states the migration rules and the initial-version limit.
 
+- Every Eval Ever export (issue #59): `aureproof export-eee` writes one EEE 0.3.0
+  aggregate record per sealed run bundle. The upstream schema is vendored and
+  pinned by digest (MIT, EvalEval). Each metric keeps its exact counts, the
+  bundle's identities travel in `source_metadata`, `from_eee` reads them back,
+  and everything EEE cannot hold is reported as a loss. The record says it
+  carries no seal. The "EEE consumer" workflow validates `examples/eee` with
+  EEE's own validator.
+
 ### Changed
 - `CODE_OF_CONDUCT.md` is now licensed CC-BY-SA-4.0 in `REUSE.toml`, matching
   the Contributor Covenant 3.0 terms its attribution states (issue #33); it was

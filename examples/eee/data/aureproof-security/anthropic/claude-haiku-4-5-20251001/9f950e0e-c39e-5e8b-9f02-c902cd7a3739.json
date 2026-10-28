@@ -1,0 +1,425 @@
+{
+  "schema_version": "0.3.0",
+  "evaluation_id": "gate-example-pass/anthropic/claude-haiku-4-5-20251001/94b76cf3f406/1793232000",
+  "retrieved_timestamp": "1793232000",
+  "source_metadata": {
+    "source_name": "Aureproof sealed run bundle",
+    "source_type": "evaluation_run",
+    "source_organization_name": "Aureproof examples",
+    "evaluator_relationship": "third_party",
+    "additional_details": {
+      "aureproof_bundle_seal": "sha256:c225f77d04ba0f71b29a9c950546b8a12c05ddcccec299b9aa91d62687055dc6",
+      "aureproof_bundle_version": "0.1",
+      "aureproof_scoring_identity": "sha256:512fa1e98bb368ad6f60639518041beed77f982664827b242d3f49114c1616f0",
+      "aureproof_system_identity": "sha256:94b76cf3f4061063a496cffeaecea7ac4c09e776ecc40a5324137a48db013fb0",
+      "aureproof_cohort": "gate-example-pass",
+      "aureproof_integrity": "This record carries no seal or signature. Verify the source bundle (aureproof validate --require-signature) before relying on it.",
+      "aureproof_protocol_identity": "sha256:0978028cb367c48c7966afb484cce4b0124fdfca18ae90362b30da4650d9c448"
+    }
+  },
+  "eval_library": {
+    "name": "aureproof",
+    "version": "gate-example",
+    "additional_details": {
+      "runner": "inspect 0.3.283",
+      "subject": "inspect_react 0.3.283"
+    }
+  },
+  "model_info": {
+    "name": "claude-haiku-4-5-20251001",
+    "id": "anthropic/claude-haiku-4-5-20251001",
+    "developer": "anthropic",
+    "additional_details": {
+      "deployment_type": "externally_managed",
+      "model_availability": "unknown",
+      "protocol": "anthropic-messages"
+    }
+  },
+  "evaluation_results": [
+    {
+      "evaluation_result_id": "gate-example-pass/adjudicated_precision",
+      "evaluation_name": "gate-example-pass",
+      "source_data": {
+        "dataset_name": "gate-example-pass",
+        "source_type": "other",
+        "additional_details": {
+          "provider": "aureproof run bundle"
+        }
+      },
+      "metric_config": {
+        "evaluation_description": "Aureproof adjudicated_precision (scoring.md section 6)",
+        "metric_id": "aureproof.adjudicated_precision",
+        "metric_name": "adjudicated_precision",
+        "metric_kind": "proportion",
+        "metric_unit": "proportion",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0,
+        "max_score": 1,
+        "additional_details": {
+          "metric_version": "0.1.0"
+        }
+      },
+      "score_details": {
+        "score": 0.5,
+        "details": {
+          "numerator": "8",
+          "denominator": "16"
+        },
+        "uncertainty": {
+          "num_samples": 16
+        }
+      }
+    },
+    {
+      "evaluation_result_id": "gate-example-pass/duplicate_rate",
+      "evaluation_name": "gate-example-pass",
+      "source_data": {
+        "dataset_name": "gate-example-pass",
+        "source_type": "other",
+        "additional_details": {
+          "provider": "aureproof run bundle"
+        }
+      },
+      "metric_config": {
+        "evaluation_description": "Aureproof duplicate_rate (scoring.md section 6)",
+        "metric_id": "aureproof.duplicate_rate",
+        "metric_name": "duplicate_rate",
+        "metric_kind": "proportion",
+        "metric_unit": "proportion",
+        "lower_is_better": true,
+        "score_type": "continuous",
+        "min_score": 0,
+        "max_score": 1,
+        "additional_details": {
+          "metric_version": "0.1.0"
+        }
+      },
+      "score_details": {
+        "score": 0,
+        "details": {
+          "numerator": "0",
+          "denominator": "16"
+        },
+        "uncertainty": {
+          "num_samples": 16
+        }
+      }
+    },
+    {
+      "evaluation_result_id": "gate-example-pass/evidence_incomplete_rate",
+      "evaluation_name": "gate-example-pass",
+      "source_data": {
+        "dataset_name": "gate-example-pass",
+        "source_type": "other",
+        "additional_details": {
+          "provider": "aureproof run bundle"
+        }
+      },
+      "metric_config": {
+        "evaluation_description": "Aureproof evidence_incomplete_rate (scoring.md section 6)",
+        "metric_id": "aureproof.evidence_incomplete_rate",
+        "metric_name": "evidence_incomplete_rate",
+        "metric_kind": "proportion",
+        "metric_unit": "proportion",
+        "lower_is_better": true,
+        "score_type": "continuous",
+        "min_score": 0,
+        "max_score": 1,
+        "additional_details": {
+          "metric_version": "0.1.0"
+        }
+      },
+      "score_details": {
+        "score": 0,
+        "details": {
+          "numerator": "0",
+          "denominator": "16"
+        },
+        "uncertainty": {
+          "num_samples": 16
+        }
+      }
+    },
+    {
+      "evaluation_result_id": "gate-example-pass/infrastructure_failure_rate",
+      "evaluation_name": "gate-example-pass",
+      "source_data": {
+        "dataset_name": "gate-example-pass",
+        "source_type": "other",
+        "additional_details": {
+          "provider": "aureproof run bundle"
+        }
+      },
+      "metric_config": {
+        "evaluation_description": "Aureproof infrastructure_failure_rate (scoring.md section 6)",
+        "metric_id": "aureproof.infrastructure_failure_rate",
+        "metric_name": "infrastructure_failure_rate",
+        "metric_kind": "proportion",
+        "metric_unit": "proportion",
+        "lower_is_better": true,
+        "score_type": "continuous",
+        "min_score": 0,
+        "max_score": 1,
+        "additional_details": {
+          "metric_version": "0.1.0"
+        }
+      },
+      "score_details": {
+        "score": 0,
+        "details": {
+          "numerator": "0",
+          "denominator": "16"
+        },
+        "uncertainty": {
+          "num_samples": 16
+        }
+      }
+    },
+    {
+      "evaluation_result_id": "gate-example-pass/invalid_finding_rate",
+      "evaluation_name": "gate-example-pass",
+      "source_data": {
+        "dataset_name": "gate-example-pass",
+        "source_type": "other",
+        "additional_details": {
+          "provider": "aureproof run bundle"
+        }
+      },
+      "metric_config": {
+        "evaluation_description": "Aureproof invalid_finding_rate (scoring.md section 6)",
+        "metric_id": "aureproof.invalid_finding_rate",
+        "metric_name": "invalid_finding_rate",
+        "metric_kind": "proportion",
+        "metric_unit": "proportion",
+        "lower_is_better": true,
+        "score_type": "continuous",
+        "min_score": 0,
+        "max_score": 1,
+        "additional_details": {
+          "metric_version": "0.1.0"
+        }
+      },
+      "score_details": {
+        "score": 0,
+        "details": {
+          "numerator": "0",
+          "denominator": "16"
+        },
+        "uncertainty": {
+          "num_samples": 16
+        }
+      }
+    },
+    {
+      "evaluation_result_id": "gate-example-pass/known_defect_recall",
+      "evaluation_name": "gate-example-pass",
+      "source_data": {
+        "dataset_name": "gate-example-pass",
+        "source_type": "other",
+        "additional_details": {
+          "provider": "aureproof run bundle"
+        }
+      },
+      "metric_config": {
+        "evaluation_description": "Aureproof known_defect_recall (scoring.md section 6)",
+        "metric_id": "aureproof.known_defect_recall",
+        "metric_name": "known_defect_recall",
+        "metric_kind": "proportion",
+        "metric_unit": "proportion",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0,
+        "max_score": 1,
+        "additional_details": {
+          "metric_version": "0.1.0"
+        }
+      },
+      "score_details": {
+        "score": 0.2,
+        "details": {
+          "numerator": "8",
+          "denominator": "40"
+        },
+        "uncertainty": {
+          "num_samples": 40
+        }
+      }
+    },
+    {
+      "evaluation_result_id": "gate-example-pass/operational_completion",
+      "evaluation_name": "gate-example-pass",
+      "source_data": {
+        "dataset_name": "gate-example-pass",
+        "source_type": "other",
+        "additional_details": {
+          "provider": "aureproof run bundle"
+        }
+      },
+      "metric_config": {
+        "evaluation_description": "Aureproof operational_completion (scoring.md section 6)",
+        "metric_id": "aureproof.operational_completion",
+        "metric_name": "operational_completion",
+        "metric_kind": "proportion",
+        "metric_unit": "proportion",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0,
+        "max_score": 1,
+        "additional_details": {
+          "metric_version": "0.1.0"
+        }
+      },
+      "score_details": {
+        "score": 1,
+        "details": {
+          "numerator": "16",
+          "denominator": "16"
+        },
+        "uncertainty": {
+          "num_samples": 16
+        }
+      }
+    },
+    {
+      "evaluation_result_id": "gate-example-pass/refusal_rate",
+      "evaluation_name": "gate-example-pass",
+      "source_data": {
+        "dataset_name": "gate-example-pass",
+        "source_type": "other",
+        "additional_details": {
+          "provider": "aureproof run bundle"
+        }
+      },
+      "metric_config": {
+        "evaluation_description": "Aureproof refusal_rate (scoring.md section 6)",
+        "metric_id": "aureproof.refusal_rate",
+        "metric_name": "refusal_rate",
+        "metric_kind": "proportion",
+        "metric_unit": "proportion",
+        "lower_is_better": true,
+        "score_type": "continuous",
+        "min_score": 0,
+        "max_score": 1,
+        "additional_details": {
+          "metric_version": "0.1.0"
+        }
+      },
+      "score_details": {
+        "score": 0,
+        "details": {
+          "numerator": "0",
+          "denominator": "16"
+        },
+        "uncertainty": {
+          "num_samples": 16
+        }
+      }
+    },
+    {
+      "evaluation_result_id": "gate-example-pass/scoped_false_alarm_rate",
+      "evaluation_name": "gate-example-pass",
+      "source_data": {
+        "dataset_name": "gate-example-pass",
+        "source_type": "other",
+        "additional_details": {
+          "provider": "aureproof run bundle"
+        }
+      },
+      "metric_config": {
+        "evaluation_description": "Aureproof scoped_false_alarm_rate (scoring.md section 6)",
+        "metric_id": "aureproof.scoped_false_alarm_rate",
+        "metric_name": "scoped_false_alarm_rate",
+        "metric_kind": "rate",
+        "metric_unit": "rate",
+        "lower_is_better": true,
+        "score_type": "continuous",
+        "min_score": 0,
+        "max_score": "Infinity",
+        "additional_details": {
+          "metric_version": "0.1.0"
+        }
+      },
+      "score_details": {
+        "score": 0.2,
+        "details": {
+          "numerator": "8",
+          "denominator": "40"
+        },
+        "uncertainty": {
+          "num_samples": 40
+        }
+      }
+    },
+    {
+      "evaluation_result_id": "gate-example-pass/strict_confirmed_yield",
+      "evaluation_name": "gate-example-pass",
+      "source_data": {
+        "dataset_name": "gate-example-pass",
+        "source_type": "other",
+        "additional_details": {
+          "provider": "aureproof run bundle"
+        }
+      },
+      "metric_config": {
+        "evaluation_description": "Aureproof strict_confirmed_yield (scoring.md section 6)",
+        "metric_id": "aureproof.strict_confirmed_yield",
+        "metric_name": "strict_confirmed_yield",
+        "metric_kind": "proportion",
+        "metric_unit": "proportion",
+        "lower_is_better": false,
+        "score_type": "continuous",
+        "min_score": 0,
+        "max_score": 1,
+        "additional_details": {
+          "metric_version": "0.1.0"
+        }
+      },
+      "score_details": {
+        "score": 0.5,
+        "details": {
+          "numerator": "8",
+          "denominator": "16"
+        },
+        "uncertainty": {
+          "num_samples": 16
+        }
+      }
+    },
+    {
+      "evaluation_result_id": "gate-example-pass/unresolved_fraction",
+      "evaluation_name": "gate-example-pass",
+      "source_data": {
+        "dataset_name": "gate-example-pass",
+        "source_type": "other",
+        "additional_details": {
+          "provider": "aureproof run bundle"
+        }
+      },
+      "metric_config": {
+        "evaluation_description": "Aureproof unresolved_fraction (scoring.md section 6)",
+        "metric_id": "aureproof.unresolved_fraction",
+        "metric_name": "unresolved_fraction",
+        "metric_kind": "proportion",
+        "metric_unit": "proportion",
+        "lower_is_better": true,
+        "score_type": "continuous",
+        "min_score": 0,
+        "max_score": 1,
+        "additional_details": {
+          "metric_version": "0.1.0"
+        }
+      },
+      "score_details": {
+        "score": 0,
+        "details": {
+          "numerator": "0",
+          "denominator": "16"
+        },
+        "uncertainty": {
+          "num_samples": 16
+        }
+      }
+    }
+  ]
+}
