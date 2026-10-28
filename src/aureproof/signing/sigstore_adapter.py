@@ -35,7 +35,10 @@ def sign_bytes(data: bytes) -> str:
     if token is None:
         raise RuntimeError("no ambient OIDC credential: run inside the sign.yml workflow")
     context = SigningContext.from_trust_config(ClientTrustConfig.production())
-    with context.signer(IdentityToken(token), cache=False) as signer:
+    # cache=True is required: in sigstore 4.5.1, cache=False makes `_private_key`
+    # generate a fresh key on every access, so the Fulcio CSR and the artifact
+    # signature use different keys and Rekor rejects the entry (seen in CI).
+    with context.signer(IdentityToken(token), cache=True) as signer:
         bundle = signer.sign_artifact(data)
     signed: str = bundle.to_json()
     return signed
