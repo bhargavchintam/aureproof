@@ -165,6 +165,14 @@ public API and the specs may change between minor versions).
   digest: `controller_observed` for the reference subject, `agent_reported` for
   Claude Code.
 
+- Fixture pairs #2 and #3 (issue #41, AP-014), both `healthy` and awaiting the
+  reviewer: `path-001`, a percent-encoded attachment name checked before it is
+  decoded, so `%2e%2e%2f` escapes the vault (CWE-22/180); and `authz-002`, a
+  tenant-membership check that never ties the invoice to the tenant (CWE-639/863).
+  Each has three decoys, a calibration PoC, AST-checked labels and its own
+  cluster. `tests/oracles/test_pairs.py` pins the controls and the graded
+  scenarios, and CI validates every registered task.
+
 ### Changed
 - `CODE_OF_CONDUCT.md` is now licensed CC-BY-SA-4.0 in `REUSE.toml`, matching
   the Contributor Covenant 3.0 terms its attribution states (issue #33); it was

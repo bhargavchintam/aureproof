@@ -40,7 +40,10 @@ jobs:
       - name: Tests (pytest + coverage)
         run: uv run pytest
       - name: Fixture qualification (task health)
-        run: uv run aureproof task validate authz-001
+        run: |
+          for task in $(jq -r '.tasks[].task_id' fixtures/dataset.json); do
+            uv run aureproof task validate "$task"
+          done
       - name: REUSE / license compliance
         run: uvx --with charset-normalizer --from reuse reuse lint
 
