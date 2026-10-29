@@ -114,3 +114,15 @@ def test_a_record_from_a_development_host_says_so_without_a_stale_claim(
     linux = {**host, "platform": "linux/x86_64"}
     monkeypatch.setattr(calibration, "environment", lambda: linux)
     assert not any("development host" in x for x in calibrate(ROOT, "authz-001").known_limits)
+
+
+@pytest.mark.parametrize("task_id", ["authz-001", "path-001", "authz-002"])
+def test_each_instruction_states_the_scoring_limits(task_id: str) -> None:
+    """scoring.md Q5: the agent is told the limits its submission is scored under."""
+    from aureproof.scoring.params import MatcherParams
+
+    params = MatcherParams()
+    text = (ROOT / "fixtures" / "security" / task_id / "instruction.md").read_text("utf-8")
+    assert f"At most {params.max_findings} findings" in text
+    assert f"at most {params.max_bytes // (1 << 20)} MiB" in text
+    assert f"At most {params.max_locations} locations per finding" in text

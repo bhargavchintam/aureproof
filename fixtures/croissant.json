@@ -85,7 +85,7 @@
       "description": "Dataset registry: tasks, splits, canaries, exposure.",
       "contentUrl": "dataset.json",
       "encodingFormat": "application/json",
-      "sha256": "0bd47a9b1c477bb8c894bf5dfa93b20553f3bd21bff7bc3a2e1525138c24dd88"
+      "sha256": "70d982911111db0965088f59cc1facc73b8eff1e640696bf89b93b3e1f67ce8f"
     },
     {
       "@type": "cr:FileObject",
@@ -202,7 +202,7 @@
       "description": "Agent-visible: the task instruction or one variant's source.",
       "contentUrl": "security/authz-001/instruction.md",
       "encodingFormat": "text/markdown",
-      "sha256": "e72b38a2805b60d77f70dd8340c33a8851f47ecd51801fb1c6a4ca491926acbc"
+      "sha256": "971981df1bfff0ad5ef07e59f3e0fcf28522c213aeac5f3a178ade5f323c6999"
     },
     {
       "@type": "cr:FileObject",
@@ -301,7 +301,7 @@
       "description": "Agent-visible: the task instruction or one variant's source.",
       "contentUrl": "security/authz-002/instruction.md",
       "encodingFormat": "text/markdown",
-      "sha256": "f6bb28dbd99d0d50e9089e6e024f3185684c6292f9fd7cfb14d6acdc3725501d"
+      "sha256": "cbc1a979450924a8e61a95884622af5fba65b3633fe8a3a657e60bee22270bc1"
     },
     {
       "@type": "cr:FileObject",
@@ -400,7 +400,7 @@
       "description": "Agent-visible: the task instruction or one variant's source.",
       "contentUrl": "security/path-001/instruction.md",
       "encodingFormat": "text/markdown",
-      "sha256": "bb97172c4863f97762289d355e42ddfa9e02d35b4b8db4db53c3f43515c0f4cc"
+      "sha256": "8c18fed23c68cae4b06a081a1d5c86141577ad824690d2aee7484f4df6c53981"
     },
     {
       "@type": "cr:FileObject",
