@@ -4,7 +4,7 @@ SPDX-License-Identifier: Apache-2.0
 -->
 # Scoring specification: findings matcher, dispositions, and metrics
 
-- Spec: `scoring/v0.1`. Status: **draft, pending a second review** (issue #9, AP-005; ADR-0005).
+- Spec: `scoring/v0.1`. Status: **accepted for v0.1 by maintainer self-review (2026-10-29; not independently reviewed)** (issue #9, AP-005; ADR-0005).
 - Versions: `matcher_version = "0.1.0"`, `disposition_version = "0.1.0"`, `metrics_version = "0.1.0"`.
 - Normative source: [`docs/aureproof-plan-v2.md`](../../docs/aureproof-plan-v2.md) §5.
   This document refines §5.4–§5.8 into an executable definition. Where they differ, this document wins and the plan gets updated.
@@ -281,11 +281,11 @@ They were written **before** the matcher. They were cross-checked against an ind
 | 18 spray | S-01 (episode G-39) |
 | additional | G-16/G-17 role required, G-19 CWE string, G-20 qualified symbol, G-21–G-24 and G-41 validity and normalization, G-29 missing file, G-34 budget, G-35 agent error, G-36 too many findings, G-37 empty array plus refusal; C-01/C-02 cohort denominators and undefined metrics |
 
-## 9. Open questions for the second reviewer
+## 9. Review questions and their resolutions
 
-- **Q1.** Is `line_tolerance = 3` right, or should tolerance scale with the anchor's span?
-- **Q2.** Is final-component symbol matching (with lint rule L1) acceptable, or should qualified names be required?
-- **Q3.** Is greedy submission-order crediting acceptable, versus an optimal bipartite matching that would credit G-07's second defect when a later finding names it?
-- **Q4.** This spec counts `budget_exhausted`, `agent_error` and `invalid_output` as graded, so their positives count as misses. This deliberately departs from plan §4.3's default ("excluded from quality metrics"): excluding them would let a system avoid misses by timing out on hard tasks. Should the Decision Protocol be allowed to override this?
+- **Q1.** *Resolved 2026-10-29 (maintainer self-review, ADR-0005 amendment):* keep `line_tolerance = 3`. Was: is `line_tolerance = 3` right, or should tolerance scale with the anchor's span?
+- **Q2.** *Resolved 2026-10-29 (maintainer self-review, ADR-0005 amendment):* final-component matching stays; lint rule L1 rejects ambiguous symbols. Was: is final-component symbol matching (with lint rule L1) acceptable, or should qualified names be required?
+- **Q3.** *Resolved 2026-10-29 (maintainer self-review, ADR-0005 amendment):* greedy submission-order crediting stays and is documented here; a later finding that names a second defect of a G-07-like case is not credited. Was: is greedy submission-order crediting acceptable, versus an optimal bipartite matching that would credit G-07's second defect when a later finding names it?
+- **Q4.** *Resolved 2026-10-29 (maintainer self-review, ADR-0005 amendment):* they stay graded as misses, and a Decision Protocol may not override this. Was: this spec counts `budget_exhausted`, `agent_error` and `invalid_output` as graded, so their positives count as misses. This deliberately departs from plan §4.3's default ("excluded from quality metrics"): excluding them would let a system avoid misses by timing out on hard tasks. Should the Decision Protocol be allowed to override this?
 - **Q5.** *Resolved 2026-10-29:* every instruction states the limits (`max_findings`, `max_bytes`, `max_locations`) and what happens beyond them; `tests/oracles/test_calibration.py::test_each_instruction_states_the_scoring_limits` keeps the text equal to the scorer's parameters. The tasks moved to revision 0.1.1.
 - **Q6.** *Resolved in AP-004 (#11):* the `authz-001` labels are migrated to `variants[]`, and the focal negative lists both its site and its `api.py::handle_request` source anchor. A source-end finding on the repaired variant is therefore refuted (M6), not left unresolved.

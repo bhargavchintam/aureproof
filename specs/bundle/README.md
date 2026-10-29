@@ -4,7 +4,7 @@ SPDX-License-Identifier: Apache-2.0
 -->
 # Evidence Bundle specification
 
-- Spec: `bundle/v0.1`. Status: **draft, pending a second review** (issue #13, AP-036; ADR-0005).
+- Spec: `bundle/v0.1`. Status: **accepted for v0.1 by maintainer self-review (2026-10-29; not independently reviewed)** (issue #13, AP-036; ADR-0005).
 - Normative source: [`docs/aureproof-plan-v2.md`](../../docs/aureproof-plan-v2.md) §3.5 and §4.2. This document refines them; where they differ, this document wins.
 - Reference implementation: `aureproof.bundle` (pure; no file or network I/O). Conformance vectors: [`conformance/bundle/v0.1/`](../../conformance/bundle/v0.1/).
 - JSON Schemas, generated from the models with a drift check: [`v0.1/manifest.schema.json`](v0.1/manifest.schema.json), [`v0.1/seal-statement.schema.json`](v0.1/seal-statement.schema.json), [`v0.1/journal-entry.schema.json`](v0.1/journal-entry.schema.json).
@@ -188,8 +188,8 @@ The validator never stops at the first problem. It reports every failed check, s
 
 It also covers adversarial inputs: NaN in the manifest, an unsafe integer and a lone surrogate in the seal, and a journal line nested 10,000 deep. Each vector names the checks that must fail. `scripts/make_bundle_vectors.py` regenerates them deterministically, and a test fails if the committed vectors drift.
 
-## 9. Open questions for the second reviewer
+## 9. Review questions and their resolutions
 
-- **B1.** The `predicateType` URI lives under the GitHub repository until a project domain exists. Is that acceptable for v0.1?
-- **B2.** Is it right that `verdicts` and `metrics` are mandatory even for a bundle that records only execution, before scoring? The alternative is a separate "execution bundle" profile.
-- **B3.** Should v0.1 seal a producer timestamp, unsigned and therefore unverified, for human convenience? This spec says no: unverified time invites misplaced trust.
+- **B1.** *Resolved 2026-10-29 (maintainer self-review, ADR-0005 amendment):* acceptable for v0.1. Was: the `predicateType` URI lives under the GitHub repository until a project domain exists. Is that acceptable for v0.1?
+- **B2.** *Resolved 2026-10-29 (maintainer self-review, ADR-0005 amendment):* yes, they stay mandatory. Was: is it right that `verdicts` and `metrics` are mandatory even for a bundle that records only execution, before scoring? The alternative is a separate "execution bundle" profile.
+- **B3.** *Resolved 2026-10-29 (maintainer self-review, ADR-0005 amendment):* no unsigned timestamp is sealed. Was: should v0.1 seal a producer timestamp, unsigned and therefore unverified, for human convenience? This spec says no: unverified time invites misplaced trust.

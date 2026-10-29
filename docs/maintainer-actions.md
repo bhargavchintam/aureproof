@@ -10,7 +10,7 @@ can be done in the repository. The M2 stop/go (#47) needs all of them.
 
 | # | Action (maintainer) | Unblocks |
 | --- | --- | --- |
-| [#31](https://github.com/bhargavchintam/aureproof/issues/31) | **Done 2026-10-29: the maintainer self-reviews** (ADR-0005 amendment). Work through the [reviewer packet](#reviewer-packet) and comment on each issue. Freezing THRs still needs a second person. | Recording self-reviews on #9, #12, #14, #16, #36 |
+| [#31](https://github.com/bhargavchintam/aureproof/issues/31) | **Done 2026-10-29: the maintainer self-reviews** (ADR-0005 amendment). The spec self-reviews were recorded on 2026-10-29 with the resolutions now in each spec (#9, #12, #14, #16, #36). Freezing THRs still needs a second person. | The `0.1.0a1` alpha (#37) |
 | [#7](https://github.com/bhargavchintam/aureproof/issues/7) | **Provide a provider key.** Put `ANTHROPIC_API_KEY=...` in `~/.aureproof-spike.env`, run `chmod 600` on it, and approve a small budget. | The live Claude Code episode (`spikes/inspect_day2/live.py`), the single-shot probe (`aureproof task probe <task> --model <id>`, #44), the real-key digest check (#42), the live slice (#47, [procedure](guides/live-slice.md)) |
 | [#32](https://github.com/bhargavchintam/aureproof/issues/32) | **Provision the Linux host** ([guide](guides/linux-host.md)) and run `scripts/check_host.sh` until every line says `PASS`. | Running the Docker lane there (`uv run --extra inspect pytest tests/integration --no-cov`), which qualifies #39, #42 and the THR determinism re-runs on the named host |
 | [#33](https://github.com/bhargavchintam/aureproof/issues/33) | **Done 2026-10-29.** Reports go to `bindubhargavareddy+aureproof-conduct@gmail.com`; a test message reached the maintainer's inbox. | `CODE_OF_CONDUCT.md` |

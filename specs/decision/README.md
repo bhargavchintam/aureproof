@@ -4,7 +4,7 @@ SPDX-License-Identifier: Apache-2.0
 -->
 # Decision Protocol specification
 
-- Spec: `decision/v0.1`. Status: **draft, pending a second review** (issue #14, AP-037;
+- Spec: `decision/v0.1`. Status: **accepted for v0.1 by maintainer self-review (2026-10-29; not independently reviewed)** (issue #14, AP-037;
   acceptance also waits on #9).
 - Normative source: plan v2 §4.3 and §6. This document refines them and takes precedence.
 - Schemas: [`v0.1/protocol.schema.json`](v0.1/protocol.schema.json) and
@@ -70,9 +70,9 @@ With interval [L, U] and margin δ:
 δ is the decimal written in the protocol, compared as an exact rational: `0.05` is 1/20, not the nearest binary float.
 4. **Incomplete adjudication:** if any unresolved finding remains, adjudicating it could move either yield. A decisive result is then recorded as `provisional_outcome`, and the `outcome` is **inconclusive**. An incomplete adjudication can never silently pass.
 
-## 6. Open questions for the second reviewer
+## 6. Review questions and their resolutions
 
-- **G1.** Is `undefined_yield = zero` the right default? An agent that submits nothing
+- **G1.** *Resolved 2026-10-29 (maintainer self-review, ADR-0005 amendment):* yes, `undefined_yield = zero`. Was: is `undefined_yield = zero` the right default? An agent that submits nothing
   in a cluster earns 0 yield there.
-- **G2.** Should the decision also gate on the refusal-rate difference? (v0.1 reports it
+- **G2.** *Resolved 2026-10-29 (maintainer self-review, ADR-0005 amendment):* no; the refusal-rate difference is reported beside the decision, not gated. Was: should the decision also gate on the refusal-rate difference? (v0.1 reports it
   alongside.)
