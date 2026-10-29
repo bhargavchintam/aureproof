@@ -148,7 +148,7 @@ def build() -> dict[str, Any]:
             "small, controlled suite. Not for training, fine-tuning or retrieval corpora."
         ),
         "rai:dataLimitations": (
-            "Synthetic and small (three pairs at revision 0.1.0-dev): it measures controlled "
+            "Synthetic and small (six pairs at revision 0.1.0-dev): it measures controlled "
             "skills, not real-world capability, and results do not generalize to a wider "
             "population of code. Public tasks may be contaminated, so they are development "
             "tasks only."

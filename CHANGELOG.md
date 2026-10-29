@@ -12,6 +12,14 @@ public API and the specs may change between minor versions).
 ## [Unreleased]
 
 ### Added
+- Three draft fixture pairs for the M3 pack (issue #49), written before the M2 go
+  decision as #67 allows: `ssrf-001` (a redirect followed without re-checking the
+  allowlist, `linkpreview`), `redirect-001` (a sign-in `next` value that accepts
+  `//host`, `portalauth`) and `massassign-001` (a self-service profile edit that sets
+  any attribute, including `role`, `profilehub`). Each has three decoys, labels, a
+  calibration PoC, notes and expected verdicts, and is HEALTHY. Bandit and the
+  single-shot model saturate none of them. With them the public development split
+  has six pairs in six clusters, the pilot's size (#52).
 - The Claude Code subject is pinned by binary checksum (issue #48). The Linux
   binaries of each pinned version have their sha256 from the release manifest in
   `CLAUDE_CODE_CHECKSUMS` and in the system identity (`settings.binary_sha256`). An

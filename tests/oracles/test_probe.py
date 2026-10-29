@@ -118,7 +118,14 @@ def test_the_bandit_identity_names_tool_version_and_arguments() -> None:
 
 def test_pinned_bandit_does_not_solve_any_calibrated_pair() -> None:
     """The real run: no pair is solved by the static baseline (difficulty probe)."""
-    for task in ("authz-001", "path-001", "authz-002"):
+    for task in (
+        "authz-001",
+        "path-001",
+        "authz-002",
+        "ssrf-001",
+        "redirect-001",
+        "massassign-001",
+    ):
         run = bandit_baseline(ROOT, task)
         assert run.solved is False, task
         assert run.metrics["known_defect_recall"] == "0/1"

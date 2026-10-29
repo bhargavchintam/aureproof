@@ -46,6 +46,51 @@
         }
       ],
       "overlap": "Self-authored and synthetic. Cross-tenant object references (CWE-639) are a common textbook class; only this code and these labels are new. Public since 2026-10-28, so it is a development task and never an assessment task."
+    },
+    {
+      "task_id": "ssrf-001",
+      "split": "development",
+      "task_revision": "0.1.0",
+      "canary": "5714c506-93a0-4449-a85e-a928cff25049",
+      "oracle_canary": "2e52536c-84bd-4dd1-baf7-6a9e769e105f",
+      "exposure": [
+        {
+          "since": "2026-10-29",
+          "where": "public GitHub repository bhargavchintam/aureproof",
+          "kind": "public"
+        }
+      ],
+      "overlap": "Self-authored and synthetic. Server-side request forgery (CWE-918), including through an unchecked redirect, is a common textbook class; only this code and these labels are new. Public since 2026-10-29, so it is a development task and never an assessment task."
+    },
+    {
+      "task_id": "redirect-001",
+      "split": "development",
+      "task_revision": "0.1.0",
+      "canary": "d2e2540e-b03d-4a96-9d23-26103a7652f5",
+      "oracle_canary": "e9ea2d2e-bac2-4d98-8f6c-16d7f7c8fe94",
+      "exposure": [
+        {
+          "since": "2026-10-29",
+          "where": "public GitHub repository bhargavchintam/aureproof",
+          "kind": "public"
+        }
+      ],
+      "overlap": "Self-authored and synthetic. Open redirects (CWE-601) through protocol-relative URLs are a common textbook class; only this code and these labels are new. Public since 2026-10-29, so it is a development task and never an assessment task."
+    },
+    {
+      "task_id": "massassign-001",
+      "split": "development",
+      "task_revision": "0.1.0",
+      "canary": "bc7be4bb-329f-4b66-b449-21b81c3c246e",
+      "oracle_canary": "3af06b78-4c0c-4767-9bce-96694770258f",
+      "exposure": [
+        {
+          "since": "2026-10-29",
+          "where": "public GitHub repository bhargavchintam/aureproof",
+          "kind": "public"
+        }
+      ],
+      "overlap": "Self-authored and synthetic. Mass assignment (CWE-915) leading to privilege escalation is a common textbook class; only this code and these labels are new. Public since 2026-10-29, so it is a development task and never an assessment task."
     }
   ],
   "assessment_repository": "bhargavchintam/aureproof-assessment (private)",

@@ -53,3 +53,31 @@ with the wrong weakness class, which the matcher leaves unresolved rather than c
 A first attempt passed `anthropic/<id>` to the API unchanged and got a 404. The probe now
 accepts the model with or without the `anthropic/` prefix, refuses other providers, and
 reports provider errors without a traceback.
+
+## 2026-10-29: the three draft pairs (`ssrf-001`, `redirect-001`, `massassign-001`)
+
+Same Bandit and single-shot configurations as above (single-shot system identity
+`sha256:5c8bc29f8f338358a0370d6aebd6680bd511fc6ad5988481cd67fc9e18b7139f`). These pairs
+are drafts for the M3 pack (#49), at task revision 0.1.0.
+
+| Task | Task identity |
+| --- | --- |
+| `ssrf-001` | `sha256:1cd96806e1d4d7e95aa1898819a844355c28238e5b1aac15e76e59858064796b` |
+| `redirect-001` | `sha256:6f4686140720cac1f2e48d94332e8c5e44fa5d5abef1ec70e12048b054bc1e48` |
+| `massassign-001` | `sha256:4e0d392747c4b45faf321104cb56eef66b1db64868257ee13991c2ff772ee902` |
+
+| Task | Bandit recall | Single-shot recall | Single-shot strict yield | Vulnerable verdicts | Repaired verdicts | Solved | Saturation |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `ssrf-001` | 0/1 | 0/1 | 0/8 | `unresolved:class_mismatch`, `unresolved:class_mismatch`, `refuted`, `refuted` | `refuted`, `refuted`, `invalid`, `refuted` | no | open |
+| `redirect-001` | 0/1 | 1/1 | 1/6 | `confirmed`, `invalid`, `unresolved:class_mismatch` | `refuted`, `refuted`, `refuted` | no | open |
+| `massassign-001` | 0/1 | 0/1 | 0/6 | `unresolved:class_mismatch`, `unresolved:class_mismatch` | `refuted`, `refuted`, `refuted`, `refuted` | no | open |
+
+Request IDs, in table order (vulnerable, then repaired): `req_011CgXABHxW7Uvzp75fgZDzB`, `req_011CgXABktkModTNBYgLsB7z`, `req_011CgXACDNhaiiiKWLkoyxrC`, `req_011CgXACao46YCoeciouAa5o`, `req_011CgXAD37LZ9gTxzhFqMFZf`, `req_011CgXADHZ13i9wWEoeQzTge`.
+
+**Reading.** No pair is saturated. Bandit reports nothing on any variant. The
+single-shot model finds the `redirect-001` defect, with one confirmed finding out of
+six. On `ssrf-001` it described the defect but classed it CWE-601 (open redirect),
+which is not in the accepted family, and on `massassign-001` it named the right
+function with CWE-434 (file upload). The matcher leaves both unresolved for
+adjudication rather than crediting them. A separate call, made only to see those CWEs,
+is not part of this record.
