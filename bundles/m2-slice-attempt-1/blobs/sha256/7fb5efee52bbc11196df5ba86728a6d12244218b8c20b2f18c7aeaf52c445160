@@ -1,0 +1,28 @@
+[
+  {
+    "cwe": 269,
+    "locations": [
+      {
+        "file": "docstore/service.py",
+        "symbol": "delete_document",
+        "start_line": 60,
+        "end_line": 63,
+        "role": "site"
+      }
+    ],
+    "description": "delete_document() does not check if the actor has permission to delete the document. Any authenticated user can delete any document in the store by calling this function with its doc_id."
+  },
+  {
+    "cwe": 284,
+    "locations": [
+      {
+        "file": "docstore/service.py",
+        "symbol": "read_document",
+        "start_line": 44,
+        "end_line": 48,
+        "role": "site"
+      }
+    ],
+    "description": "The read_document() function does not perform authorization checks before the document is fetched from storage. An attacker could bypass access controls by directly calling store.get() instead of read_document() if they have access to the store object."
+  }
+]

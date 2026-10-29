@@ -296,6 +296,15 @@ public API and the specs may change between minor versions).
 - Dependencies: grouped GitHub Actions updates (#21) and pydantic 2.14.0 (#23).
 
 ### Fixed
+- The declared Claude Code tool surface lacked the four task-list tools
+  (`TaskCreate`, `TaskGet`, `TaskList`, `TaskUpdate`) that Claude Code 2.1.287
+  offers with a real model, so the first live slice stopped every episode as
+  `config:tool_surface_mismatch` (issue #47). They are declared now, which changes
+  the system identities; the slice protocol is revised as `protocols/m2-slice-2/`.
+- A live run crashed at its first episode outcome: Inspect 0.3.283 reports provider
+  request IDs as `ModelRequestId(id, header, status)` objects, and the ledger
+  accepts strings only. The runner now records each ID's string. Mock and scripted
+  models report no request IDs, so only the first live slice (issue #47) found it.
 - A run with an `evidence_incomplete` episode was sealed as `complete`, against
   scoring rule D1. It now seals as `completeness: incomplete` (bundle v0.1 amended
   before its first release). The offline re-score reports a mismatch when a seal's

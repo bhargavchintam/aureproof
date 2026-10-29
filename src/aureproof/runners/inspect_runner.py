@@ -54,7 +54,11 @@ CAPTURE_KEY = "aureproof_capture"
 FINDINGS_FILE = "findings.json"
 COMPOSE = Path(__file__).with_name("compose.yaml")
 REFERENCE_TOOLS = ("bash", "submit")
-# Offered by inspect_swe's claude_code 2.1.287 with WebSearch/WebFetch disallowed (Day-2 spike).
+# Offered by inspect_swe's claude_code 2.1.287 with a real model but not to the scripted
+# model of the Docker lane: the in-session task list. Found by the first live slice (#47).
+CLAUDE_CODE_LIVE_ONLY_TOOLS = ("TaskCreate", "TaskGet", "TaskList", "TaskUpdate")
+# Offered by inspect_swe's claude_code 2.1.287 with WebSearch/WebFetch disallowed (Day-2
+# spike, scripted model), plus the live-only tools above.
 CLAUDE_CODE_TOOLS = (
     "Agent",
     "Bash",
@@ -74,6 +78,7 @@ CLAUDE_CODE_TOOLS = (
     "TaskStop",
     "Workflow",
     "Write",
+    *CLAUDE_CODE_LIVE_ONLY_TOOLS,
 )
 CLAUDE_CODE_SETTINGS: dict[str, Any] = {
     "disallowed_tools": ["WebSearch", "WebFetch"],
@@ -302,7 +307,11 @@ def facts_from_sample(
     model_events = [e for e in sample.events if getattr(e, "event", None) == "model"]
     tools = {t.name for e in model_events for t in (e.tools or [])}
     stops = [e.output.stop_reason for e in model_events if e.output is not None]
-    request_ids = [rid for e in model_events for rid in (getattr(e, "request_ids", None) or [])]
+    request_ids = [
+        rid if isinstance(rid, str) else str(rid.id)  # Inspect 0.3.283: ModelRequestId
+        for e in model_events
+        for rid in (getattr(e, "request_ids", None) or [])
+    ]
     capture = (sample.store or {}).get(CAPTURE_KEY)
     submission: bytes | None = None
     status: Literal["captured", "absent", "rejected", "missing"] = "missing"

@@ -2,7 +2,10 @@
 SPDX-FileCopyrightText: 2026 Bindu Bhargava R Chintam
 SPDX-License-Identifier: Apache-2.0
 -->
-# M2 live slice protocol
+# M2 live slice protocol (superseded)
+
+Superseded by [`../m2-slice-2/`](../m2-slice-2/): its one run stopped every episode on a
+tool-surface mismatch before any episode was graded.
 
 Issue #47. The pre-registered protocol for the M2 live slice
 ([procedure](../../docs/guides/live-slice.md)), written before any assessment episode

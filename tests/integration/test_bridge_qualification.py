@@ -30,7 +30,12 @@ from aureproof.contracts import Budget, Disposition, EpisodeSpec, LabelSet
 from aureproof.contracts.dataset import DatasetRegistry
 from aureproof.oracles.calibration import task_spec
 from aureproof.oracles.python_spans import line_counts
-from aureproof.runners.inspect_runner import CLAUDE_CODE_TOOLS, InspectRunner, InspectRunnerConfig
+from aureproof.runners.inspect_runner import (
+    CLAUDE_CODE_LIVE_ONLY_TOOLS,
+    CLAUDE_CODE_TOOLS,
+    InspectRunner,
+    InspectRunnerConfig,
+)
 from aureproof.runners.orchestrate import EpisodeRun, run_episode
 from aureproof.runners.port import AttemptRequest
 from aureproof.storage import BlobStore
@@ -180,7 +185,7 @@ def test_hosted_tools_are_withheld_and_a_call_to_one_is_rejected(tmp_path: Path)
     """T-ELEV-2: closed-world offers no WebSearch or WebFetch, and calling one fails."""
     script = Script(("WebFetch", {"url": "https://example.com", "prompt": "summarize"}))
     _, store = _run(tmp_path, script)
-    assert script.offered == sorted(CLAUDE_CODE_TOOLS)
+    assert script.offered == sorted(set(CLAUDE_CODE_TOOLS) - set(CLAUDE_CODE_LIVE_ONLY_TOOLS))
     assert "WebSearch" not in script.offered and "WebFetch" not in script.offered
     [result] = script.tool_results
     assert "No such tool available: WebFetch" in result, result
