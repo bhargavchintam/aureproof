@@ -21,9 +21,35 @@ signature Bandit's rules know: a missing ownership check, a decode after a name 
 and a lookup not tied to its tenant. Strict yield is 0/0, undefined, because Bandit
 submitted no findings.
 
-## Single-shot model: not run yet
+## 2026-10-29: single-shot model, the three calibrated pairs
 
-The single-shot baseline needs a provider key (#7). Until it runs, every pair's
-saturation is `incomplete`, and #47's stop/go cannot treat the probe as done. When it
-runs, record the model ID, the config identity printed by `task probe --json`, the
-request IDs from each episode note, and any refusals here.
+Model `claude-haiku-4-5-20251001` (Anthropic Messages, run as
+`--model anthropic/claude-haiku-4-5-20251001`), single-shot system identity
+`sha256:5c8bc29f8f338358a0370d6aebd6680bd511fc6ad5988481cd67fc9e18b7139f`
+(max_tokens 8192, provider-default sampling, no retries). One call per variant, run
+from the maintainer's workstation. No refusals and no cut-offs.
+
+| Task | Known-defect recall | Strict yield | Vulnerable verdicts | Repaired verdicts | Solved | Saturation |
+| --- | --- | --- | --- | --- | --- | --- |
+| `authz-001` | 0/1 | 0/3 | `unresolved:class_mismatch` | `refuted`, `invalid` | no | open |
+| `path-001` | 1/1 | 1/4 | `confirmed`, `refuted` | `refuted`, `invalid` | yes | partial |
+| `authz-002` | 1/1 | 1/4 | `confirmed`, `refuted` | `refuted`, `refuted` | yes | partial |
+
+Request IDs, in table order (vulnerable, then repaired):
+`req_011CgW9AkN6S8qsfHkJUSNRQ`, `req_011CgW9Au3z447t5brUa9YYJ`,
+`req_011CgW9BDXiwAmb1Qtv85oeU`, `req_011CgW9BUgZ8WmnePwij6rpN`,
+`req_011CgW9BnmEniEfXeGC22eFm`, `req_011CgW9C2AtG4ua1JYjYPadX`. Each call used about
+2,100–2,450 input and 140–310 output tokens.
+
+An earlier run the same day gave the same recall, yield, solved and saturation on all
+three tasks; only the labels on some unmatched findings differed.
+
+**Reading.** No pair is saturated, so none goes back for redesign (§6). The model finds
+the defect in `path-001` and `authz-002` in one shot, but three of its four findings on
+each pair are false alarms, including on the repaired code. That is the gap a
+precision-first metric is meant to measure. On `authz-001` it names the right place
+with the wrong weakness class, which the matcher leaves unresolved rather than credits.
+
+A first attempt passed `anthropic/<id>` to the API unchanged and got a 404. The probe now
+accepts the model with or without the `anthropic/` prefix, refuses other providers, and
+reports provider errors without a traceback.
