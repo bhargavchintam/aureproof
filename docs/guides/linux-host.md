@@ -16,6 +16,23 @@ egress enforcement is unverified; use it for development only (plan §7.1).
 | Size (v0.2, plan only) | Real-CVE suites are large: SEC-bench needs >200 GB; CyberGym data is ~240 GB (~10 TB with images). Start from small subsets |
 | Toolchain | `git`, [`uv`](https://docs.astral.sh/uv/) |
 
+## The v0.1 host
+
+For v0.1 the maintainer chose a GitHub-hosted runner (`ubuntu-24.04`) as the
+evaluation host (#32). The [Linux host qualification](../../.github/workflows/linux-host.yml)
+workflow runs `scripts/check_host.sh`, records the kernel, OS, cgroup, Docker and
+runner-image identities, runs the Docker lane (mockllm, no provider key) and
+uploads all of it as the `host-evidence` artifact. It runs weekly, on changes to
+the check, and on demand:
+
+```bash
+gh workflow run linux-host.yml --ref main
+```
+
+The runner is ephemeral and shared, so it does not meet the "dedicated host" rule
+below; every run records its own identities instead. Live runs with a provider key
+are not made on it. A dedicated machine replaces it when v0.2 isolation work needs one.
+
 ## Provision
 
 Any dedicated cloud VM or spare machine works. On Ubuntu:
