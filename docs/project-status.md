@@ -4,6 +4,10 @@ SPDX-License-Identifier: Apache-2.0
 -->
 # Project status and execution plan
 
+> **Historical audit (14 October 2026).** For current status see
+> [`release-acceptance.md`](release-acceptance.md) and the status section of
+> [`ROADMAP.md`](../ROADMAP.md).
+
 Audited **14 October 2026**, using America/Los_Angeles dates. The authoritative
 design is [`aureproof-plan-v2.md`](aureproof-plan-v2.md), prepared 6 October.
 The public [execution tracker #67](https://github.com/bhargavchintam/aureproof/issues/67)

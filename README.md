@@ -13,12 +13,11 @@ SPDX-License-Identifier: Apache-2.0
 [![REUSE status](https://api.reuse.software/badge/github.com/bhargavchintam/aureproof)](https://api.reuse.software/info/github.com/bhargavchintam/aureproof)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 
-> **Status: pre-alpha (0.0.x), under active construction.** No benchmark
-> result, isolation guarantee, or performance claim is asserted yet. This
-> repository has the foundation, findings/scoring core, and unsigned bundle
-> integrity core. M0 remains open and M1 is partially implemented; see the
-> [current status and ordered work](docs/project-status.md) and the
-> [implementation plan](docs/aureproof-plan-v2.md).
+> **Status: pre-release (0.0.x).** The integrity core, the Inspect runner, signing,
+> the comparison gate and one live, signed evidence chain are built; no benchmark
+> result or performance claim is asserted yet. What remains before v0.1.0, and who
+> it waits on, is in the [release acceptance matrix](docs/release-acceptance.md);
+> the design is the [implementation plan](docs/aureproof-plan-v2.md).
 
 ## What it does
 
@@ -64,7 +63,7 @@ the cited landscape.
 | Harbor / Terminal-Bench | admission checks | regrade yes, signing no | — |
 | SEC-bench / CyberGym | — | — | — |
 | Every Eval Ever | — | interchange, no signing | — |
-| **Aureproof (planned)** | **persistent + exclusion** | **yes** | **yes** |
+| **Aureproof (v0.1, pre-release)** | **persistent + exclusion** | **yes** | **yes** |
 
 ## Try it offline
 
