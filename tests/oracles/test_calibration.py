@@ -25,7 +25,9 @@ def _copy(tmp_path: Path) -> Path:
     return root
 
 
-@pytest.mark.parametrize("task_id", ["authz-001", "path-001", "authz-002"])
+@pytest.mark.parametrize(
+    "task_id", ["authz-001", "path-001", "authz-002", "ssrf-001", "redirect-001", "massassign-001"]
+)
 def test_each_pair_is_healthy_with_every_control_and_a_reproducing_rerun(task_id: str) -> None:
     record = calibrate(ROOT, task_id)
     assert record.status is HealthStatus.HEALTHY
@@ -116,7 +118,9 @@ def test_a_record_from_a_development_host_says_so_without_a_stale_claim(
     assert not any("development host" in x for x in calibrate(ROOT, "authz-001").known_limits)
 
 
-@pytest.mark.parametrize("task_id", ["authz-001", "path-001", "authz-002"])
+@pytest.mark.parametrize(
+    "task_id", ["authz-001", "path-001", "authz-002", "ssrf-001", "redirect-001", "massassign-001"]
+)
 def test_each_instruction_states_the_scoring_limits(task_id: str) -> None:
     """scoring.md Q5: the agent is told the limits its submission is scored under."""
     from aureproof.scoring.params import MatcherParams

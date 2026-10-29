@@ -72,7 +72,7 @@
   "rai:annotationsPerItem": "One author; independent review pending (issue #31).",
   "rai:machineAnnotationTools": "None. Labels are hand-written; tools only check them.",
   "rai:dataUseCases": "Validating AI security-review agents and the Aureproof evaluation pipeline on a small, controlled suite. Not for training, fine-tuning or retrieval corpora.",
-  "rai:dataLimitations": "Synthetic and small (three pairs at revision 0.1.0-dev): it measures controlled skills, not real-world capability, and results do not generalize to a wider population of code. Public tasks may be contaminated, so they are development tasks only.",
+  "rai:dataLimitations": "Synthetic and small (six pairs at revision 0.1.0-dev): it measures controlled skills, not real-world capability, and results do not generalize to a wider population of code. Public tasks may be contaminated, so they are development tasks only.",
   "rai:dataBiases": "Python only, web-service shaped code, two vulnerability families (access control, path boundary), written by one author.",
   "rai:personalSensitiveInformation": "None: synthetic code with made-up identifiers.",
   "rai:dataSocialImpact": "The defects are textbook classes in small synthetic services, which gives little uplift for misuse. The aim is to measure false alarms as well as detection.",
@@ -85,7 +85,7 @@
       "description": "Dataset registry: tasks, splits, canaries, exposure.",
       "contentUrl": "dataset.json",
       "encodingFormat": "application/json",
-      "sha256": "70d982911111db0965088f59cc1facc73b8eff1e640696bf89b93b3e1f67ce8f"
+      "sha256": "f0718d75306464979b0ef24f80de72cbc305f6a664145bedc5e1dd59f2ed97f6"
     },
     {
       "@type": "cr:FileObject",
@@ -161,6 +161,42 @@
     },
     {
       "@type": "cr:FileObject",
+      "@id": "oracles/massassign-001/README.md",
+      "name": "oracles/massassign-001/README.md",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/massassign-001/README.md",
+      "encodingFormat": "text/markdown",
+      "sha256": "571664a78b985f03614b869d7cc403c5e4dadc0a3eaa37265d71e33aea0d5346"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "oracles/massassign-001/calibration_poc.py",
+      "name": "oracles/massassign-001/calibration_poc.py",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/massassign-001/calibration_poc.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "2420e0a7de3cb97f45ac60089347ac49f37e603875684b9d3121c22516dcca0f"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "oracles/massassign-001/expected_verdicts.md",
+      "name": "oracles/massassign-001/expected_verdicts.md",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/massassign-001/expected_verdicts.md",
+      "encodingFormat": "text/markdown",
+      "sha256": "12ba8599f94de1ab959930bb266c5ebe1d7f3fbc5d7c5e033b90a898507f2939"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "oracles/massassign-001/labels.json",
+      "name": "oracles/massassign-001/labels.json",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/massassign-001/labels.json",
+      "encodingFormat": "application/json",
+      "sha256": "9c88009f892f0d8397581e4487042dab96f75c5555a4170460bef8ea534ba505"
+    },
+    {
+      "@type": "cr:FileObject",
       "@id": "oracles/path-001/README.md",
       "name": "oracles/path-001/README.md",
       "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
@@ -194,6 +230,78 @@
       "contentUrl": "oracles/path-001/labels.json",
       "encodingFormat": "application/json",
       "sha256": "f2368e542c7d7d55c032a8f2db6347faac36f7f505c6f6d0717bf8bf9fc3d967"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "oracles/redirect-001/README.md",
+      "name": "oracles/redirect-001/README.md",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/redirect-001/README.md",
+      "encodingFormat": "text/markdown",
+      "sha256": "9d8718c8a0304b2cbf0704c228077f8568ce39e26c89270eae1770a423405298"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "oracles/redirect-001/calibration_poc.py",
+      "name": "oracles/redirect-001/calibration_poc.py",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/redirect-001/calibration_poc.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "207d11171dffdb3fb4f102cefa3d7fdccf996d56854ff08ec8bf31b9cbc21c91"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "oracles/redirect-001/expected_verdicts.md",
+      "name": "oracles/redirect-001/expected_verdicts.md",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/redirect-001/expected_verdicts.md",
+      "encodingFormat": "text/markdown",
+      "sha256": "46a448371e67d33129e6b111ed6a5a2ae58ecec379ae9fe9de32b6ef22ceafb9"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "oracles/redirect-001/labels.json",
+      "name": "oracles/redirect-001/labels.json",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/redirect-001/labels.json",
+      "encodingFormat": "application/json",
+      "sha256": "45b56ce7d93432f82f2cd8faa0090375581427a40faba6c67f6f744c97e11108"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "oracles/ssrf-001/README.md",
+      "name": "oracles/ssrf-001/README.md",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/ssrf-001/README.md",
+      "encodingFormat": "text/markdown",
+      "sha256": "03ed01bf5fb20d6702ac60f85af4b2276a2ffe35bb496877312c7a8b780fdd18"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "oracles/ssrf-001/calibration_poc.py",
+      "name": "oracles/ssrf-001/calibration_poc.py",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/ssrf-001/calibration_poc.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "f72589a19f9277ebc791f53699f8c644073b769f6f7736824e5785d3c2044b2c"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "oracles/ssrf-001/expected_verdicts.md",
+      "name": "oracles/ssrf-001/expected_verdicts.md",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/ssrf-001/expected_verdicts.md",
+      "encodingFormat": "text/markdown",
+      "sha256": "09a66797d89a219bacf385121e2e5fc5fe3187c384da7517c0d2eb0bd535006f"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "oracles/ssrf-001/labels.json",
+      "name": "oracles/ssrf-001/labels.json",
+      "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
+      "contentUrl": "oracles/ssrf-001/labels.json",
+      "encodingFormat": "application/json",
+      "sha256": "979a679e9a24dd5331bab7b46b749c6b4172a19e9444e7d9cf94d3a7bdf91113"
     },
     {
       "@type": "cr:FileObject",
@@ -395,6 +503,105 @@
     },
     {
       "@type": "cr:FileObject",
+      "@id": "security/massassign-001/instruction.md",
+      "name": "security/massassign-001/instruction.md",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/massassign-001/instruction.md",
+      "encodingFormat": "text/markdown",
+      "sha256": "12869b6a789b043fb724d12338a4e8802e037f04ecd8d5806cd76c31d46a0242"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/massassign-001/variants/repaired/profilehub/__init__.py",
+      "name": "security/massassign-001/variants/repaired/profilehub/__init__.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/massassign-001/variants/repaired/profilehub/__init__.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "16746323740bbc035caa30c2e6aa1b4df93ed11a1cf8badd9477f14076934a0b"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/massassign-001/variants/repaired/profilehub/api.py",
+      "name": "security/massassign-001/variants/repaired/profilehub/api.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/massassign-001/variants/repaired/profilehub/api.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "0b05670fac63458c09539a9f1068b854915f738580558a9f7527d47b748a1900"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/massassign-001/variants/repaired/profilehub/models.py",
+      "name": "security/massassign-001/variants/repaired/profilehub/models.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/massassign-001/variants/repaired/profilehub/models.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "50ce26f3073fbd347e47bcc038f7703811706718def6b9dad96b034f526a8f53"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/massassign-001/variants/repaired/profilehub/service.py",
+      "name": "security/massassign-001/variants/repaired/profilehub/service.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/massassign-001/variants/repaired/profilehub/service.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "ba8d2e88a9e3992fd9e50caf17823c219db3b18457e004c7233729613bab3478"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/massassign-001/variants/repaired/profilehub/store.py",
+      "name": "security/massassign-001/variants/repaired/profilehub/store.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/massassign-001/variants/repaired/profilehub/store.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "29e81dfcc828aca0b5dcd7e678b53956253b70a01759e148f77e397bedb6d66b"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/massassign-001/variants/vulnerable/profilehub/__init__.py",
+      "name": "security/massassign-001/variants/vulnerable/profilehub/__init__.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/massassign-001/variants/vulnerable/profilehub/__init__.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "16746323740bbc035caa30c2e6aa1b4df93ed11a1cf8badd9477f14076934a0b"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/massassign-001/variants/vulnerable/profilehub/api.py",
+      "name": "security/massassign-001/variants/vulnerable/profilehub/api.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/massassign-001/variants/vulnerable/profilehub/api.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "0b05670fac63458c09539a9f1068b854915f738580558a9f7527d47b748a1900"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/massassign-001/variants/vulnerable/profilehub/models.py",
+      "name": "security/massassign-001/variants/vulnerable/profilehub/models.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/massassign-001/variants/vulnerable/profilehub/models.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "50ce26f3073fbd347e47bcc038f7703811706718def6b9dad96b034f526a8f53"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/massassign-001/variants/vulnerable/profilehub/service.py",
+      "name": "security/massassign-001/variants/vulnerable/profilehub/service.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/massassign-001/variants/vulnerable/profilehub/service.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "a4fe2b3ba3273879270732ea0b780990a5485cbae2411f13c452faa86aa8c4b2"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/massassign-001/variants/vulnerable/profilehub/store.py",
+      "name": "security/massassign-001/variants/vulnerable/profilehub/store.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/massassign-001/variants/vulnerable/profilehub/store.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "29e81dfcc828aca0b5dcd7e678b53956253b70a01759e148f77e397bedb6d66b"
+    },
+    {
+      "@type": "cr:FileObject",
       "@id": "security/path-001/instruction.md",
       "name": "security/path-001/instruction.md",
       "description": "Agent-visible: the task instruction or one variant's source.",
@@ -473,6 +680,186 @@
       "contentUrl": "security/path-001/variants/vulnerable/reportvault/storage.py",
       "encodingFormat": "text/x-python",
       "sha256": "bec65c2d7e80f696b9ad533691bed75de1e968dd80de7daf43a7e8305cde0001"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/redirect-001/instruction.md",
+      "name": "security/redirect-001/instruction.md",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/redirect-001/instruction.md",
+      "encodingFormat": "text/markdown",
+      "sha256": "7b14d81e32e2fa1b6ad1de56c4d83a502ae09cd47dc8078c721563a7044a7d6a"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/redirect-001/variants/repaired/portalauth/__init__.py",
+      "name": "security/redirect-001/variants/repaired/portalauth/__init__.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/redirect-001/variants/repaired/portalauth/__init__.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "3e6138029509475425f0b5e123d16932414559f014382e599976f6010232b93a"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/redirect-001/variants/repaired/portalauth/api.py",
+      "name": "security/redirect-001/variants/repaired/portalauth/api.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/redirect-001/variants/repaired/portalauth/api.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "032e5bfb5e5dd8ce5f3a471b92790f43ba64e41f9d6965684672beb336a7dc87"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/redirect-001/variants/repaired/portalauth/service.py",
+      "name": "security/redirect-001/variants/repaired/portalauth/service.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/redirect-001/variants/repaired/portalauth/service.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "2d64a77eaedb8858c4437777f587a80d8c9e74d8ac3b6772c0bd0564088ccc3f"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/redirect-001/variants/repaired/portalauth/sessions.py",
+      "name": "security/redirect-001/variants/repaired/portalauth/sessions.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/redirect-001/variants/repaired/portalauth/sessions.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "1db29bcf9c86c58e7c91e53afb5c032ec337705da04b6c5a5090ccff6921bbd3"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/redirect-001/variants/repaired/portalauth/urls.py",
+      "name": "security/redirect-001/variants/repaired/portalauth/urls.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/redirect-001/variants/repaired/portalauth/urls.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "1f9353da7c5d0ed516f5ddec607c38d8d0fee9589a993076021699855fd38d9c"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/redirect-001/variants/vulnerable/portalauth/__init__.py",
+      "name": "security/redirect-001/variants/vulnerable/portalauth/__init__.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/redirect-001/variants/vulnerable/portalauth/__init__.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "3e6138029509475425f0b5e123d16932414559f014382e599976f6010232b93a"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/redirect-001/variants/vulnerable/portalauth/api.py",
+      "name": "security/redirect-001/variants/vulnerable/portalauth/api.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/redirect-001/variants/vulnerable/portalauth/api.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "032e5bfb5e5dd8ce5f3a471b92790f43ba64e41f9d6965684672beb336a7dc87"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/redirect-001/variants/vulnerable/portalauth/service.py",
+      "name": "security/redirect-001/variants/vulnerable/portalauth/service.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/redirect-001/variants/vulnerable/portalauth/service.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "823e038849540ab831ee4ee780600d756da6f27a6de02b5fcac5adabdc4325b0"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/redirect-001/variants/vulnerable/portalauth/sessions.py",
+      "name": "security/redirect-001/variants/vulnerable/portalauth/sessions.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/redirect-001/variants/vulnerable/portalauth/sessions.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "1db29bcf9c86c58e7c91e53afb5c032ec337705da04b6c5a5090ccff6921bbd3"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/redirect-001/variants/vulnerable/portalauth/urls.py",
+      "name": "security/redirect-001/variants/vulnerable/portalauth/urls.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/redirect-001/variants/vulnerable/portalauth/urls.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "1f9353da7c5d0ed516f5ddec607c38d8d0fee9589a993076021699855fd38d9c"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/ssrf-001/instruction.md",
+      "name": "security/ssrf-001/instruction.md",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/ssrf-001/instruction.md",
+      "encodingFormat": "text/markdown",
+      "sha256": "d843076a1bf4292af4bcfb4c76ad18aa922d1c03c57e767d35ab374a70d49796"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/ssrf-001/variants/repaired/linkpreview/__init__.py",
+      "name": "security/ssrf-001/variants/repaired/linkpreview/__init__.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/ssrf-001/variants/repaired/linkpreview/__init__.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "c6e3016ed987b3b8ac3dd8e45fd00054170e35db02079830ada992734b539f9c"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/ssrf-001/variants/repaired/linkpreview/api.py",
+      "name": "security/ssrf-001/variants/repaired/linkpreview/api.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/ssrf-001/variants/repaired/linkpreview/api.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "7c079507762798bf28477d9803e12d05878caa8b78b4519d1a95a93d4881c4f4"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/ssrf-001/variants/repaired/linkpreview/net.py",
+      "name": "security/ssrf-001/variants/repaired/linkpreview/net.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/ssrf-001/variants/repaired/linkpreview/net.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "e7e3ffae5e78409170af3e3dd980a077e7511c9ef688702bbcd6e90d0dfecb6a"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/ssrf-001/variants/repaired/linkpreview/service.py",
+      "name": "security/ssrf-001/variants/repaired/linkpreview/service.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/ssrf-001/variants/repaired/linkpreview/service.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "08b6b97459014bf4781ad8343c995ef9c1723ce336cd8088ba771f9ccc657fca"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/ssrf-001/variants/vulnerable/linkpreview/__init__.py",
+      "name": "security/ssrf-001/variants/vulnerable/linkpreview/__init__.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/ssrf-001/variants/vulnerable/linkpreview/__init__.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "c6e3016ed987b3b8ac3dd8e45fd00054170e35db02079830ada992734b539f9c"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/ssrf-001/variants/vulnerable/linkpreview/api.py",
+      "name": "security/ssrf-001/variants/vulnerable/linkpreview/api.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/ssrf-001/variants/vulnerable/linkpreview/api.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "7c079507762798bf28477d9803e12d05878caa8b78b4519d1a95a93d4881c4f4"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/ssrf-001/variants/vulnerable/linkpreview/net.py",
+      "name": "security/ssrf-001/variants/vulnerable/linkpreview/net.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/ssrf-001/variants/vulnerable/linkpreview/net.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "e7e3ffae5e78409170af3e3dd980a077e7511c9ef688702bbcd6e90d0dfecb6a"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "security/ssrf-001/variants/vulnerable/linkpreview/service.py",
+      "name": "security/ssrf-001/variants/vulnerable/linkpreview/service.py",
+      "description": "Agent-visible: the task instruction or one variant's source.",
+      "contentUrl": "security/ssrf-001/variants/vulnerable/linkpreview/service.py",
+      "encodingFormat": "text/x-python",
+      "sha256": "fdfb47cc08347f776d5e7a96b2d2223f1b0ed21a3e5b5593d7a7f7a2b199279e"
     }
   ],
   "recordSet": [
