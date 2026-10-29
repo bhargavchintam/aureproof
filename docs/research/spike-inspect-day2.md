@@ -13,8 +13,8 @@
 
 **Inspect passes as the v0.1 runner.** Checks 1, 3, 4 and 5 pass with evidence.
 Check 2 passes for the reference subject and for Claude Code's plumbing (it runs offline through the bridge and is graded as `no_submission` when it writes nothing).
-The **live** Claude Code episode on a real model is still open. It needs a provider key, and
-[`live.py`](../../spikes/inspect_day2/live.py) runs it in one command. ADR-0002 and ADR-0003 are accepted.
+The **live** Claude Code episode ran on 2026-10-29 and passed (see
+[Live episode](#live-episode-2026-10-29) below). ADR-0002 and ADR-0003 are accepted.
 The plain-Docker fallback is not needed.
 
 ## Checks
@@ -77,8 +77,38 @@ uv run --extra inspect python spikes/inspect_day2/live.py               # live; 
 
 Logs and run summaries go to `spikes/inspect_day2/logs/`, which git ignores. Run summaries record each log's sha256.
 
+## Live episode (2026-10-29)
+
+One budgeted live run of `spikes/inspect_day2/live.py`, authorized by the maintainer,
+completes check 2 (#7).
+
+| Identity | Value |
+| --- | --- |
+| Subject | Claude Code 2.1.287 through `inspect_swe` 0.2.72 and `sandbox_agent_bridge` |
+| Runner | inspect-ai 0.3.283 |
+| Model | `anthropic/claude-haiku-4-5-20251001` |
+| Budget | 400,000 tokens and 900 s per sample; WebSearch and WebFetch disallowed; no retries |
+| Sandbox | `python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1` (python:3.12-slim), `network_mode: none` |
+| Host | macOS 27.2 (arm64), Docker Desktop 29.8.2: **development evidence**, not the qualified Linux host (#32) |
+| Task | `authz-001`, both variants |
+
+| Check | Result |
+| --- | --- |
+| Bridge probe, each variant | the proxy answered; egress `blocked: OSError(101, 'Network is unreachable')`; the key's hash matched no sandbox env value |
+| Vulnerable variant | `completed_with_findings`: one finding `confirmed` (M1, symbol anchor, defect `authz-001-d1`), one `refuted` (M7); 130,962 tokens |
+| Repaired variant | `completed_with_findings`: one finding `refuted`; 188,537 tokens |
+| Findings capture | `captured` for both: Claude Code wrote `findings.json` |
+| Key in logs | none found |
+| Offline re-score | equals the live verdicts |
+
+Neither sample hit a limit. So on this one run, Claude Code found the labeled defect
+and made one false claim on each variant: strict confirmed yield 1/3 for the pair.
+One run is a plumbing result, not a measurement. The logs and the run summary
+(`live-summary-20261029T074421Z.json`, which records each log's sha256) are in the
+git-ignored `spikes/inspect_day2/logs/`.
+
 ## Open items
 
-- **Live Claude Code episode** (completes check 2). This needs `ANTHROPIC_API_KEY` in `~/.aureproof-spike.env` (mode 600). Paste the resulting `live-summary-*.json` into #7.
+- ~~**Live Claude Code episode**~~ **Done 2026-10-29** (above). Repeating it on the Linux host needs the key there, which the v0.1 host does not hold.
 - ~~The spike test was flaky.~~ **Fixed.** The failure reproduced in 1 of 12 runs with captured output: `URLError(ConnectionRefusedError)` from the bridge probe. The probe connected before the bridge's in-container proxy was listening. It now waits up to 30 s for the port before calling the proxy. **AP-012 must do the same**: never assume the proxy is ready when `sandbox_agent_bridge()` yields.
 - The spike matcher is a stand-in. The real rules M1–M9 come with AP-005 and AP-007.
