@@ -8,7 +8,8 @@ Issue #47. Replaces [`../m2-slice/`](../m2-slice/) after its first run stopped e
 episode as `config:tool_surface_mismatch` (see
 [`docs/research/m2-live-slice.md`](../../docs/research/m2-live-slice.md)). The declared
 Claude Code tool surface now includes the four task-list tools a real model is
-offered, so both system identities changed. Nothing else changed: the cohort, the
+offered, so both system identities changed, and the protocol is named
+`m2-live-slice-2`. Nothing else changed: the cohort, the
 THRs (still in `../m2-slice/`, named by the same digests), the budget, the
 repetitions and the test are those of revision 1.
 

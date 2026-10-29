@@ -39,4 +39,4 @@ The four tools are local to the session and use no network, so they are now
 declared (`CLAUDE_CODE_LIVE_ONLY_TOOLS`), and a test pins the declared surface to the
 22 tools observed live. That changes both system identities, so the protocol was
 revised, not edited: [`protocols/m2-slice-2/`](../../protocols/m2-slice-2/), signed before
-attempt 2. Nothing else changed.
+attempt 2. Only the configurations and the name changed.
