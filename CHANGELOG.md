@@ -301,6 +301,9 @@ public API and the specs may change between minor versions).
 - Dependencies: grouped GitHub Actions updates (#21) and pydantic 2.14.0 (#23).
 
 ### Fixed
+- A THR calibrated off Linux still said "Linux host qualification pending (#32)"
+  after #32 closed. It now says the record comes from a development host and must
+  be recalibrated on the qualified Linux host before freezing.
 - The declared Claude Code tool surface lacked the four task-list tools
   (`TaskCreate`, `TaskGet`, `TaskList`, `TaskUpdate`) that Claude Code 2.1.287
   offers with a real model, so the first live slice stopped every episode as

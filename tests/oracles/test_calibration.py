@@ -98,3 +98,19 @@ def test_unregistered_task_is_a_qualification_problem(unregistered: str) -> None
     assert qualification_problems(ROOT, unregistered) == [
         f"{unregistered} is not registered in fixtures/dataset.json"
     ]
+
+
+def test_a_record_from_a_development_host_says_so_without_a_stale_claim(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from aureproof.oracles import calibration
+
+    host = {**calibration.environment(), "platform": "darwin/arm64"}
+    monkeypatch.setattr(calibration, "environment", lambda: host)
+    limits = calibrate(ROOT, "authz-001").known_limits
+    assert any("darwin/arm64, a development host" in limit for limit in limits)
+    assert not any("pending" in limit for limit in limits)  # #32 qualified the Linux host
+
+    linux = {**host, "platform": "linux/x86_64"}
+    monkeypatch.setattr(calibration, "environment", lambda: linux)
+    assert not any("development host" in x for x in calibrate(ROOT, "authz-001").known_limits)
