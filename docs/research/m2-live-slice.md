@@ -93,3 +93,21 @@ and unfrozen (ADR-0005 amendment). The one unresolved finding stays unresolved u
 adjudicated. The bundle is signed by `sign.yml` on main (run 40857350529). The offline check
 below ran from a fresh clone with no key, but it was run by the maintainer's
 assistant, so it is not an independent third party.
+
+### Offline verification from a fresh clone
+
+```text
+$ git clone --branch chore/sign-m2-slice https://github.com/bhargavchintam/aureproof.git clone && cd clone
+$ env -u ANTHROPIC_API_KEY uv sync --frozen --extra sign
+$ env -u ANTHROPIC_API_KEY uv run aureproof validate bundles/m2-slice-2 --require-signature
+V1 structure            pass
+V2 members              pass
+V3 journal              pass
+V4 mandatory evidence   pass
+V5 signature            pass
+    - verified: https://github.com/bhargavchintam/aureproof/.github/workflows/sign.yml@refs/heads/main (issuer https://token.actions.githubusercontent.com)
+V6 identity             pass
+VALID
+$ env -u ANTHROPIC_API_KEY uv run aureproof score bundles/m2-slice-2 --offline
+re-score: reproduced
+```
