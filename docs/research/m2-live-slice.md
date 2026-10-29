@@ -90,5 +90,6 @@ anyway.
 
 **Limits.** macOS development host, not the Linux runner. The THRs are self-reviewed
 and unfrozen (ADR-0005 amendment). The one unresolved finding stays unresolved until
-adjudicated. The bundle is signed by `sign.yml` in a follow-up, and a third party's
-offline verification is still to be recorded.
+adjudicated. The bundle is signed by `sign.yml` on main (run 40857350529). The offline check
+below ran from a fresh clone with no key, but it was run by the maintainer's
+assistant, so it is not an independent third party.
