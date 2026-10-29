@@ -12,6 +12,10 @@ public API and the specs may change between minor versions).
 ## [Unreleased]
 
 ### Added
+- `docs/release-acceptance.md`: every plan §14 release gate with its evidence, its
+  status (met, partly or not yet) and what it still needs (issue #66). The README
+  status, the README comparison row and the ROADMAP status now describe the project
+  as of 29 October 2026; `docs/project-status.md` is marked as the 14 October audit.
 - ClusterFuzzLite fuzzing of the parsers of untrusted input: the strict JSON
   loader, the agent-submission parser and evidence-bundle validation (`fuzz/`,
   `.clusterfuzzlite/`, `.github/workflows/cflite.yml`). Pull requests that touch them

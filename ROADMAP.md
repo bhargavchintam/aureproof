@@ -25,26 +25,26 @@ Planned total: ~40–55 focused days.
 
 ## Status
 
-Audited **14 October 2026** against default-branch `ca7a936`, GitHub issues/PRs
-and local checks. **M0 remains open; M1 is partially implemented; M2 has not
-passed.** The unsigned bundle core merged today in PR #30.
+As of **29 October 2026** (main `687e3f3`). Gate by gate, with evidence, in
+[`docs/release-acceptance.md`](docs/release-acceptance.md).
 
-Delivered: repository/CI foundation; `authz-001` fixture (#8); accepted Inspect
-and attempt-ownership ADRs from the mock spike; findings/event/submission
-contracts and SARIF (#11); matcher/dispositions/metrics (#15); unsigned bundle
-integrity, journal and in-toto seal (#13). Scoring spec #9 remains draft pending
-human review and unresolved choices.
+- **M0:** built, except the interviews (#6), which wait on the maintainer. The
+  Linux host is qualified (#32). The maintainer is the reviewer, disclosed as
+  self-review (ADR-0005 amendment).
+- **M1:** built and passing. The spec issues (#9, #12, #14, #16, #36) wait on the
+  maintainer's review, and the `0.1.0a1` alpha (#37) waits on those.
+- **M2:** built. Three calibrated pairs, non-saturating probes, the Inspect runner
+  and bridge qualification, signing, and one live signed slice that re-scores
+  offline ([`research/m2-live-slice.md`](docs/research/m2-live-slice.md)). The stop/go
+  decision (#47) waits on the interviews; it is not recorded yet.
+- **M3:** drafted, not accepted. The gate, Action and adjudication are built;
+  fourteen draft pairs are HEALTHY (six public, eight private). The pilot (#52) is
+  blocked until go.
+- **M4:** export, Croissant, ABC, SBOM, fault qualification and migration are built.
+  The assessment (#54), independent reproduction (#57) and design partner (#62)
+  are open.
+- **M5:** not started.
 
-Next: restore the spike after the label-schema migration (#34), harden core
-input/conformance behavior (#35–#36), freeze the metric/protocol (#5), name a
-reviewer (#31), qualify Linux (#32), finish interviews (#6) and the live spike
-(#7), then complete identity/THR/Decision contracts and the offline CLI. Signed
-evidence and the production runner follow in M2. **#47 records the M2 stop/go
-before benchmark expansion; #66 is the final release gate.**
-
-The expanded backlog has 51 implementation tasks (4 closed, 47 open at audit
-time), with estimates, acceptance criteria and numbered dependencies. See the
-[ordered execution tracker #67](https://github.com/bhargavchintam/aureproof/issues/67)
-and [`docs/project-status.md`](docs/project-status.md) for the full schedule,
-verification evidence and workday-count limitations. These tasks decompose the
-existing plan; v0.2+ remains deferred.
+The [execution tracker #67](https://github.com/bhargavchintam/aureproof/issues/67)
+keeps one valid dependency order; [`docs/project-status.md`](docs/project-status.md)
+is the 14 October audit, kept for its schedule and workday-count limitations.
