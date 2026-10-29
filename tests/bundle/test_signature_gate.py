@@ -18,6 +18,8 @@ TUTORIAL = {
     for k, v in read_bundle(ROOT / "examples/bundles/tutorial-v0.1").items()
     if k != "seal.sigstore.json"
 }
+# Public bundles are made only from complete runs; the tutorial is sealed as incomplete.
+COMPLETE = read_bundle(ROOT / "examples/gate/pass/a")
 
 
 def _v5(report: object) -> str:
@@ -50,10 +52,10 @@ def test_private_bundle_is_not_publishable() -> None:
 
 
 def test_redaction_reseals_without_labels_and_cannot_be_rescored() -> None:
-    public = redact(TUTORIAL)
+    public = redact(COMPLETE)
     assert validate(public).valid
     assert public_problems(public) == []
-    assert not [p for p in public if p.startswith("tasks/")]
+    assert not [p for p in public if p.endswith("/labels.json")]
     assert rescore(public).status == "not_rescorable"
 
 
@@ -62,5 +64,5 @@ def test_secret_scan_names_the_kind_never_the_secret() -> None:
     hits = secret_findings({"episodes.json": planted.encode(), "ok.json": b"{}"})
     assert hits == ["episodes.json: anthropic_key"]
     assert planted not in " ".join(hits)
-    leaky = {**redact(TUTORIAL), "notes.txt": b"AKIA" + b"A" * 16}
+    leaky = {**redact(COMPLETE), "notes.txt": b"AKIA" + b"A" * 16}
     assert any("aws_access_key" in p for p in public_problems(leaky))

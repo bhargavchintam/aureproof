@@ -296,6 +296,13 @@ public API and the specs may change between minor versions).
 - Dependencies: grouped GitHub Actions updates (#21) and pydantic 2.14.0 (#23).
 
 ### Fixed
+- A run with an `evidence_incomplete` episode was sealed as `complete`, against
+  scoring rule D1. It now seals as `completeness: incomplete` (bundle v0.1 amended
+  before its first release). The offline re-score reports a mismatch when a seal's
+  completeness differs from the one its episodes imply, `aureproof compare` refuses
+  an incomplete bundle, a public bundle can only be made from a complete run, and
+  the report explains the state. The tutorial bundle is re-sealed as incomplete
+  and is re-signed in a follow-up.
 - `aureproof task probe --model anthropic/<id>`, the form the live-slice guide
   gives, sent the prefixed name to the API and failed with a 404 and a traceback.
   The probe now takes the model with or without `anthropic/`, refuses other

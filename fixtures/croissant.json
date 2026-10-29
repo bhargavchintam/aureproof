@@ -130,7 +130,7 @@
       "description": "Evaluator-only: labels, calibration PoC or notes. Never mounted for an agent.",
       "contentUrl": "oracles/authz-002/README.md",
       "encodingFormat": "text/markdown",
-      "sha256": "31131661c67e25c2d2dbb15aa8c748f566af7ad9550e808c3e2839a115683e27"
+      "sha256": "cd6c7481a524099e19e09f13ad8ff0a6a4ad6479cdf57554bae360caa2c1151b"
     },
     {
       "@type": "cr:FileObject",

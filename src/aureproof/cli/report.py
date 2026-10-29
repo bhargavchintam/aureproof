@@ -70,7 +70,13 @@ def limitations(data: ReportData) -> list[str]:
     out = ["Unsigned: Sigstore signing arrives in M2. Integrity is relative to the seal digest."]
     if not data.trusted_seal_checked:
         out.append("No trusted seal digest was supplied, so the seal's own metadata is unchecked.")
-    out.append(f"Completeness: {predicate.get('completeness', 'unknown')}.")
+    completeness = predicate.get("completeness", "unknown")
+    out.append(f"Completeness: {completeness}.")
+    if completeness == "incomplete":
+        out.append(
+            "At least one episode is evidence_incomplete. It is reported, never graded, "
+            "and a decision gate refuses this bundle."
+        )
     if data.rescore is None:
         out.append("Not re-scored.")
     elif data.rescore.status != "reproduced":

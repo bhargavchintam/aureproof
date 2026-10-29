@@ -21,8 +21,7 @@ never publish.
 ## Each release
 
 1. Make sure `main` is green, including the **fresh install + Phase-1 gate** job. The
-   Recovery and Evidence-completeness gates rest on [`fault-qualification.md`](../fault-qualification.md);
-   its open item must be resolved before a release claims them.
+   Recovery and Evidence-completeness gates rest on [`fault-qualification.md`](../fault-qualification.md).
    Compatibility and migrations follow [`specs/COMPATIBILITY.md`](../../specs/COMPATIBILITY.md);
    a release that changes any record version adds its migration and N−1 vectors.
    The **EEE consumer** workflow must be green too, with the round trip and its losses as

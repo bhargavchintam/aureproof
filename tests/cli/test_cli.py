@@ -191,7 +191,8 @@ def test_report_shows_denominators_outcomes_and_limitations(tmp_path: Path) -> N
         "3/4",
         "1/9",
         "Unsigned",
-        "Completeness: complete",
+        "Completeness: incomplete",
+        "a decision gate refuses this bundle",
         "No trusted seal digest",
         "controlled skills",
     ):

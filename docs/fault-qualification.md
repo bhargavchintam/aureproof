@@ -22,21 +22,18 @@ inject the fault. All of them run in the required CI job, except where a row say
 | Partial or forged signature | Garbage, missing, altered or wrongly signed signatures are rejected; an unverified signature is never `signed` | `tests/signing/test_sigstore.py::test_garbage_or_missing_signatures_are_rejected`, `::test_altered_bytes_and_wrong_identity_are_rejected`, `tests/bundle/test_signature_gate.py::test_a_present_but_unverified_signature_is_only_skipped` |
 | Missing mandatory evidence | The builder refuses to seal without the journal, verdicts and metrics, or with a blob reference it does not hold | `tests/bundle/test_bundle.py::test_builder_refuses_missing_mandatory_evidence`, `::test_builder_refuses_unresolved_blob_refs_and_reserved_paths` |
 
-## Open: an `evidence_incomplete` episode in a sealed bundle
+## Resolved: an `evidence_incomplete` episode in a sealed bundle
 
-Scoring rule D1 (`specs/scoring/scoring.md` §5.3) says an episode whose evidence is
-incomplete is `evidence_incomplete`, "the bundle can't seal". The bundle spec says
-incomplete evidence is "never sealed as if complete". But `seal_run` seals such an
-episode with `completeness: "complete"`. The committed, signed tutorial bundle
-(golden cohort C-01) does exactly that: its metrics report
-`evidence_incomplete_rate 1/7`.
+Scoring rule D1 said a run with an `evidence_incomplete` episode "can't seal", and the
+bundle spec said incomplete evidence is "never sealed as if complete". `seal_run` used
+to seal such a run with `completeness: "complete"`, and the signed tutorial bundle
+(golden cohort C-01, `evidence_incomplete_rate 1/7`) did exactly that.
 
-Resolving this means choosing semantics, so it waits for the reviewer (#31). One
-option is to refuse to seal. The other is a third completeness state (for example
-`incomplete`) that a gate treats as failing. Either way the bundle schema
-changes, and the tutorial must be regenerated and re-signed. Until then, the decision gate
-fails closed on its own: `aureproof compare` re-scores every episode, and an
-`evidence_incomplete` episode is never graded.
+The maintainer decided on 2026-10-29 that such a run seals with
+`completeness: "incomplete"`. The re-score reports a mismatch if a seal claims
+otherwise, `aureproof compare` refuses an incomplete bundle, and a public (redacted)
+bundle can only be made from a complete run (`tests/bundle/test_completeness.py`). The
+tutorial was re-sealed as incomplete and re-signed.
 
 ## Deferred
 

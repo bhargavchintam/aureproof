@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any, Literal, get_args
+from typing import Any, get_args
 
 from pydantic import ValidationError
 
@@ -27,6 +27,7 @@ from aureproof.bundle.models import (
     RESERVED,
     SEAL,
     STATEMENT_TYPE,
+    Completeness,
     Manifest,
     Predicate,
     Role,
@@ -87,7 +88,7 @@ def build_bundle(
     blobs: Iterable[bytes],
     versions: Mapping[str, str],
     generator: Mapping[str, str],
-    completeness: Literal["complete", "redacted"] = "complete",
+    completeness: Completeness = "complete",
 ) -> dict[str, bytes]:
     """Every bundle file, keyed by path. Refuses to seal incomplete evidence."""
     journal, head = journal_bytes(events)
