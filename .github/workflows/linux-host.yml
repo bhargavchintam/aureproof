@@ -10,7 +10,7 @@
 name: Linux host qualification
 
 on:
-  pull_request:
+  push:
     paths:
       - "scripts/check_host.sh"
       - ".github/workflows/linux-host.yml"
