@@ -31,8 +31,8 @@ As of **29 October 2026** (main `687e3f3`). Gate by gate, with evidence, in
 - **M0:** built, except the interviews (#6), which wait on the maintainer. The
   Linux host is qualified (#32). The maintainer is the reviewer, disclosed as
   self-review (ADR-0005 amendment).
-- **M1:** built and passing. The spec issues (#9, #12, #14, #16, #36) wait on the
-  maintainer's review, and the `0.1.0a1` alpha (#37) waits on those.
+- **M1:** built, passing and accepted by the maintainer's disclosed self-review
+  (2026-10-29). The `0.1.0a1` alpha (#37) is being released.
 - **M2:** built. Three calibrated pairs, non-saturating probes, the Inspect runner
   and bridge qualification, signing, and one live signed slice that re-scores
   offline ([`research/m2-live-slice.md`](docs/research/m2-live-slice.md)). The stop/go

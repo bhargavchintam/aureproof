@@ -287,6 +287,10 @@ public API and the specs may change between minor versions).
   agreement.
 
 ### Changed
+- The scoring, THR, Decision and Bundle specs are accepted for v0.1 by the
+  maintainer's disclosed self-review (2026-10-29; not independently reviewed). Every
+  open review question is resolved in its spec: Q1–Q4, H1–H2, G1–G2 and B1–B3. No
+  behavior changes; each resolution keeps what the code already does.
 - Conduct reports now go to a published address (issue #33). The maintainer is
   the reviewer and self-review is disclosed: `MAINTAINERS.md` and an ADR-0005
   amendment (issue #31). THRs still freeze only with an independent reviewer.

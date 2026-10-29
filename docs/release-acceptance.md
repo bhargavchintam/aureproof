@@ -16,7 +16,7 @@ no row below counts as independently reviewed.
 | Gate | Status | Evidence | Still needed |
 | --- | --- | --- | --- |
 | Scope honesty | met | README "Scope and limits" and "How it compares"; the cited landscape in [`plan-review.md`](plan-review.md); [`scope.md`](scope.md) | — |
-| Spec integrity | partly | THR, Bundle and Decision schemas in `specs/*/v0.1/` with vectors in `conformance/`; `tests/test_compatibility.py` rejects unknown versions | Maintainer self-review of #9, #12, #14 and #36 |
+| Spec integrity | met | THR, Bundle and Decision schemas in `specs/*/v0.1/` with vectors in `conformance/`; `tests/test_compatibility.py` rejects unknown versions; accepted by maintainer self-review on 2026-10-29 | — |
 | **Task health** | not yet | Every task is HEALTHY with all controls, `spray_cheat` and `nop` included, and a determinism rerun (`aureproof task validate`, run in CI on Linux) | A frozen THR needs an independent reviewer (#31); the healthy cohort is frozen with the assessment protocol (#52) |
 | **Discrimination** | met (drafts) | [`research/difficulty-probe.md`](research/difficulty-probe.md): neither Bandit nor the single-shot model saturates any of the six public pairs, and the private eight are recorded in the assessment repository | Accepting the pack needs the M2 go decision (#47) |
 | Grade separation | met | Controller-side matcher (ADR-0004); `test_bridge_qualification.py` label and canary isolation (T-INFO-1); T-TAMP-1 tests | — |
@@ -44,12 +44,11 @@ no row below counts as independently reviewed.
 Everything in the "Still needed" column comes down to the following people's actions,
 listed in [`maintainer-actions.md`](maintainer-actions.md):
 
-1. **The maintainer:** the self-reviews for the spec gates (#9, #12, #14, #36); the
-   M2 go decision after the interviews (#6, #47). Go unblocks the pilot (#52) and the
-   assessment (#54).
+1. **The maintainer:** the M2 go decision after the interviews (#6, #47). Go
+   unblocks the pilot (#52) and the assessment (#54).
 2. **A second person:** an independent reviewer to freeze THRs (#31), an independent
    reproduction (#57) and a design partner (#62).
 3. **Time and the release itself:** Scorecard's Maintained check needs 90 days of
    history; Signed-Releases and Packaging count once a release publishes.
 
-The `0.1.0a1` alpha (#37) needs only item 1's spec self-reviews.
+The spec self-reviews were recorded on 2026-10-29, so the `0.1.0a1` alpha (#37) is unblocked.

@@ -4,7 +4,7 @@ SPDX-License-Identifier: Apache-2.0
 -->
 # Task Health Record (THR) specification
 
-- Spec: `thr/v0.1`. Status: **draft, pending a second review** (issue #12, AP-035;
+- Spec: `thr/v0.1`. Status: **accepted for v0.1 by maintainer self-review (2026-10-29; not independently reviewed)** (issue #12, AP-035;
   acceptance also waits on #9).
 - Normative source: plan v2 §4.1. This document refines it and takes precedence.
 - Schema: [`v0.1/thr.schema.json`](v0.1/thr.schema.json), generated from
@@ -118,8 +118,8 @@ as an agent, and its metrics keep their exact denominators.
 - **Saturation** is `saturated` (both solve), `partial` (one solves), `open` (neither) or
   `incomplete` (a probe has not run). `aureproof task probe` exits 1 on `saturated`.
 
-## 7. Open questions for the second reviewer
+## 7. Review questions and their resolutions
 
-- **H1.** Should `unknown` tasks be excluded like `unhealthy` ones (this draft says yes),
+- **H1.** *Resolved 2026-10-29 (maintainer self-review, ADR-0005 amendment):* `unknown` tasks are excluded like `unhealthy` ones. Was: should `unknown` tasks be excluded like `unhealthy` ones (this draft says yes),
   or kept with a warning?
-- **H2.** Is a single determinism re-run enough, or should the protocol set the count?
+- **H2.** *Resolved 2026-10-29 (maintainer self-review, ADR-0005 amendment):* one determinism re-run is the v0.1 default; a larger count would be a new protocol field in a later version. Was: is a single determinism re-run enough, or should the protocol set the count?
