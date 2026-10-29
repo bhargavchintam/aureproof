@@ -12,6 +12,11 @@ public API and the specs may change between minor versions).
 ## [Unreleased]
 
 ### Added
+- ClusterFuzzLite fuzzing of the parsers of untrusted input: the strict JSON
+  loader, the agent-submission parser and evidence-bundle validation (`fuzz/`,
+  `.clusterfuzzlite/`, `.github/workflows/cflite.yml`). Pull requests that touch them
+  get a 120-second code-change run, and a weekly batch run goes longer. The builder
+  image is pinned by digest. A first local run of about a million inputs found no crash.
 - Three draft fixture pairs for the M3 pack (issue #49), written before the M2 go
   decision as #67 allows: `ssrf-001` (a redirect followed without re-checking the
   allowlist, `linkpreview`), `redirect-001` (a sign-in `next` value that accepts
