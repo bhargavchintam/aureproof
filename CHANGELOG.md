@@ -301,6 +301,12 @@ public API and the specs may change between minor versions).
 - Dependencies: grouped GitHub Actions updates (#21) and pydantic 2.14.0 (#23).
 
 ### Fixed
+- The task instructions did not state the submission limits the scorer applies
+  (scoring.md Q5). Each now states at most 256 findings and 1 MiB per file, and at
+  most 4 locations per finding, with what happens beyond them. A test ties the text
+  to the scorer's parameters. The agent-visible text changed, so `authz-001`,
+  `path-001` and `authz-002` are now at task revision 0.1.1, and their identities
+  changed. All three stay HEALTHY.
 - A THR calibrated off Linux still said "Linux host qualification pending (#32)"
   after #32 closed. It now says the record comes from a development host and must
   be recalibrated on the qualified Linux host before freezing.

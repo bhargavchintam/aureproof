@@ -5,7 +5,7 @@
     {
       "task_id": "authz-001",
       "split": "development",
-      "task_revision": "0.1.0",
+      "task_revision": "0.1.1",
       "canary": "7effd90b-bc48-4bf8-ab0b-72dfff0d0f97",
       "oracle_canary": "aa8d4c1d-242e-47a3-9099-ec978a3b0d2f",
       "exposure": [
@@ -20,7 +20,7 @@
     {
       "task_id": "path-001",
       "split": "development",
-      "task_revision": "0.1.0",
+      "task_revision": "0.1.1",
       "canary": "5b6ad745-3f06-45a5-af30-f61d28d3a3f2",
       "oracle_canary": "b5cd076f-88d2-48b6-9d9e-4a7da599a96b",
       "exposure": [
@@ -35,7 +35,7 @@
     {
       "task_id": "authz-002",
       "split": "development",
-      "task_revision": "0.1.0",
+      "task_revision": "0.1.1",
       "canary": "c5a2dc45-5c39-4e94-a69b-f6efc32f6f25",
       "oracle_canary": "709db802-31b6-4556-a1b7-ff88348530a6",
       "exposure": [
