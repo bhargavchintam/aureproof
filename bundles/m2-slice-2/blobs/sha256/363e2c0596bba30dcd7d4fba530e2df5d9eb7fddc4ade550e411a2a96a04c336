@@ -1,0 +1,41 @@
+[
+  {
+    "cwe": 639,
+    "locations": [
+      {
+        "file": "invoicer/service.py",
+        "symbol": "get_invoice",
+        "start_line": 40,
+        "end_line": 45,
+        "role": "site"
+      }
+    ],
+    "description": "get_invoice() verifies tenant membership but does not verify that the invoice belongs to the requested tenant. An authenticated user can access any invoice by ID, bypassing cross-tenant isolation if they guess or discover an invoice ID from another tenant."
+  },
+  {
+    "cwe": 668,
+    "locations": [
+      {
+        "file": "invoicer/service.py",
+        "symbol": "shared_view",
+        "start_line": 60,
+        "end_line": 65,
+        "role": "site"
+      }
+    ],
+    "description": "shared_view() performs a linear search through all invoices to find a matching share token. This allows an attacker to enumerate invoices via timing attacks: different response times reveal whether invoices exist in the system, leaking information about invoice IDs and counts."
+  },
+  {
+    "cwe": 209,
+    "locations": [
+      {
+        "file": "invoicer/auth.py",
+        "symbol": "require_member",
+        "start_line": 18,
+        "end_line": 22,
+        "role": "site"
+      }
+    ],
+    "description": "Error messages in require_member() expose user_id and tenant_id, revealing system structure and potentially aiding attackers in identifying valid user and tenant identifiers for targeted attacks."
+  }
+]

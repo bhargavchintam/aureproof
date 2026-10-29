@@ -1,0 +1,22 @@
+[
+  {
+    "cwe": 203,
+    "locations": [
+      {
+        "file": "invoicer/auth.py",
+        "symbol": "require_member",
+        "start_line": 18,
+        "end_line": 22,
+        "role": "site"
+      },
+      {
+        "file": "invoicer/auth.py",
+        "symbol": "require_role",
+        "start_line": 25,
+        "end_line": 29,
+        "role": "site"
+      }
+    ],
+    "description": "Error messages in require_member() and require_role() leak whether a user is a member of a tenant. An attacker can enumerate valid tenant IDs by observing different error responses (\"not a member\" vs \"needs one of roles\"), violating information disclosure controls."
+  }
+]
