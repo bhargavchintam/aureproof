@@ -696,11 +696,13 @@ def task_probe(
     as_json: JsonOpt = False,
 ) -> None:
     """Difficulty probe: Bandit and single-shot baselines. Exit 1 if both solve the task."""
+    from aureproof.oracles import probe
     from aureproof.oracles.calibration import calibrate
     from aureproof.oracles.probe import (
-        AnthropicClient,
+        ProbeError,
         SingleShotConfig,
         bandit_baseline,
+        provider_model,
         saturation,
         single_shot_baseline,
         with_probe,
@@ -713,17 +715,25 @@ def task_probe(
         typer.echo(f"error: {out} exists", err=True)
         raise typer.Exit(2)
     try:
+        model_id = provider_model(model) if model is not None else None
+    except ValueError as error:
+        typer.echo(f"error: {error}", err=True)
+        raise typer.Exit(2) from None
+    try:
         static = bandit_baseline(root, task_id)
     except ModuleNotFoundError:
         typer.echo("error: the Bandit probe needs the `baseline` extra", err=True)
         raise typer.Exit(2) from None
     single = None
-    if model is not None:
-        config = SingleShotConfig(model=model)
+    if model_id is not None:
+        config = SingleShotConfig(model=model_id)
         try:
-            single = single_shot_baseline(root, task_id, config, AnthropicClient(config))
+            single = single_shot_baseline(root, task_id, config, probe.AnthropicClient(config))
         except ModuleNotFoundError:
             typer.echo("error: the single-shot probe needs the `inspect` extra", err=True)
+            raise typer.Exit(2) from None
+        except ProbeError as error:
+            typer.echo(f"error: {error}", err=True)
             raise typer.Exit(2) from None
     verdict = saturation(static, single)
     record = with_probe(calibrate(root, task_id), static, single)

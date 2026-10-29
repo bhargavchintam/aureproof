@@ -296,6 +296,11 @@ public API and the specs may change between minor versions).
 - Dependencies: grouped GitHub Actions updates (#21) and pydantic 2.14.0 (#23).
 
 ### Fixed
+- `aureproof task probe --model anthropic/<id>`, the form the live-slice guide
+  gives, sent the prefixed name to the API and failed with a 404 and a traceback.
+  The probe now takes the model with or without `anthropic/`, refuses other
+  providers before any call, and reports provider errors as one line (issue #44).
+  The first live single-shot results are in `docs/research/difficulty-probe.md`.
 - The decision gate read the protocol's margin as a binary float, so `0.05`
   became slightly more than 1/20, and a CI lower bound of exactly -1/20 passed
   instead of being inconclusive (specs/decision §5: the inequalities are strict).

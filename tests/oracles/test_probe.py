@@ -16,12 +16,15 @@ from aureproof.contracts.findings import Finding
 from aureproof.contracts.sarif import findings_from_sarif, findings_to_sarif
 from aureproof.contracts.thr import TaskHealthRecord
 from aureproof.importers import bandit
+from aureproof.oracles import probe
 from aureproof.oracles.calibration import Paths, calibrate
 from aureproof.oracles.probe import (
     SINGLE_SHOT_PROMPT,
+    ProbeError,
     Reply,
     SingleShotConfig,
     bandit_baseline,
+    provider_model,
     saturation,
     single_shot_baseline,
     single_shot_input,
@@ -272,3 +275,35 @@ def test_task_probe_cli_refuses_unknown_tasks_and_existing_outputs(tmp_path: Pat
     existing.write_text("{}")
     args = ["task", "probe", "path-001", "--root", str(ROOT), "--out", str(existing)]
     assert runner.invoke(app, args).exit_code == 2
+
+
+def test_the_probe_takes_the_model_with_or_without_its_provider() -> None:
+    assert provider_model("anthropic/claude-haiku-4-5-20251001") == "claude-haiku-4-5-20251001"
+    assert provider_model("claude-haiku-4-5-20251001") == "claude-haiku-4-5-20251001"
+    with pytest.raises(ValueError, match="only Anthropic"):
+        provider_model("openai/gpt-5")
+
+
+def test_task_probe_cli_refuses_another_provider_before_any_call() -> None:
+    args = ["task", "probe", "path-001", "--root", str(ROOT), "--model", "openai/gpt-5"]
+    result = runner.invoke(app, args)
+    assert result.exit_code == 2
+    assert "only Anthropic" in result.output
+
+
+def test_task_probe_cli_reports_a_provider_error_without_a_traceback(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class Failing:
+        def __init__(self, config: SingleShotConfig) -> None:
+            self.model = config.model
+
+        def complete(self, *, system: str, user: str, max_tokens: int) -> Reply:
+            raise ProbeError(f"provider error (404): model: {self.model}")
+
+    monkeypatch.setattr(probe, "AnthropicClient", Failing)
+    args = ["task", "probe", "path-001", "--root", str(ROOT), "--model", "anthropic/m-1"]
+    result = runner.invoke(app, args)
+    assert result.exit_code == 2
+    assert "error: provider error (404): model: m-1" in result.output
+    assert "Traceback" not in result.output

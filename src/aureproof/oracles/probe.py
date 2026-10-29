@@ -122,6 +122,20 @@ def bandit_baseline(
 # --- Single-shot model ------------------------------------------------------------
 
 
+class ProbeError(RuntimeError):
+    """The provider refused the call; the probe did not run."""
+
+
+def provider_model(model: str) -> str:
+    """The provider's model ID, from `anthropic/<id>` (as `aureproof run` takes it) or `<id>`."""
+    provider, sep, name = model.partition("/")
+    if not sep:
+        return model
+    if provider != "anthropic" or not name:
+        raise ValueError(f"the single-shot probe calls only Anthropic models, not {model!r}")
+    return name
+
+
 @dataclass(frozen=True)
 class Reply:
     text: str
@@ -217,12 +231,19 @@ class AnthropicClient:
         self._client = anthropic.Anthropic(max_retries=0)
 
     def complete(self, *, system: str, user: str, max_tokens: int) -> Reply:
-        message = self._client.messages.create(
-            model=self._config.model,
-            max_tokens=max_tokens,
-            system=system,
-            messages=[{"role": "user", "content": user}],
-        )
+        import anthropic
+
+        try:
+            message = self._client.messages.create(
+                model=self._config.model,
+                max_tokens=max_tokens,
+                system=system,
+                messages=[{"role": "user", "content": user}],
+            )
+        except anthropic.APIStatusError as error:
+            raise ProbeError(f"provider error ({error.status_code}): {error.message}") from error
+        except anthropic.APIError as error:
+            raise ProbeError(f"provider error: {error.message}") from error
         text = "".join(getattr(block, "text", "") for block in message.content)
         return Reply(
             text=text,
