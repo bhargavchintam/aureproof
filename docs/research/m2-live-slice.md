@@ -111,3 +111,12 @@ VALID
 $ env -u ANTHROPIC_API_KEY uv run aureproof score bundles/m2-slice-2 --offline
 re-score: reproduced
 ```
+
+## After the slice
+
+Issue #48 then pinned the Claude Code binary by checksum and recorded the checksums in
+the system identity (`settings.binary_sha256`). The binary these runs used hashes to
+the pinned `linux-arm64` value
+(`e4daf793d1e74fb0d9874dd09e98690bbfd7be515f78a87fd05b9e2b4bb33b03`). Because the identity
+changed, a new run needs a new protocol: the pilot's (#52) will be the next one. The
+sealed bundles keep the system identity they ran under.
