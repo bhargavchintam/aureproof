@@ -36,7 +36,7 @@ SPDX-FileCopyrightText = "2026 Bindu Bhargava R Chintam"
 SPDX-License-Identifier = "Apache-2.0"
 
 [[annotations]]
-path = ["fixtures/**", "examples/**", "conformance/**"]
+path = ["fixtures/**", "examples/**", "conformance/**", "protocols/**", "bundles/**"]
 precedence = "override"
 SPDX-FileCopyrightText = "2026 Bindu Bhargava R Chintam"
 SPDX-License-Identifier = "CC-BY-4.0"
