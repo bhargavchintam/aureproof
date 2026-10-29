@@ -1,0 +1,42 @@
+[
+  {
+    "cwe": 209,
+    "locations": [
+      {
+        "file": "docstore/api.py",
+        "symbol": "handle_request",
+        "start_line": 35,
+        "end_line": 35,
+        "role": "site"
+      }
+    ],
+    "description": "Permission denied error messages expose the actor's user_id to unauthorized users, disclosing information about access attempts. An attacker can determine valid user IDs and which documents other users are trying to access by observing error messages."
+  },
+  {
+    "cwe": 367,
+    "locations": [
+      {
+        "file": "docstore/service.py",
+        "symbol": "read_document",
+        "start_line": 44,
+        "end_line": 48,
+        "role": "site"
+      },
+      {
+        "file": "docstore/service.py",
+        "symbol": "update_document",
+        "start_line": 51,
+        "end_line": 57,
+        "role": "site"
+      },
+      {
+        "file": "docstore/service.py",
+        "symbol": "delete_document",
+        "start_line": 60,
+        "end_line": 65,
+        "role": "site"
+      }
+    ],
+    "description": "Time-of-check-time-of-use (TOCTOU) race condition exists between fetching a document and checking permissions. A document could be deleted or modified between the get() call and the permission check, leading to inconsistent state or bypassed authorization."
+  }
+]

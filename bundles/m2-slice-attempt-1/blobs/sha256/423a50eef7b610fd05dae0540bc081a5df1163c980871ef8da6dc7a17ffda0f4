@@ -1,0 +1,41 @@
+[
+  {
+    "cwe": 22,
+    "locations": [
+      {
+        "file": "reportvault/service.py",
+        "symbol": "download_attachment",
+        "start_line": 28,
+        "end_line": 32,
+        "role": "site"
+      }
+    ],
+    "description": "Path traversal vulnerability: download_attachment validates the raw (percent-encoded) name with is_plain_name() but then decodes it without re-validating. An attacker could use URL encoding to bypass the check (e.g., \"%2e%2e/etc/passwd\" passes is_plain_name but decodes to \"../etc/passwd\"), allowing access to files outside the attachments directory."
+  },
+  {
+    "cwe": 134,
+    "locations": [
+      {
+        "file": "reportvault/service.py",
+        "symbol": "render_template",
+        "start_line": 43,
+        "end_line": 49,
+        "role": "site"
+      }
+    ],
+    "description": "Format string vulnerability: render_template uses text.format_map() with user-supplied values. If template text contains malicious format string sequences like \"{values[key].__class__.__bases__}\" or if values are not properly sanitized, an attacker could achieve arbitrary code execution or information disclosure."
+  },
+  {
+    "cwe": 400,
+    "locations": [
+      {
+        "file": "reportvault/service.py",
+        "symbol": "list_attachments",
+        "start_line": 35,
+        "end_line": 36,
+        "role": "site"
+      }
+    ],
+    "description": "Missing resource limits: list_attachments iterates over all files in the attachments directory without any limit. An attacker could create millions of files to cause excessive memory consumption or DoS by repeatedly calling the list action."
+  }
+]

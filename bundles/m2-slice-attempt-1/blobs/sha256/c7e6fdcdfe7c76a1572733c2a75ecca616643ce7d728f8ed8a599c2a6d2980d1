@@ -1,0 +1,41 @@
+[
+  {
+    "cwe": 639,
+    "locations": [
+      {
+        "file": "invoicer/service.py",
+        "symbol": "get_invoice",
+        "start_line": 40,
+        "end_line": 45,
+        "role": "site"
+      }
+    ],
+    "description": "The get_invoice function only checks membership but not role, allowing any member to read any invoice in their tenant. This breaks access control if roles are intended to restrict read access based on user permissions."
+  },
+  {
+    "cwe": 862,
+    "locations": [
+      {
+        "file": "invoicer/service.py",
+        "symbol": "shared_view",
+        "start_line": 60,
+        "end_line": 65,
+        "role": "site"
+      }
+    ],
+    "description": "The shared_view function lacks rate limiting and token regeneration protection, allowing attackers to brute-force share tokens to access invoice data without authentication."
+  },
+  {
+    "cwe": 208,
+    "locations": [
+      {
+        "file": "invoicer/service.py",
+        "symbol": "shared_view",
+        "start_line": 62,
+        "end_line": 63,
+        "role": "site"
+      }
+    ],
+    "description": "The loop in shared_view iterates through all invoices linearly, potentially leaking timing information about the number of invoices and token positions through variable execution time."
+  }
+]

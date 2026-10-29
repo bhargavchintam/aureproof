@@ -1,0 +1,42 @@
+[
+  {
+    "cwe": 22,
+    "locations": [
+      {
+        "file": "reportvault/service.py",
+        "symbol": "read_report",
+        "start_line": 40,
+        "end_line": 41,
+        "role": "site"
+      },
+      {
+        "file": "reportvault/storage.py",
+        "symbol": "decode_name",
+        "start_line": 33,
+        "end_line": 35,
+        "role": "source"
+      }
+    ],
+    "description": "The read_report function decodes the raw_name parameter but does not validate it with is_plain_name(), allowing path traversal attacks to read arbitrary files from the system."
+  },
+  {
+    "cwe": 95,
+    "locations": [
+      {
+        "file": "reportvault/service.py",
+        "symbol": "render_template",
+        "start_line": 49,
+        "end_line": 50,
+        "role": "site"
+      },
+      {
+        "file": "reportvault/api.py",
+        "symbol": "handle_request",
+        "start_line": 37,
+        "end_line": 40,
+        "role": "source"
+      }
+    ],
+    "description": "The render_template function uses str.format_map() with user-controlled values, which can be exploited for code injection through format string attacks if malicious values containing format specifiers are provided."
+  }
+]

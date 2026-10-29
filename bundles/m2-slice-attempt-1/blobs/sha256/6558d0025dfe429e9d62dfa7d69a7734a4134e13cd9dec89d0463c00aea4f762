@@ -1,0 +1,28 @@
+[
+  {
+    "cwe": 639,
+    "locations": [
+      {
+        "file": "invoicer/service.py",
+        "symbol": "get_invoice",
+        "start_line": 40,
+        "end_line": 45,
+        "role": "site"
+      }
+    ],
+    "description": "get_invoice only checks membership but not tenant ownership. An attacker can access invoices from other tenants by guessing invoice IDs, bypassing the tenant isolation enforced by _in_tenant in other functions."
+  },
+  {
+    "cwe": 639,
+    "locations": [
+      {
+        "file": "invoicer/service.py",
+        "symbol": "list_invoices",
+        "start_line": 35,
+        "end_line": 37,
+        "role": "site"
+      }
+    ],
+    "description": "list_invoices returns all invoices matching a tenant_id but doesn't validate that each invoice actually belongs to that tenant. If an invoice's tenant_id field is modified, the filtering becomes unreliable, allowing data leakage across tenants."
+  }
+]
