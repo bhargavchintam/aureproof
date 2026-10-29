@@ -14,7 +14,7 @@ Short records of significant, hard-to-reverse decisions. Format: a lightweight
 | [0002](0002-runner-inspect-first.md) | Inspect AI as the first runner; Harbor in v0.2 | accepted (Day-2 spike) |
 | [0003](0003-aureproof-owns-attempts.md) | Aureproof owns attempt identity and retries | accepted (Day-2 spike) |
 | [0004](0004-oracle-is-a-pure-label-matcher.md) | The v0.1 oracle is a deterministic label matcher | accepted |
-| [0005](0005-second-reviewer-required.md) | A second reviewer is required for gates | proposed (needs a named reviewer) |
+| [0005](0005-second-reviewer-required.md) | A second reviewer is required for gates | accepted, amended 2026-10-29 (maintainer self-review, disclosed) |
 | [0006](0006-primary-metric-strict-confirmed-yield.md) | Strict confirmed yield is the primary metric | accepted |
 | [0007](0007-external-agent-and-interface.md) | External agent, protocol, interface modes, hosted tools and budgets | accepted |
 

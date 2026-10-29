@@ -30,8 +30,8 @@ The open items, each as one action with what it unblocks, are in
 [`maintainer-actions.md`](maintainer-actions.md).
 
 - [x] **Freeze scope, the primary metric, and the external agent + protocol** in ADRs ([#5](https://github.com/bhargavchintam/aureproof/issues/5), AP-001). This is an M0 issue, and #6 and #9 depend on it.
-- [ ] **Name the second reviewer** in `MAINTAINERS.md` and accept ADR-0005 (blocks the M2 calibration gate; [#31](https://github.com/bhargavchintam/aureproof/issues/31)).
-- [ ] **Set the Code of Conduct contact** and reconcile license provenance ([#33](https://github.com/bhargavchintam/aureproof/issues/33)).
+- [x] **Reviewer decided** (2026-10-29): the maintainer self-reviews, disclosed in `MAINTAINERS.md` and the ADR-0005 amendment ([#31](https://github.com/bhargavchintam/aureproof/issues/31)). THR freezing still needs an independent reviewer.
+- [x] **Set the Code of Conduct contact** (2026-10-29) and reconcile license provenance ([#33](https://github.com/bhargavchintam/aureproof/issues/33)).
 - [ ] **Run 3–5 practitioner interviews** with the kit and record the go / narrow decision ([#6](https://github.com/bhargavchintam/aureproof/issues/6)).
 - [ ] **Provision the Linux host** and get all `PASS` from `scripts/check_host.sh` ([#32](https://github.com/bhargavchintam/aureproof/issues/32)).
 - [x] **Day-2 Inspect spike** on `authz-001`: ADR-0002/0003 accepted. Notes: [`research/spike-inspect-day2.md`](research/spike-inspect-day2.md).
