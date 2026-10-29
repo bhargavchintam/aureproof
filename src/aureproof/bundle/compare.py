@@ -143,6 +143,12 @@ def _check(
         if planned.get("protocol") != protocol.identity or planned.get("system") != expected_system:
             problems.append(f"{side}: episode {event['episode_id']} was planned for another run")
 
+    try:
+        completeness = str(loads_strict(files[SEAL], i_json=True)["predicate"]["completeness"])
+    except (KeyError, TypeError, JsonInputError):
+        completeness = "unreadable"
+    if completeness != "complete":
+        problems.append(f"{side}: sealed as {completeness}; the gate needs complete evidence")
     redo = rescore(files)
     if redo.status != "reproduced":
         problems.append(f"{side}: offline re-score {redo.status}: {'; '.join(redo.problems)}")

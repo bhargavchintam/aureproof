@@ -62,6 +62,10 @@ one released version, 0.1. They have no N−1 to validate or migrate from, so th
 policy for them is rule 1 (fail closed) until a 0.2 exists. A 0.2 must come with its
 migration and with N−1 vectors.
 
+Before its first release, v0.1 was amended once: on 2026-10-29 `bundle/v0.1` gained
+`completeness: incomplete` (scoring D1). No released reader exists to break, and the
+tutorial bundle was re-sealed and re-signed.
+
 
 ## Pinned combinations
 

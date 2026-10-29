@@ -93,6 +93,16 @@ def test_missing_episodes_and_tampered_evidence_fail_closed() -> None:
         compare(protocol, a, tampered)
 
 
+def test_a_bundle_sealed_as_incomplete_fails_closed() -> None:
+    protocol, a, b = _example("pass")
+    seal = json.loads(b["seal.intoto.json"])
+    seal["predicate"]["completeness"] = "incomplete"
+    incomplete = dict(b, **{"seal.intoto.json": json.dumps(seal).encode()})
+    with pytest.raises(GateError) as err:
+        compare(protocol, a, incomplete)
+    assert "B: sealed as incomplete; the gate needs complete evidence" in err.value.problems
+
+
 def test_a_thr_other_than_the_one_registered_fails_closed() -> None:
     protocol, a, b = _example("pass")
     thr = json.loads(b["tasks/s1/thr.json"])

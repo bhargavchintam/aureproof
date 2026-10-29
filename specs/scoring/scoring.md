@@ -188,7 +188,7 @@ The first matching rule wins. "Graded" says whether the episode enters quality m
 
 | # | Condition | Disposition | Verdicts computed? | Graded |
 | --- | --- | --- | --- | --- |
-| D1 | `evidence_complete` is false | `evidence_incomplete` | no | no; the bundle can't seal |
+| D1 | `evidence_complete` is false | `evidence_incomplete` | no | no; the bundle can't seal as complete: it seals as `incomplete`, and gates refuse it |
 | D2 | `runner_outcome = infra_error` | `infra_failure` | no | no; rerun under a new attempt ID (ADR-0003) |
 | D3 | `refusal_signal`, and the submission is absent or an empty array | `safety_refusal` | no | no; reported separately, never retried |
 | D4 | `runner_outcome = limit_exceeded` | `budget_exhausted` | yes, on whatever was captured | **yes** |

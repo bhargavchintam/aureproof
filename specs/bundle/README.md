@@ -94,6 +94,7 @@ Its journal starts with the attempt journal (`episode_planned`, `attempt_planned
 - `role` is one of `journal`, `verdicts`, `metrics`, `adjudications`, `protocol`, `system`, `task_health`, `submission`, `decision`, `episodes`, `labels`, `blob` or `other`.
 - **Mandatory roles in v0.1:** `journal`, `verdicts` and `metrics`. Each MUST appear exactly once, with `mandatory: true`. A producer MAY mark further members mandatory; their absence then makes the bundle invalid.
 - **A producer MUST refuse to seal** when mandatory evidence is missing (plan §3.4). Incomplete evidence is reported, never sealed as if complete.
+- **An episode with incomplete evidence** (scoring D1, `evidence_incomplete`) does not stop the run from sealing, but the run seals with `completeness: incomplete`. Re-scoring MUST report a mismatch when the sealed completeness differs from the one the episodes imply (decided 2026-10-29).
 - A producer MUST also refuse a mandatory role marked `mandatory: false`, an unknown role, an empty media type, or invalid seal metadata. Before returning, the reference builder validates its own output, so it never hands back a bundle that fails V1–V6.
 
 ## 5. Journal
@@ -137,7 +138,7 @@ The chain makes a removed, reordered or edited entry detectable. **Tail truncati
 
 **Predicate v0.1.**
 - `versions.scoring_profile` is the scoring identity: the digest of the matcher, disposition and metrics versions and every matcher parameter (`aureproof.scoring.scoring_identity`). An offline re-score MUST use the same identity (issue #36).
-- `completeness` is `complete` or `redacted`. A redacted public bundle is a distinct product from the private complete one (plan §4.2).
+- `completeness` is `complete`, `incomplete` or `redacted`. `incomplete` means at least one episode is `evidence_incomplete`; such a bundle is valid and re-scorable, its report says so, and a decision gate (`aureproof compare`) refuses it. A redacted public bundle is a distinct product from the private complete one (plan §4.2) and is made only from a `complete` run.
 - No timestamps are sealed in v0.1. The pure core has no clock, and trustworthy time comes with signing (M2).
 
 The predicate follows in-toto `test-result/v0.1` in spirit. The `predicateType` will move to in-toto's proposed `eval-result` predicate if [in-toto/attestation#575](https://github.com/in-toto/attestation/pull/575) merges (open as of 2026-10-13).

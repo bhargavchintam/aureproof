@@ -69,11 +69,17 @@ class Generator(Contract):
     version: NonEmptyStr
 
 
+# complete: every episode's mandatory evidence is present. incomplete: at least one
+# episode is evidence_incomplete (scoring D1); gates refuse it. redacted: a public
+# bundle without evaluator labels, made only from a complete run.
+Completeness = Literal["complete", "incomplete", "redacted"]
+
+
 class Predicate(Contract):
     bundle_version: Literal["0.1"]
     event_count: NonNegativeInt
     journal_head: DigestRef
-    completeness: Literal["complete", "redacted"]
+    completeness: Completeness
     versions: dict[str, NonEmptyStr]
     generator: Generator
 

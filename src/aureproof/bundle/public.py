@@ -14,7 +14,7 @@ import json
 import re
 from collections.abc import Mapping
 
-from aureproof.bundle.build import Member, build_bundle
+from aureproof.bundle.build import BundleError, Member, build_bundle
 from aureproof.bundle.models import BLOB_PREFIX, JOURNAL, MANIFEST, SEAL, Manifest
 from aureproof.contracts.events import Event
 
@@ -64,6 +64,11 @@ def redact(files: Mapping[str, bytes]) -> dict[str, bytes]:
     """
     manifest = Manifest.model_validate_json(files[MANIFEST])
     predicate = json.loads(files[SEAL])["predicate"]
+    if predicate["completeness"] != "complete":
+        raise BundleError(
+            f"a public bundle needs a complete run; this one is sealed as "
+            f"{predicate['completeness']}"
+        )
     members = [
         Member(m.path, files[m.path], m.role, m.media_type, m.mandatory)
         for m in manifest.members

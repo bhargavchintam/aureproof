@@ -20,14 +20,14 @@ from typing import Any, Literal
 
 from pydantic import Field, TypeAdapter, ValidationError
 
-from aureproof.bundle.build import Member, build_bundle
+from aureproof.bundle.build import BundleError, Member, build_bundle
 from aureproof.bundle.canonical import canonical_json, digest_ref, sha256_hex
-from aureproof.bundle.models import BLOB_PREFIX
+from aureproof.bundle.models import BLOB_PREFIX, SEAL
 from aureproof.contracts._base import Contract, NonEmptyStr, NonNegativeInt, Variant
 from aureproof.contracts.events import Event, ObservationSource
 from aureproof.contracts.labels import LabelSet
 from aureproof.contracts.strict_json import JsonInputError, loads_strict
-from aureproof.contracts.verdicts import EpisodeSignals
+from aureproof.contracts.verdicts import Disposition, EpisodeSignals
 from aureproof.scoring import (
     DISPOSITION_VERSION,
     MATCHER_VERSION,
@@ -111,6 +111,10 @@ def _documents(
     return canonical_json(verdicts), canonical_json(metrics_doc)
 
 
+def _incomplete(scored: Sequence[tuple[EpisodeInput, EpisodeScore]]) -> list[str]:
+    return [ep.episode_id for ep, s in scored if s.disposition is Disposition.EVIDENCE_INCOMPLETE]
+
+
 def seal_run(
     episodes: Sequence[EpisodeInput],
     labels: Mapping[str, bytes],
@@ -128,9 +132,15 @@ def seal_run(
     tool and model observations, outcomes); the scoring events follow it in one
     hash chain. ``extra`` adds evidence members such as the protocol, the system
     spec and the Task Health Records.
+
+    A run with any ``evidence_incomplete`` episode seals as ``incomplete``, never
+    as complete (scoring D1), and cannot be sealed as a redacted public bundle.
     """
     blobs = {digest_ref(b): b for b in submissions}
     scored = _score_all(episodes, labels, blobs)
+    incomplete = _incomplete(scored)
+    if incomplete and completeness == "redacted":
+        raise BundleError("a public bundle needs a complete run: " + ", ".join(incomplete))
     verdicts, metrics = _documents(scored, cohort)
     members = [
         Member(
@@ -173,7 +183,7 @@ def seal_run(
         blobs=list(blobs.values()),
         versions=versions,
         generator=generator,
-        completeness=completeness,
+        completeness="incomplete" if incomplete else completeness,
     )
 
 
@@ -214,6 +224,7 @@ def rescore(files: Mapping[str, bytes]) -> Rescore:
         problems.append("verdicts.json differs from the recomputed verdicts")
     if metrics != files.get(METRICS):
         problems.append("metrics.json differs from the recomputed metrics")
+    problems += _completeness_problems(files, scored)
     return Rescore(
         "mismatch" if problems else "reproduced",
         problems,
@@ -221,3 +232,18 @@ def rescore(files: Mapping[str, bytes]) -> Rescore:
         loads_strict(metrics, i_json=True),
         scored,
     )
+
+
+def _completeness_problems(
+    files: Mapping[str, bytes], scored: Sequence[tuple[EpisodeInput, EpisodeScore]]
+) -> list[str]:
+    """The seal's completeness must be the one the episodes imply."""
+    try:
+        sealed = loads_strict(files[SEAL], i_json=True)["predicate"]["completeness"]
+    except (KeyError, TypeError, JsonInputError):
+        return ["the seal's completeness is unreadable"]
+    incomplete = _incomplete(scored)
+    expected = "incomplete" if incomplete else "complete"
+    if sealed != expected:
+        return [f"sealed as {sealed} with {len(incomplete)} evidence_incomplete episode(s)"]
+    return []

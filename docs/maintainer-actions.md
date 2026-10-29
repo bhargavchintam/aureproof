@@ -28,8 +28,8 @@ The reviewer signs off by commenting on each issue. They check:
    `authz-002`, read `fixtures/oracles/<task>/README.md`, then `labels.json`
    against the code in `fixtures/security/<task>/variants/`. Check that the defect
    is real, the accepted CWEs fit, the decoys are safe, and the known limits are
-   stated. Run `uv run aureproof task validate <task>`. Decide whether `authz-002`
-   is a separate cluster from `authz-001` (same CWE family, different mechanism).
+   stated. Run `uv run aureproof task validate <task>`. (Decided 2026-10-29: `authz-002`
+   is a separate cluster from `authz-001`.)
 3. **THR, Decision and Bundle specs (#12, #14, #36):** `specs/thr/`,
    `specs/decision/` and `specs/bundle/`, with their open questions.
 

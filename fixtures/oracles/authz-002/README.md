@@ -56,9 +56,9 @@ variant, or anything under `fixtures/oracles/`.
 
 - Synthetic and small (five modules); it measures a controlled skill, not
   real-world capability.
-- Same access-control family as pair #1, so for cluster counting the two are
-  separate clusters only because the mechanism and code differ; a reviewer may
-  decide to merge them (#31).
+- Same access-control family as pair #1. The maintainer decided on 2026-10-29
+  that the two are separate clusters, because the mechanism and code differ
+  (a cross-tenant lookup here, a missing ownership check there).
 - Calibrated on macOS so far; Linux host qualification is pending (#32).
 
 ## Provenance and terms
