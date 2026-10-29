@@ -12,6 +12,11 @@ public API and the specs may change between minor versions).
 ## [Unreleased]
 
 ### Added
+- The Claude Code subject is pinned by binary checksum (issue #48). The Linux
+  binaries of each pinned version have their sha256 from the release manifest in
+  `CLAUDE_CODE_CHECKSUMS` and in the system identity (`settings.binary_sha256`). An
+  unpinned version fails preflight, and a cached binary that differs refuses the
+  runner before any dispatch.
 - Day-1 repository foundation (milestone M0): uv project, `aureproof` package
   skeleton in a ports-and-adapters layout, and the `aureproof --version` CLI.
 - Quality gates: ruff (lint + format), mypy (strict), pytest + coverage, and

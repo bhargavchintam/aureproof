@@ -31,6 +31,7 @@ import base64
 import hashlib
 import importlib.metadata as md
 import json
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Literal
@@ -80,6 +81,17 @@ CLAUDE_CODE_TOOLS = (
     "Write",
     *CLAUDE_CODE_LIVE_ONLY_TOOLS,
 )
+# The Linux sandbox binaries of each pinned Claude Code version, from
+# https://downloads.claude.ai/claude-code-releases/<version>/manifest.json (the manifest
+# inspect_swe checks a download against). 2.1.287: build 3c446a1b, 2026-10-01.
+CLAUDE_CODE_CHECKSUMS: dict[str, dict[str, str]] = {
+    "2.1.287": {
+        "linux-arm64": "e4daf793d1e74fb0d9874dd09e98690bbfd7be515f78a87fd05b9e2b4bb33b03",
+        "linux-x64": "3920489a5109cff5786a1a392c25277408ff22bc796d5edb9c16a60e5a1718f0",
+        "linux-arm64-musl": "83d95a9fa28b1fadd8c012fda873aed8f8998e23dfabe6dd4efd05bcdd7383ba",
+        "linux-x64-musl": "ba22ce4b5744c6016e3076ccbd692a059fc4e9f1592f21361859a73938f4e722",
+    },
+}
 CLAUDE_CODE_SETTINGS: dict[str, Any] = {
     "disallowed_tools": ["WebSearch", "WebFetch"],
     "retry_refusals": 0,
@@ -100,6 +112,7 @@ class InspectRunnerConfig:
     hosted_tools: Literal["closed-world", "web-search"] = "closed-world"
     compose: Path = COMPOSE
     budget: Budget = field(default_factory=Budget)
+    binary_cache: Path | None = None  # None: inspect_swe's own download cache
 
 
 class UnsupportedCapability(ValueError):
@@ -130,6 +143,11 @@ def preflight(cfg: InspectRunnerConfig) -> list[str]:
             "web-search is not implemented: the bridge's web_search is never enabled, and"
             " hosted search needs live qualification (#7, #42)"
         )
+    if cfg.claude_code_version not in CLAUDE_CODE_CHECKSUMS:
+        raise UnsupportedCapability(
+            f"Claude Code {cfg.claude_code_version} has no pinned checksums: pin its"
+            " manifest checksums in CLAUDE_CODE_CHECKSUMS first"
+        )
     if provider not in CLAUDE_CODE_PROVIDERS:
         raise UnsupportedCapability(
             f"Claude Code needs an Anthropic Messages provider, not {provider!r}: an"
@@ -140,6 +158,40 @@ def preflight(cfg: InspectRunnerConfig) -> list[str]:
         " sandbox_agent_bridge in the sandbox and forwarded to the Inspect model API",
         f"WebSearch and WebFetch are disallowed in Claude Code ({cfg.hosted_tools})",
     ]
+
+
+def verify_cached_binaries(
+    cache: Path, version: str, pins: Mapping[str, Mapping[str, str]] = CLAUDE_CODE_CHECKSUMS
+) -> list[str]:
+    """Problems with the cached binaries of ``version``; empty when each matches its pin.
+
+    inspect_swe checks a fresh download against the release manifest; this also
+    catches a cached binary that changed afterwards.
+    """
+    problems = []
+    for path in sorted(cache.glob(f"claude-{version}-*")):
+        platform = path.name.removeprefix(f"claude-{version}-")
+        expected = pins.get(version, {}).get(platform)
+        if expected is None:
+            problems.append(f"{path.name}: no pinned checksum for this platform")
+            continue
+        digest = hashlib.sha256()
+        with path.open("rb") as stream:
+            for chunk in iter(lambda: stream.read(1 << 20), b""):
+                digest.update(chunk)
+        if digest.hexdigest() != expected:
+            problems.append(f"{path.name}: sha256 differs from the pinned checksum")
+    return problems
+
+
+def _binary_cache(cfg: InspectRunnerConfig) -> Path | None:
+    if cfg.binary_cache is not None:
+        return cfg.binary_cache
+    try:
+        from inspect_swe._util.appdirs import package_cache_dir
+    except ModuleNotFoundError:  # without the extra no binary can run at all
+        return None
+    return Path(package_cache_dir("claude-code-downloads"))
 
 
 def _protocol(cfg: InspectRunnerConfig) -> str:
@@ -162,7 +214,11 @@ def system_spec(cfg: InspectRunnerConfig) -> SystemSpec:
             "scaffold": f"inspect_swe.claude_code@{md.version('inspect-swe')}",
         }
         mode, prompts = "native-capability", {}
-        settings = {**CLAUDE_CODE_SETTINGS, **RUNNER_SETTINGS}
+        settings = {
+            **CLAUDE_CODE_SETTINGS,
+            **RUNNER_SETTINGS,
+            "binary_sha256": dict(CLAUDE_CODE_CHECKSUMS[cfg.claude_code_version]),
+        }
     else:
         subject = {
             "kind": "reference",
@@ -349,6 +405,11 @@ def facts_from_sample(
 class InspectRunner:
     def __init__(self, config: InspectRunnerConfig) -> None:
         preflight(config)  # unsupported capabilities fail here, before any dispatch
+        cache = _binary_cache(config) if config.subject == "claude_code" else None
+        if cache is not None:
+            problems = verify_cached_binaries(cache, config.claude_code_version)
+            if problems:
+                raise UnsupportedCapability("; ".join(problems))
         self.config = config
 
     def system_spec(self) -> SystemSpec:
