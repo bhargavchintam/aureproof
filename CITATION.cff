@@ -14,7 +14,8 @@ authors:
 repository-code: "https://github.com/bhargavchintam/aureproof"
 url: "https://github.com/bhargavchintam/aureproof"
 license: Apache-2.0
-version: "0.0.0"
+version: "0.1.0a1"
+date-released: "2026-10-29"
 keywords:
   - evaluation
   - ai-agents
