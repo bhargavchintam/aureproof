@@ -1,0 +1,28 @@
+[
+  {
+    "cwe": 22,
+    "locations": [
+      {
+        "file": "reportvault/service.py",
+        "symbol": "read_report",
+        "start_line": 40,
+        "end_line": 41,
+        "role": "site"
+      }
+    ],
+    "description": "The read_report function does not validate that the decoded name is a plain filename before passing it to safe_join. Unlike download_attachment, it skips the is_plain_name check, allowing potential path traversal or symlink attacks to access files outside the reports directory."
+  },
+  {
+    "cwe": 1336,
+    "locations": [
+      {
+        "file": "reportvault/service.py",
+        "symbol": "render_template",
+        "start_line": 44,
+        "end_line": 50,
+        "role": "site"
+      }
+    ],
+    "description": "The render_template function uses str.format_map() with user-controlled dictionary values. An attacker can inject format string payloads in the values dict to access Python internals and achieve arbitrary code execution through format string syntax like {value[__init__.__globals__]}."
+  }
+]

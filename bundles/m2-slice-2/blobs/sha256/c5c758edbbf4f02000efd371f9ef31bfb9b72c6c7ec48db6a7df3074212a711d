@@ -1,0 +1,35 @@
+[
+  {
+    "cwe": 276,
+    "locations": [
+      {
+        "file": "docstore/auth.py",
+        "symbol": "can_read",
+        "start_line": 18,
+        "end_line": 19,
+        "role": "site"
+      }
+    ],
+    "description": "The can_read() function does not check the 'public' flag when determining read access. This means public documents are treated as private and cannot be read by users who are not the owner, admin, or explicitly shared with the document, violating the intended access model."
+  },
+  {
+    "cwe": 200,
+    "locations": [
+      {
+        "file": "docstore/service.py",
+        "symbol": "update_document",
+        "start_line": 51,
+        "end_line": 57,
+        "role": "site"
+      },
+      {
+        "file": "docstore/service.py",
+        "symbol": "delete_document",
+        "start_line": 60,
+        "end_line": 65,
+        "role": "site"
+      }
+    ],
+    "description": "Operation details are logged to the shared audit trail with user IDs and document IDs. Any user can access store.audit and observe all operations on all documents, leaking information about who is accessing, modifying, or deleting which documents."
+  }
+]

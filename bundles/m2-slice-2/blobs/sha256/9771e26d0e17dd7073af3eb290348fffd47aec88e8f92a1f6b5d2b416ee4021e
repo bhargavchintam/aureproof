@@ -1,0 +1,28 @@
+[
+  {
+    "cwe": 22,
+    "locations": [
+      {
+        "file": "reportvault/service.py",
+        "symbol": "download_attachment",
+        "start_line": 28,
+        "end_line": 32,
+        "role": "site"
+      }
+    ],
+    "description": "Path traversal vulnerability: is_plain_name() validates the URL-encoded form but not the decoded form. An attacker can pass percent-encoded dangerous characters (e.g., %2F or %5C) that pass the raw validation but create path traversal after URL decoding, bypassing the safe_join() check in upload_attachment."
+  },
+  {
+    "cwe": 22,
+    "locations": [
+      {
+        "file": "reportvault/service.py",
+        "symbol": "read_report",
+        "start_line": 39,
+        "end_line": 40,
+        "role": "site"
+      }
+    ],
+    "description": "Missing input validation on raw_name parameter. Unlike download_attachment, read_report does not validate that raw_name is a plain filename before passing it to safe_join(). This allows directory traversal attempts, even though safe_join() will ultimately block most attacks via symlink resolution."
+  }
+]
