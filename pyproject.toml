@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "aureproof"
-version = "0.0.0"
+version = "0.1.0a1"
 description = "An open-source integrity layer for AI-agent evaluations: task-health records, signed re-scorable evidence bundles, and pre-registered regression decisions."
 readme = "README.md"
 requires-python = ">=3.12"

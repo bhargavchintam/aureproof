@@ -11,6 +11,12 @@ public API and the specs may change between minor versions).
 
 ## [Unreleased]
 
+## [0.1.0a1] - 2026-10-29
+
+First alpha: the offline integrity core (M1), the Inspect runner, signing and the
+comparison gate. No benchmark result is claimed. Release gates still open are in
+`docs/release-acceptance.md`.
+
 ### Added
 - `docs/release-acceptance.md`: every plan §14 release gate with its evidence, its
   status (met, partly or not yet) and what it still needs (issue #66). The README
@@ -363,4 +369,5 @@ public API and the specs may change between minor versions).
   traceback's exception lines, including chained causes and exception-group
   members (issue #39).
 
-[Unreleased]: https://github.com/bhargavchintam/aureproof/commits/main
+[Unreleased]: https://github.com/bhargavchintam/aureproof/compare/v0.1.0a1...main
+[0.1.0a1]: https://github.com/bhargavchintam/aureproof/releases/tag/v0.1.0a1
