@@ -299,7 +299,10 @@ def calibrate(root: Path, task_id: str) -> TaskHealthRecord:
     env = environment()
     limits = ["Synthetic fixture: controlled skills, not real-world capability."]
     if not env["platform"].startswith("linux"):
-        limits.append(f"Calibrated on {env['platform']}; Linux host qualification pending (#32).")
+        limits.append(
+            f"Calibrated on {env['platform']}, a development host; recalibrate on the"
+            " qualified Linux host (docs/guides/linux-host.md) before freezing."
+        )
     return TaskHealthRecord.model_validate(
         {
             "thr_version": "0.1",
