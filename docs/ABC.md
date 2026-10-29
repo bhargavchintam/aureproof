@@ -47,7 +47,7 @@ no state matching.
 | II.3 | Errors from unavailable services are handled | met | An infrastructure failure is `infra_failure`, a recorded new attempt. A configuration fault fails preflight before dispatch (`docs/fault-qualification.md`) |
 | II.4 | State is cleared between runs | met | Each attempt is a fresh Docker sandbox holding only one variant's files |
 | II.5 | The agent is isolated from the ground truth | met | Labels live in a separate evaluator-only tree that is never mounted. An evaluator-only canary is checked in agent views and in run logs (`tests/integration/test_bridge_qualification.py`, T-INFO-1) |
-| II.6 | Annotated ground truth is verified | partly met | Labels are AST-checked against the code, and calibration PoCs demonstrate each defect. **The independent reviewer has not signed off yet (#31).** The THRs are unreviewed and unfrozen |
+| II.6 | Annotated ground truth is verified | partly met | Labels are AST-checked against the code, and calibration PoCs demonstrate each defect. **There is no independent reviewer**: the maintainer self-reviews (ADR-0005 amendment, #31), so the THRs stay unfrozen |
 | II.7 | Each task is solvable | met | The `reference_positive` control and the calibration PoC show that the labeled defect exists and can be credited |
 | II.8 | An oracle solver solves all challenges | met | `reference_positive` submits the labeled finding and is credited on every pair; `aureproof task validate` gives HEALTHY for all three |
 | II.9 | No shortcut passes without doing the task | met | The verdict is computed in the controller from captured bytes, and planted `verdict.json` or `reward.txt` files are ignored (T-TAMP-1). Spraying fails `spray_cheat` |
@@ -72,7 +72,7 @@ no state matching.
 
 ## Open items that block a fuller self-assessment
 
-- Independent label review and frozen THRs (#31).
+- Independent label review and frozen THRs. The maintainer self-reviews (#31); freezing needs a second person.
 - A populated private assessment split, and an assessment run with measured flaw rates
   (#52, #54).
 - A human-expert baseline. It is not planned for v0.1, and this document says so.
