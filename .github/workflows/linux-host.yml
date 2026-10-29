@@ -1,0 +1,73 @@
+# SPDX-FileCopyrightText: 2026 Bindu Bhargava R Chintam
+# SPDX-License-Identifier: Apache-2.0
+#
+# Linux host qualification (issue #32). The maintainer chose a GitHub-hosted
+# Ubuntu runner as the v0.1 evaluation host. This job runs scripts/check_host.sh,
+# records the host's identities, and runs the Docker lane (mockllm only, no
+# provider key) there. The evidence is uploaded as the `host-evidence` artifact.
+# Limitation: the runner is ephemeral and shared, not the dedicated host that
+# docs/guides/linux-host.md recommends; each run records its own identities.
+name: Linux host qualification
+
+on:
+  pull_request:
+    paths:
+      - "scripts/check_host.sh"
+      - ".github/workflows/linux-host.yml"
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  host:
+    name: Ubuntu 24.04 + Docker Engine
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: "0.12.19"
+          enable-cache: true
+      - name: Install nftables
+        run: sudo apt-get update -q && sudo apt-get install -y -q nftables
+      - name: Host check
+        run: mkdir -p evidence && scripts/check_host.sh | tee evidence/host-check.txt
+      - name: Record host identities
+        run: |
+          {
+            echo "commit: $GITHUB_SHA"
+            echo "run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo "runner image: ${ImageOS:-unknown} ${ImageVersion:-unknown}"
+            echo "kernel: $(uname -srvm)"
+            grep -E '^(PRETTY_NAME|VERSION_ID)=' /etc/os-release
+            echo "cgroup: $(stat -fc %T /sys/fs/cgroup)"
+            echo "nft: $(nft --version)"
+            echo "docker: $(docker version --format 'server {{.Server.Version}}, client {{.Client.Version}}')"
+            echo "docker cgroup: $(docker info --format '{{.CgroupDriver}} v{{.CgroupVersion}}')"
+            echo "uv: $(uv --version)"
+          } | tee evidence/host-identity.txt
+      - name: Install (locked, with the inspect extra)
+        run: uv sync --frozen --extra inspect
+      - name: Docker lane on this host
+        run: >-
+          uv run --extra inspect pytest tests/integration --no-cov -ra
+          --junitxml=evidence/docker-lane.xml | tee evidence/docker-lane.txt
+      - name: Image identities used by the lane
+        if: always()
+        run: docker images --digests --format '{{.Repository}}:{{.Tag}} {{.Digest}} {{.ID}}' | tee evidence/images.txt
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: host-evidence
+          path: evidence/
+          retention-days: 90
