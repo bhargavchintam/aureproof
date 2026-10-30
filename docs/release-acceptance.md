@@ -5,7 +5,7 @@ SPDX-License-Identifier: Apache-2.0
 # v0.1.0 release acceptance
 
 Issue #66. One row per gate in plan v2 §14, with the evidence that exists and what is
-still missing. Status as of **29 October 2026**, main at `687e3f3`. A gate is **met**
+still missing. Status as of **29 October 2026**, after the `0.1.0a1` alpha (`153ecff`). A gate is **met**
 only when its evidence passes today; **partly** means the machinery exists and passes,
 but an item that needs a person or the release itself is outstanding; **not yet** means
 the gate cannot pass until that item is done. Material failures block the tag.
@@ -31,7 +31,7 @@ no row below counts as independently reviewed.
 | Comparison validity | partly | `aureproof compare` and the Action: exact sign-flip test, at least 6 clusters, fail-closed linkage, three hand-worked examples | The signed assessment protocol and the assessment itself (#52, #54), after go |
 | External portability | met | Claude Code 2.1.287 ran live through the documented contract (#48, the M2 slice) | — |
 | Recovery | met | [`fault-qualification.md`](fault-qualification.md): restart, interrupted calls, duplicate delivery and partial writes, each with a test | — |
-| **Supply chain** | not yet | SBOM checked in CI and attached by `release.yml`; PEP 740 attestations through Trusted Publishing; Scorecard 7.2 with Fuzzing just added | Scorecard ≥ 8 (Code-Review approvals, the CII badge, project age); the first release publishes the SBOM and attestations |
+| **Supply chain** | partly | `0.1.0a1` is on [PyPI](https://pypi.org/p/aureproof/0.1.0a1) through Trusted Publishing with a PEP 740 attestation from `release.yml`; it installs fresh and passes the Phase-1 gate; its CycloneDX SBOM is attached to the GitHub release; from the next release `release.yml` also attaches Sigstore bundles for every file; Scorecard 7.8 with Fuzzing | Scorecard ≥ 8 (Code-Review approvals, the CII badge, project age; Signed-Releases counts after the next release) |
 | **Licensing** | met | `reuse lint` passes; [`fixtures/DATASET_CARD.md`](../fixtures/DATASET_CARD.md) and Croissant RAI fields, "evaluation only, not for training" | — |
 | **Responsible use** | met | `RESPONSIBLE_USE.md`, `SECURITY.md`, private vulnerability reporting enabled, gitleaks clean on every PR | — |
 | **Benchmark rigor** | met | [`ABC.md`](ABC.md) published | The BetterBench request is tracked separately (#61) |
@@ -48,7 +48,8 @@ listed in [`maintainer-actions.md`](maintainer-actions.md):
    unblocks the pilot (#52) and the assessment (#54).
 2. **A second person:** an independent reviewer to freeze THRs (#31), an independent
    reproduction (#57) and a design partner (#62).
-3. **Time and the release itself:** Scorecard's Maintained check needs 90 days of
-   history; Signed-Releases and Packaging count once a release publishes.
+3. **Time and the next release:** Scorecard's Maintained check needs 90 days of
+   history; Signed-Releases counts once a release carries signature files.
 
-The spec self-reviews were recorded on 2026-10-29, so the `0.1.0a1` alpha (#37) is unblocked.
+The spec self-reviews were recorded on 2026-10-29, and the `0.1.0a1` alpha (#37) was published
+the same day: <https://pypi.org/p/aureproof/0.1.0a1>.

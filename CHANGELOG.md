@@ -11,6 +11,13 @@ public API and the specs may change between minor versions).
 
 ## [Unreleased]
 
+### Fixed
+- The SBOM was kept only as a workflow-run artifact, which expires, not attached to
+  the GitHub release as the 0.1.0a1 notes said. `release.yml` has a new `attach` job:
+  after PyPI accepts the files it signs the wheel, the sdist and the SBOM with the
+  workflow's Sigstore identity, verifies them, and uploads them with their
+  `.sigstore.json` bundles to the GitHub release. The 0.1.0a1 SBOM was attached by hand.
+
 ## [0.1.0a1] - 2026-10-29
 
 First alpha: the offline integrity core (M1), the Inspect runner, signing and the
