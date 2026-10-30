@@ -74,3 +74,42 @@ jobs:
       - uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # v1.14.3
         with:
           attestations: true # PEP 740
+
+  attach:
+    # After PyPI accepts the files: sign them, and the SBOM, with this workflow's
+    # identity and attach everything to the GitHub release (Scorecard Signed-Releases).
+    name: attach signed files and the SBOM to the GitHub release
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # upload release assets
+      id-token: write # OIDC token for Fulcio
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: "0.12.19"
+      - name: Install (locked, with the sign extra)
+        run: uv sync --frozen --extra sign
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: dist
+          path: dist/
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: sbom
+          path: sbom/
+      - name: Sign with the workflow identity and verify
+        run: |
+          uv run sigstore sign dist/*.whl dist/*.tar.gz sbom/*.cdx.json
+          uv run sigstore verify identity \
+            --cert-identity "https://github.com/${GITHUB_REPOSITORY}/.github/workflows/release.yml@${GITHUB_REF}" \
+            --cert-oidc-issuer https://token.actions.githubusercontent.com \
+            dist/*.whl dist/*.tar.gz sbom/*.cdx.json
+      - name: Upload to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: gh release upload "$TAG" dist/* sbom/* --repo "$GITHUB_REPOSITORY" --clobber

@@ -36,5 +36,11 @@ never publish.
    - re-runs the Phase-1 gate from a fresh install of the wheel.
 
    Then it waits for approval in the `pypi` environment, and publishes with attestations.
+   After that, the `attach` job signs the wheel, the sdist and the SBOM with the
+   workflow's Sigstore identity and uploads them, each with its `.sigstore.json`
+   bundle, to the GitHub release.
 5. Verify at <https://pypi.org/p/aureproof>. The release files should show attestations
-   from this repository's `release.yml`.
+   from this repository's `release.yml`. The GitHub release should list the wheel, the
+   sdist, `aureproof-<version>.cdx.json` and a `.sigstore.json` bundle for each.
+   Anyone can check a bundle with
+   `sigstore verify identity --cert-identity https://github.com/bhargavchintam/aureproof/.github/workflows/release.yml@refs/tags/v<version> --cert-oidc-issuer https://token.actions.githubusercontent.com <file>`.
