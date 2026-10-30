@@ -24,8 +24,9 @@ The reviewer signs off by commenting on each issue. They check:
 1. **Scoring spec (#9):** `specs/scoring/scoring.md`. Rules M1–M9, the
    dispositions and the metrics. Then the open questions at the end of the file,
    and whether `conformance/scoring/v0.1/golden.json` matches the rules by hand.
-2. **Task Health Records (#38, #41):** for each of `authz-001`, `path-001` and
-   `authz-002`, read `fixtures/oracles/<task>/README.md`, then `labels.json`
+2. **Task Health Records (#38, #41, #49):** for each public development pair,
+   `authz-001`, `path-001`, `authz-002`, `ssrf-001`, `redirect-001` and
+   `massassign-001`, read `fixtures/oracles/<task>/README.md`, then `labels.json`
    against the code in `fixtures/security/<task>/variants/`. Check that the defect
    is real, the accepted CWEs fit, the decoys are safe, and the known limits are
    stated. Run `uv run aureproof task validate <task>`. (Decided 2026-10-29: `authz-002`
