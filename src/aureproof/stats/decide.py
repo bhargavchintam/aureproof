@@ -17,7 +17,7 @@ from aureproof.contracts.decision import (
     Interval,
 )
 from aureproof.stats.permutation import MAX_CLUSTERS, SignFlipResult, min_clusters, sign_flip
-from aureproof.stats.wilson import wilson
+from aureproof.stats.wilson import clustered_wilson
 
 Outcome = Literal["pass", "fail", "inconclusive"]
 
@@ -118,12 +118,9 @@ def decide(protocol: DecisionProtocol, rows: Sequence[ClusterRow]) -> Decision:
             diffs.append(diff)
             baseline.append(a)
         table.append(row.model_copy(update={"difference": _fmt(diff)}))
-    wa = _interval(
-        wilson(sum(r.a_confirmed for r in rows), sum(r.a_submitted for r in rows), alpha)
-    )
-    wb = _interval(
-        wilson(sum(r.b_confirmed for r in rows), sum(r.b_submitted for r in rows), alpha)
-    )
+    # Pooled yield per configuration, with clusters (not findings) as the independent units.
+    wa = _interval(clustered_wilson([(r.a_confirmed, r.a_submitted) for r in rows], alpha))
+    wb = _interval(clustered_wilson([(r.b_confirmed, r.b_submitted) for r in rows], alpha))
     margin = Fraction(str(protocol.margin))  # the decimal as written; Fraction(0.05) > 1/20
     provisional, reason, result = _three_way(diffs, alpha, margin)
     outcome = provisional

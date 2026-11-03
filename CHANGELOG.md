@@ -50,6 +50,16 @@ public API and the specs may change between minor versions).
   about 0.4 s instead of about 27 s.
 
 ### Fixed
+- The per-configuration Wilson intervals in a Decision counted every finding as an
+  independent trial, although the gate itself treats clusters as the independent
+  units. Findings of one episode and the episodes of one task are correlated, so the
+  "95%" interval was too narrow: in a simulated six-task cohort it covered the target
+  yield 74% of the time. `wilson_a` and `wilson_b` now use the effective sample size
+  from the cluster-robust variance and Student's t with k − 1 degrees of freedom
+  (`stats.clustered_wilson`, specs/decision §4, vectors CW-01 to CW-06); coverage is
+  94–95% in the same simulation (`scripts/wilson_coverage.py`). The live slice's yield
+  3/12 over three clusters was reported as [0.089, 0.532] and is [0.032, 0.772]. The
+  decision itself is unchanged.
 - A Decision Protocol whose cohort names more than 20 clusters was accepted and
   signed, and the gate then crashed with a `ValueError` when it ran after the
   assessment. Such a protocol is now invalid when it is written (conformance vector
