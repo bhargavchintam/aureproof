@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Aureproof team video</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --navy: #142030;
+        --navy-2: #1c2b3e;
+        --navy-3: #0c1622;
+        --paper: #f6f4ee;
+        --card: #fffdf8;
+        --rule: #ded9cc;
+        --gold: #e2b04a;
+        --gold-ink: #7f520f;
+        --ink: #142030;
+        --ink-soft: #3d4652;
+        --ink-mute: #5e6670;
+        --on-dark: #f4f1ea;
+        --on-dark-soft: #c9d2dc;
+        --on-dark-mute: #a3b0bf;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--navy); font-family: "Inter", sans-serif; }
+      .scene { position: absolute; inset: 0; overflow: hidden; padding: 110px 128px 190px; display: flex; flex-direction: column; gap: 40px; }
+      .dark { background: var(--navy); color: var(--on-dark); }
+      .light { background: var(--paper); color: var(--ink); }
+      .eyebrow { font-family: "JetBrains Mono", monospace; font-size: 28px; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); }
+      .light .eyebrow { color: var(--gold-ink); }
+      h1 { font-size: 104px; line-height: 1.05; font-weight: 700; letter-spacing: -2px; }
+      h2 { font-size: 72px; line-height: 1.08; font-weight: 700; letter-spacing: -1px; }
+      h3 { font-size: 40px; line-height: 1.15; font-weight: 700; }
+      .lede { font-size: 40px; line-height: 1.35; color: var(--on-dark-soft); max-width: 1500px; }
+      .byline { margin-top: auto; font-size: 30px; color: var(--on-dark-mute); }
+      #title { justify-content: center; padding-bottom: 150px; }
+      #title .byline { margin-top: 40px; }
+      .row { display: flex; gap: 32px; }
+      .card { flex: 1; display: flex; flex-direction: column; gap: 18px; padding: 40px; border-radius: 18px; background: var(--card); border: 1px solid var(--rule); border-top: 8px solid #c8912e; }
+      .card p { font-size: 30px; line-height: 1.4; color: var(--ink-soft); }
+      .tag { font-family: "JetBrains Mono", monospace; font-size: 28px; color: var(--gold-ink); }
+      .src { margin-top: auto; font-size: 24px; color: var(--ink-mute); }
+      .split { display: flex; gap: 56px; align-items: center; height: 100%; }
+      .col { width: 640px; flex: none; display: flex; flex-direction: column; gap: 28px; }
+      .check { font-size: 34px; line-height: 1.35; color: var(--ink-soft); padding-left: 24px; border-left: 6px solid #c8912e; }
+      .check b { color: var(--ink); }
+      .diagram { flex: 1; height: 760px; display: flex; align-items: center; justify-content: center; }
+      .diagram { background: url("assets/flow.png") center / contain no-repeat; }
+      .term { display: flex; flex-direction: column; gap: 2px; padding: 0 0 28px; border-radius: 16px; background: var(--navy-3); border: 1px solid #2c3b4e; overflow: hidden; }
+      .bar { display: flex; align-items: center; gap: 10px; padding: 14px 20px; margin-bottom: 14px; background: #16222f; }
+      .bar i { width: 14px; height: 14px; border-radius: 7px; background: #3a4a5e; }
+      .bar span { margin-left: 16px; font-family: "JetBrains Mono", monospace; font-size: 20px; color: var(--on-dark-mute); }
+      .term .ln { position: relative; padding: 0 36px; font-family: "JetBrains Mono", monospace; font-size: 25px; line-height: 1.5; color: var(--on-dark-soft); white-space: pre; }
+      .term .ln.dim { color: #6f7f92; }
+      .term .ln .tx { position: relative; }
+      .term .cmdline { margin-bottom: 8px; white-space: nowrap; overflow: hidden; }
+      .term .pr { color: #6fd39b; }
+      .term .cmd { color: var(--gold); display: inline-block; }
+      .mark { position: absolute; left: 20px; right: 20px; top: 0; bottom: 0; border-radius: 6px; background: rgba(226, 176, 74, 0.2); border-left: 5px solid var(--gold); transform-origin: left center; }
+      .note { font-size: 38px; line-height: 1.3; color: var(--on-dark-soft); }
+      .note b { color: var(--gold); }
+      .facts { margin-top: 12px; }
+      .fact { flex: 1; display: flex; flex-direction: column; gap: 8px; padding: 32px 36px; border-radius: 16px; background: var(--navy-2); }
+      .fact b { font-size: 52px; color: var(--on-dark); }
+      .fact span { font-size: 28px; color: var(--on-dark-mute); }
+      .ask { padding: 32px 40px; border-radius: 16px; background: var(--gold); color: var(--ink); font-size: 38px; line-height: 1.35; }
+      .ask span { font-family: "JetBrains Mono", monospace; font-size: 30px; }
+      .cap { position: absolute; left: 0; right: 0; bottom: 64px; display: flex; justify-content: center; z-index: 10; }
+      .cap span { max-width: 1500px; padding: 12px 26px; border-radius: 12px; background: rgba(8, 14, 22, 0.86); color: #fff; font-size: 38px; line-height: 1.3; font-weight: 600; text-align: center; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="root" data-start="0" data-duration="80.5" data-width="1920" data-height="1080">
+    <div id="title" class="scene clip dark" data-start="0.0" data-duration="6.5" data-track-index="1" data-track-kind="graphics">
+      <p class="eyebrow" id="ti-eb">Aureproof</p>
+      <h1 id="ti-h">Evidence you can check<br />for AI agent evals</h1>
+      <p class="lede" id="ti-sub">Open source. Signed, re-scorable results, and a gate that can say “inconclusive”.</p>
+      <p class="byline" id="ti-by">Bindu Bhargava R Chintam · solo founder · github.com/bhargavchintam/aureproof</p>
+    </div>
+
+    <div id="problem" class="scene clip light" data-start="6.5" data-duration="13.5" data-track-index="1" data-track-kind="graphics">
+      <p class="eyebrow" id="pr-eb">The problem</p>
+      <h2 id="pr-h">Agent eval results are hard to trust</h2>
+      <div class="row">
+        <div class="card" id="pr-c1"><span class="tag">01</span><h3>Broken graders still count</h3><p>OpenAI found 59.4% of 138 audited SWE-bench Verified tasks flawed.</p></div>
+        <div class="card" id="pr-c2"><span class="tag">02</span><h3>Runs can’t be re-checked</h3><p>Scores travel as a number. Nobody outside can confirm how it was made.</p></div>
+        <div class="card" id="pr-c3"><span class="tag">03</span><h3>Luck gets called a win</h3><p>A fixed threshold can’t say “too close to call”.</p></div>
+      </div>
+      <p class="src">Source: OpenAI, “Why SWE-bench Verified no longer measures frontier coding capabilities”, Feb 2026</p>
+    </div>
+
+    <div id="solution" class="scene clip light" data-start="20.0" data-duration="12.5" data-track-index="1" data-track-kind="graphics">
+      <div class="split">
+        <div class="col">
+          <p class="eyebrow" id="so-eb">The solution</p>
+          <h2 id="so-h">Three checks,<br />end to end</h2>
+          <div class="check" id="so-c1"><b>Health record.</b> A task counts only if its grader passes controls.</div>
+          <div class="check" id="so-c2"><b>Signed bundle.</b> Anyone can verify and re-score the run offline.</div>
+          <div class="check" id="so-c3"><b>Fixed gate.</b> Pass, fail or inconclusive, with rules set before the run.</div>
+        </div>
+        <div class="diagram" id="so-img" role="img" aria-label="Aureproof end-to-end flow diagram"></div>
+      </div>
+    </div>
+
+    <div id="validate" class="scene clip dark" data-start="32.5" data-duration="9.5" data-track-index="1" data-track-kind="graphics">
+      <p class="eyebrow" id="validate-eb">Real output · Aureproof 0.1.0a1</p>
+      <div class="term" id="validate-term">
+        <div class="bar"><i></i><i></i><i></i><span>~/aureproof</span></div>
+        <div class="ln cmdline"><span class="pr">$ </span><span class="cmd" id="validate-cmd">uv run --extra sign aureproof validate bundles/m2-slice-2 --require-signature</span></div>
+          <div id="validate-l0" class="ln dim"><span class="tx">TUF repository is loaded in offline mode; updates will not be performed</span></div>
+          <div id="validate-l1" class="ln"><span class="tx">V1 structure            pass</span></div>
+          <div id="validate-l2" class="ln"><span class="tx">V2 members              pass</span></div>
+          <div id="validate-l3" class="ln"><span class="tx">V3 journal              pass</span></div>
+          <div id="validate-l4" class="ln"><span class="tx">V4 mandatory evidence   pass</span></div>
+          <div id="validate-l5" class="ln"><span class="mark"></span><span class="tx">V5 signature            pass</span></div>
+          <div id="validate-l6" class="ln"><span class="mark"></span><span class="tx">    - verified: https://github.com/bhargavchintam/aureproof/.github/workflows/sign.yml@refs/heads/main</span></div>
+          <div id="validate-l7" class="ln"><span class="tx">V6 identity             pass</span></div>
+          <div id="validate-l8" class="ln"><span class="mark"></span><span class="tx">VALID</span></div>
+      </div>
+      <p class="note" id="validate-note">A real Claude Code run, signed by <b>sign.yml</b> on main, verified offline.</p>
+    </div>
+
+    <div id="score" class="scene clip dark" data-start="42.0" data-duration="14.0" data-track-index="1" data-track-kind="graphics">
+      <p class="eyebrow" id="score-eb">Real output · Aureproof 0.1.0a1</p>
+      <div class="term" id="score-term">
+        <div class="bar"><i></i><i></i><i></i><span>~/aureproof</span></div>
+        <div class="ln cmdline"><span class="pr">$ </span><span class="cmd" id="score-cmd">uv run aureproof score bundles/m2-slice-2 --offline</span></div>
+          <div id="score-l0" class="ln"><span class="mark"></span><span class="tx">re-score: reproduced</span></div>
+          <div id="score-l1" class="ln"><span class="tx">  adjudicated_precision        3/11  0.2727</span></div>
+          <div id="score-l2" class="ln"><span class="tx">  duplicate_rate               0/12  0.0000</span></div>
+          <div id="score-l3" class="ln"><span class="tx">  evidence_incomplete_rate     0/6  0.0000</span></div>
+          <div id="score-l4" class="ln"><span class="tx">  infrastructure_failure_rate  0/6  0.0000</span></div>
+          <div id="score-l5" class="ln"><span class="tx">  invalid_finding_rate         0/12  0.0000</span></div>
+          <div id="score-l6" class="ln"><span class="mark"></span><span class="tx">  known_defect_recall          3/3  1.0000</span></div>
+          <div id="score-l7" class="ln"><span class="tx">  operational_completion       6/6  1.0000</span></div>
+          <div id="score-l8" class="ln"><span class="tx">  refusal_rate                 0/6  0.0000</span></div>
+          <div id="score-l9" class="ln"><span class="tx">  scoped_false_alarm_rate      8/39  0.2051</span></div>
+          <div id="score-l10" class="ln"><span class="mark"></span><span class="tx">  strict_confirmed_yield       3/12  0.2500</span></div>
+          <div id="score-l11" class="ln"><span class="tx">  unresolved_fraction          1/12  0.0833</span></div>
+      </div>
+      <p class="note" id="score-note">Recall 3/3 looks perfect. <b>Only 3 of its 12 findings were real.</b></p>
+    </div>
+
+    <div id="compare" class="scene clip dark" data-start="56.0" data-duration="10.5" data-track-index="1" data-track-kind="graphics">
+      <p class="eyebrow" id="compare-eb">Real output · long lines trimmed</p>
+      <div class="term" id="compare-term">
+        <div class="bar"><i></i><i></i><i></i><span>~/aureproof</span></div>
+        <div class="ln cmdline"><span class="pr">$ </span><span class="cmd" id="compare-cmd">uv run aureproof compare --protocol protocols/agent-explore/protocol.json \</span></div>
+        <div class="ln cmdline"><span class="pr">  </span><span class="cmd" id="compare-cmd2">--a bundles/agent-explore-A --b bundles/agent-explore-B</span></div>
+          <div id="compare-l0" class="ln"><span class="tx"># Comparison: agent-explore-akash-1</span></div>
+          <div id="compare-l1" class="ln"><span class="tx"></span></div>
+          <div id="compare-l2" class="ln"><span class="mark"></span><span class="tx">**Outcome: inconclusive** (CI [-1/4, 4/5] spans -margin)</span></div>
+          <div id="compare-l3" class="ln"><span class="tx"></span></div>
+          <div id="compare-l4" class="ln"><span class="tx">- Protocol sha256:725acbe0…; repetitions 3; margin 0.05; alpha 0.025 per side</span></div>
+          <div id="compare-l5" class="ln"><span class="tx">- 6 clusters with a defined difference; at least 6 are needed for a decisive outcome.</span></div>
+          <div id="compare-l6" class="ln"><span class="tx">- Mean difference 11/144; exact two-sided p 7/8; CI [-0.25, 0.8].</span></div>
+      </div>
+      <p class="note" id="compare-note">Two real agent setups, three runs each. <b>The gate won’t guess.</b></p>
+    </div>
+
+    <div id="outro" class="scene clip dark" data-start="66.5" data-duration="14.0" data-track-index="1" data-track-kind="graphics">
+      <p class="eyebrow" id="ou-eb">Founder</p>
+      <h2 id="ou-h">Bindu Bhargava R Chintam</h2>
+      <p class="lede" id="ou-sub">Research Scientist, Research Foundation for SUNY · M.S. CS, Stony Brook</p>
+      <div class="row facts" id="ou-facts">
+        <div class="fact"><b>3 weeks</b><span>built solo, all in the open</span></div>
+        <div class="fact"><b>Apache-2.0</b><span>open source</span></div>
+        <div class="fact"><b>0.1.0a1</b><span>alpha on PyPI</span></div>
+      </div>
+      <div class="ask" id="ou-ask"><b>Next:</b> teams who run agent evals, trying it on their own runs.<br /><span>github.com/bhargavchintam/aureproof</span></div>
+    </div>
+
+      <div id="captions" class="clip" data-start="0" data-duration="80.5" data-track-index="2" data-track-kind="captions" style="position: absolute; inset: 0; pointer-events: none">
+      <div id="cap-title-0" class="clip cap" data-start="0.50" data-duration="1.44" data-track-index="3"><span>This is Aureproof,</span></div>
+      <div id="cap-title-1" class="clip cap" data-start="1.94" data-duration="3.98" data-track-index="3"><span>evidence you can check for AI agent evaluations.</span></div>
+      <div id="cap-problem-0" class="clip cap" data-start="7.00" data-duration="2.61" data-track-index="3"><span>When a team says its agent got better,</span></div>
+      <div id="cap-problem-1" class="clip cap" data-start="9.61" data-duration="3.19" data-track-index="3"><span>nobody outside the team can check that claim.</span></div>
+      <div id="cap-problem-2" class="clip cap" data-start="12.80" data-duration="1.88" data-track-index="3"><span>The grader might be broken,</span></div>
+      <div id="cap-problem-3" class="clip cap" data-start="14.68" data-duration="1.87" data-track-index="3"><span>the run can&#x27;t be re-checked,</span></div>
+      <div id="cap-problem-4" class="clip cap" data-start="16.55" data-duration="2.75" data-track-index="3"><span>and a lucky result gets called a win.</span></div>
+      <div id="cap-solution-0" class="clip cap" data-start="20.50" data-duration="2.04" data-track-index="3"><span>Aureproof adds three checks.</span></div>
+      <div id="cap-solution-1" class="clip cap" data-start="22.54" data-duration="2.68" data-track-index="3"><span>It proves each task&#x27;s grader works.</span></div>
+      <div id="cap-solution-2" class="clip cap" data-start="25.22" data-duration="2.88" data-track-index="3"><span>It seals the run into a signed bundle.</span></div>
+      <div id="cap-solution-3" class="clip cap" data-start="28.10" data-duration="1.16" data-track-index="3"><span>And it uses a gate</span></div>
+      <div id="cap-solution-4" class="clip cap" data-start="29.26" data-duration="1.57" data-track-index="3"><span>that is allowed to say,</span></div>
+      <div id="cap-solution-5" class="clip cap" data-start="30.83" data-duration="1.37" data-track-index="3"><span>inconclusive.</span></div>
+      <div id="cap-validate-0" class="clip cap" data-start="33.70" data-duration="2.64" data-track-index="3"><span>Here is a real Claude Code run.</span></div>
+      <div id="cap-validate-1" class="clip cap" data-start="36.34" data-duration="2.56" data-track-index="3"><span>Its signature verifies offline against</span></div>
+      <div id="cap-validate-2" class="clip cap" data-start="38.90" data-duration="3.10" data-track-index="3"><span>the signing workflow on main.</span></div>
+      <div id="cap-score-0" class="clip cap" data-start="43.00" data-duration="2.03" data-track-index="3"><span>It re-scores to the same</span></div>
+      <div id="cap-score-1" class="clip cap" data-start="45.03" data-duration="2.13" data-track-index="3"><span>numbers with no API key.</span></div>
+      <div id="cap-score-2" class="clip cap" data-start="47.16" data-duration="2.88" data-track-index="3"><span>The agent found all three planted bugs,</span></div>
+      <div id="cap-score-3" class="clip cap" data-start="50.04" data-duration="1.49" data-track-index="3"><span>but only three of its</span></div>
+      <div id="cap-score-4" class="clip cap" data-start="51.53" data-duration="1.67" data-track-index="3"><span>12 findings were real.</span></div>
+      <div id="cap-score-5" class="clip cap" data-start="53.20" data-duration="2.76" data-track-index="3"><span>Recall alone would call that perfect.</span></div>
+      <div id="cap-compare-0" class="clip cap" data-start="57.00" data-duration="2.96" data-track-index="3"><span>This compares two real agent setups.</span></div>
+      <div id="cap-compare-1" class="clip cap" data-start="59.96" data-duration="2.44" data-track-index="3"><span>Three runs each can&#x27;t support a call,</span></div>
+      <div id="cap-compare-2" class="clip cap" data-start="62.40" data-duration="3.74" data-track-index="3"><span>so the gate says inconclusive instead of guessing.</span></div>
+      <div id="cap-outro-0" class="clip cap" data-start="67.00" data-duration="2.25" data-track-index="3"><span>Built solo by Bindu Bhargava</span></div>
+      <div id="cap-outro-1" class="clip cap" data-start="69.25" data-duration="2.07" data-track-index="3"><span>R. Chintam in three weeks,</span></div>
+      <div id="cap-outro-2" class="clip cap" data-start="71.32" data-duration="3.28" data-track-index="3"><span>open source under Apache 2.0.</span></div>
+      <div id="cap-outro-3" class="clip cap" data-start="74.60" data-duration="2.36" data-track-index="3"><span>Next, teams who run agent evals</span></div>
+      <div id="cap-outro-4" class="clip cap" data-start="76.96" data-duration="2.38" data-track-index="3"><span>trying it on their own runs.</span></div>
+      </div>
+
+      <audio id="vo-title" class="clip" src="assets/voice/title.wav" data-start="0.50" data-duration="5.16" data-track-index="4"></audio>
+      <audio id="vo-problem" class="clip" src="assets/voice/problem.wav" data-start="7.00" data-duration="12.12" data-track-index="4"></audio>
+      <audio id="vo-solution" class="clip" src="assets/voice/solution.wav" data-start="20.50" data-duration="11.26" data-track-index="4"></audio>
+      <audio id="vo-validate" class="clip" src="assets/voice/validate.wav" data-start="33.70" data-duration="7.30" data-track-index="4"></audio>
+      <audio id="vo-score" class="clip" src="assets/voice/score.wav" data-start="43.00" data-duration="12.59" data-track-index="4"></audio>
+      <audio id="vo-compare" class="clip" src="assets/voice/compare.wav" data-start="57.00" data-duration="8.75" data-track-index="4"></audio>
+      <audio id="vo-outro" class="clip" src="assets/voice/outro.wav" data-start="67.00" data-duration="12.18" data-track-index="4"></audio>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      gsap.set("#ti-sub, #ti-by, #pr-eb, #pr-h, #pr-c1, #pr-c2, #pr-c3, #so-eb, #so-h, #so-c1, #so-c2, #so-c3, #so-img, #ou-eb, #ou-h, #ou-sub, #ou-facts, #ou-ask, .term .ln:not(.cmdline), .mark, .note", { opacity: 0 });
+      tl.fromTo("#ti-sub", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, 1.2);
+      tl.fromTo("#ti-by", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, 2.4);
+      tl.fromTo("#pr-eb", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, 6.6);
+      tl.fromTo("#pr-h", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, 6.8);
+      tl.fromTo("#pr-c1", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, 13.04);
+      tl.fromTo("#pr-c2", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, 14.92);
+      tl.fromTo("#pr-c3", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, 16.88);
+      tl.fromTo("#so-eb", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, 20.1);
+      tl.fromTo("#so-h", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, 20.3);
+      tl.fromTo("#so-img", { opacity: 0, y: 0 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", immediateRender: false }, 20.6);
+      tl.fromTo("#so-c1", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, 22.72);
+      tl.fromTo("#so-c2", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, 25.41);
+      tl.fromTo("#so-c3", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, 28.51);
+      tl.fromTo("#validate-cmd", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.92, ease: "steps(77)", immediateRender: false }, 32.6);
+      tl.fromTo("#validate-l0", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 33.75);
+      tl.fromTo("#validate-l1", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 33.80);
+      tl.fromTo("#validate-l2", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 33.85);
+      tl.fromTo("#validate-l3", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 33.90);
+      tl.fromTo("#validate-l4", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 33.95);
+      tl.fromTo("#validate-l5", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 34.00);
+      tl.fromTo("#validate-l6", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 34.05);
+      tl.fromTo("#validate-l7", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 34.10);
+      tl.fromTo("#validate-l8", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 34.15);
+      tl.fromTo("#validate-l5 .mark", { opacity: 0, scaleX: 0.2 }, { opacity: 1, scaleX: 1, duration: 0.35, ease: "power2.out", immediateRender: false }, 36.57);
+      tl.fromTo("#validate-l6 .mark", { opacity: 0, scaleX: 0.2 }, { opacity: 1, scaleX: 1, duration: 0.35, ease: "power2.out", immediateRender: false }, 36.72);
+      tl.fromTo("#validate-l8 .mark", { opacity: 0, scaleX: 0.2 }, { opacity: 1, scaleX: 1, duration: 0.35, ease: "power2.out", immediateRender: false }, 39.66);
+      tl.fromTo("#validate-note", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, 36.57);
+      tl.fromTo("#score-cmd", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.61, ease: "steps(51)", immediateRender: false }, 42.1);
+      tl.fromTo("#score-l0", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 42.85);
+      tl.fromTo("#score-l1", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 42.90);
+      tl.fromTo("#score-l2", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 42.95);
+      tl.fromTo("#score-l3", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 43.00);
+      tl.fromTo("#score-l4", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 43.05);
+      tl.fromTo("#score-l5", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 43.10);
+      tl.fromTo("#score-l6", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 43.15);
+      tl.fromTo("#score-l7", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 43.20);
+      tl.fromTo("#score-l8", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 43.25);
+      tl.fromTo("#score-l9", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 43.30);
+      tl.fromTo("#score-l10", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 43.35);
+      tl.fromTo("#score-l11", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 43.40);
+      tl.fromTo("#score-l0 .mark", { opacity: 0, scaleX: 0.2 }, { opacity: 1, scaleX: 1, duration: 0.35, ease: "power2.out", immediateRender: false }, 43.51);
+      tl.fromTo("#score-l6 .mark", { opacity: 0, scaleX: 0.2 }, { opacity: 1, scaleX: 1, duration: 0.35, ease: "power2.out", immediateRender: false }, 47.86);
+      tl.fromTo("#score-l10 .mark", { opacity: 0, scaleX: 0.2 }, { opacity: 1, scaleX: 1, duration: 0.35, ease: "power2.out", immediateRender: false }, 50.3);
+      tl.fromTo("#score-note", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, 53.2);
+      tl.fromTo("#compare-cmd", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.90, ease: "steps(75)", immediateRender: false }, 56.1);
+      tl.fromTo("#compare-cmd2", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.66, ease: "steps(55)", immediateRender: false }, 57.0);
+      tl.fromTo("#compare-l0", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 57.85);
+      tl.fromTo("#compare-l1", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 57.90);
+      tl.fromTo("#compare-l2", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 57.95);
+      tl.fromTo("#compare-l3", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 58.00);
+      tl.fromTo("#compare-l4", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 58.05);
+      tl.fromTo("#compare-l5", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 58.10);
+      tl.fromTo("#compare-l6", { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, 58.15);
+      tl.fromTo("#compare-l2 .mark", { opacity: 0, scaleX: 0.2 }, { opacity: 1, scaleX: 1, duration: 0.35, ease: "power2.out", immediateRender: false }, 63.44);
+      tl.fromTo("#compare-note", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, 63.94);
+      tl.fromTo("#ou-eb", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, 66.6);
+      tl.fromTo("#ou-h", { opacity: 0, y: 36 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out", immediateRender: false }, 66.8);
+      tl.fromTo("#ou-sub", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, 67.6);
+      tl.fromTo("#ou-facts", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, 69.3);
+      tl.fromTo("#ou-ask", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, 74.6);
+      tl.to({}, { duration: 0.01 }, 80.49);
+      window.__timelines["root"] = tl;
+    </script>
+  </body>
+</html>
