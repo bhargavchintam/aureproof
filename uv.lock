@@ -375,7 +375,7 @@ requires-dist = [
     { name = "bandit", extras = ["sarif"], marker = "extra == 'baseline'", specifier = "==1.9.4" },
     { name = "inspect-ai", marker = "extra == 'inspect'", specifier = "==0.3.286" },
     { name = "inspect-swe", marker = "extra == 'inspect'", specifier = "==0.2.72" },
-    { name = "openai", marker = "extra == 'inspect'", specifier = "==3.30.0" },
+    { name = "openai", marker = "extra == 'inspect'", specifier = "==3.46.0" },
     { name = "pydantic", specifier = ">=2,<3" },
     { name = "rfc8785", specifier = ">=0.1.4,<0.2" },
     { name = "sigstore", marker = "extra == 'sign'", specifier = "==4.5.1" },
@@ -2267,7 +2267,7 @@ wheels = [
 
 [[package]]
 name = "openai"
-version = "3.30.0"
+version = "3.46.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -2277,9 +2277,9 @@ dependencies = [
     { name = "sniffio" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/13/be/bb26a618193f36f65cfde4d6ea71444d33a5e8fdb2e44d0f45e5b3a960ea/openai-3.30.0.tar.gz", hash = "sha256:94c4429df87f212ae461be41e00350690e8343f55e1571335f31edd3d6bfab1b", size = 1836527, upload-time = "2026-10-14T04:01:09.978Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/34/b6/23cddcb571d6eafe7b4bb58c7e0a068076121b7b001b776179994cca6a03/openai-3.46.0.tar.gz", hash = "sha256:fb34cd8cab6809ad0aa8dc42493fa622aaa87c814fd8e67a6fb3fa1f1e5d952d", size = 2408622, upload-time = "2026-11-05T00:55:55.463Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/73/64/a95afb853d7faf478cfb5d8dd2a20c8bfc6140742d0acc8dafe1f9e94303/openai-3.30.0-py3-none-any.whl", hash = "sha256:21ee7fad3420ed4af6c3d12f1a49436a7352e0aa1a861858ffdfbb01f609a520", size = 2181650, upload-time = "2026-10-14T04:01:07.441Z" },
+    { url = "https://files.pythonhosted.org/packages/f4/63/454e6faad68ac903e7669932db8d0a91c95dfca829ec9476e52045b17684/openai-3.46.0-py3-none-any.whl", hash = "sha256:7b650117e9bf539029bf880c2eff94a26f281394f6572284efa5d068d4b1c98e", size = 2438918, upload-time = "2026-11-05T00:55:53.301Z" },
 ]
 
 [[package]]

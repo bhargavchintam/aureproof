@@ -44,7 +44,7 @@ inspect = [
     "anthropic>=1.13,<3",
     "inspect-ai==0.3.286",
     "inspect-swe==0.2.72",
-    "openai==3.30.0",  # Inspect's openai-api provider (the reference subject on other endpoints)
+    "openai==3.46.0",  # Inspect's openai-api provider (the reference subject on other endpoints)
 ]
 sign = [
     "sigstore==4.5.1",
