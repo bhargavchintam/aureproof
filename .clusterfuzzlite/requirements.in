@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: 2026 Bindu Bhargava R Chintam
+# SPDX-License-Identifier: Apache-2.0
+# What the fuzz build installs, hash-pinned in requirements.txt for the builder
+# image's Python 3.11. Runtime dependencies as in pyproject.toml, plus the build
+# backend, since the package itself is installed without build isolation.
+pydantic>=2,<3
+rfc8785>=0.1.4,<0.2
+typer>=0.12,<1
+hatchling>=1.27
+#
+# Regenerate requirements.txt with the versions uv.lock already pins:
+#   uv export --no-dev --no-emit-project --no-hashes -o /tmp/lock.txt
+#   uv pip compile .clusterfuzzlite/requirements.in -c /tmp/lock.txt \
+#     --python-version 3.11 --python-platform x86_64-unknown-linux-gnu \
+#     --generate-hashes --no-header -o .clusterfuzzlite/requirements.txt

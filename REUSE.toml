@@ -18,6 +18,7 @@ path = [
   "CITATION.cff",
   ".zenodo.json",
   "uv.lock",
+  ".clusterfuzzlite/requirements.txt",
   ".python-version",
   ".gitignore",
   ".gitleaks.toml",
