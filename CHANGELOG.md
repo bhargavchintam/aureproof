@@ -48,6 +48,11 @@ public API and the specs may change between minor versions).
   ordered by exact integer keys. Results are identical to the Fraction enumeration
   (a property test keeps the old implementation as its oracle); 20 clusters take
   about 0.4 s instead of about 27 s.
+- The ClusterFuzzLite build installs its dependencies and build backend from a
+  hash-pinned file (`.clusterfuzzlite/requirements.txt`, compiled for the builder's
+  Python 3.11 at the versions `uv.lock` pins), builds the wheel offline and installs
+  it with `--no-deps`. It used to run a plain `pip install .`, the one unpinned
+  download OpenSSF Scorecard reported (Pinned-Dependencies 9/10, now 10/10 locally).
 
 ### Fixed
 - The per-configuration Wilson intervals in a Decision counted every finding as an
